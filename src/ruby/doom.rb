@@ -29,17 +29,15 @@ end
 
 class Thing < Lump
 	NAME="THING"
+	attr_reader :type_id, :facing_angle, :location
 	def initialize
 		super(NAME)
 	end
-	def type_id
-		return Wad.unmarshal_short(@bytes.slice(6,2))	
-	end
-	def facing_angle
-		return Wad.unmarshal_short(@bytes.slice(4,2))	
-	end
-	def location
-		Point.new(Wad.unmarshal_short(@bytes.slice(0,2)), Wad.unmarshal_short(@bytes.slice(2,2)))
+	def read(bytes)
+		super(bytes)
+		@type_id =  Wad.unmarshal_short(@bytes.slice(6,2))
+		@facing_angle = Wad.unmarshal_short(@bytes.slice(4,2))
+		@location = Point.new(Wad.unmarshal_short(@bytes.slice(0,2)), Wad.unmarshal_short(@bytes.slice(2,2)))
 	end
 end
 
