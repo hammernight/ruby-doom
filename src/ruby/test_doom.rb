@@ -301,17 +301,6 @@ class IndexToCoordinatesTest < Test::Unit::TestCase
 	end
 end
 
-class ArrayToPointsTest < Test::Unit::TestCase
-	def test_convert
-		# Ensure we find the right point (3,1) when given a bitmap with the 12th bit set
-		# 00000000
-		# 00010000
-		# 00000000
-		a2p = ArrayToPoints.new(8,3,[255,239,255])
-		assert(a2p.points[0] == Point.new(3,1), "Didn't find correct point " + a2p.points[0].to_s)
-	end
-end
-
 class PointsToLineTest < Test::Unit::TestCase
 	def test_lower_left
 		pts = [Point.new(1,1), Point.new(2,1), Point.new(3,1), Point.new(2,4)]
@@ -334,8 +323,10 @@ class PointsToLineTest < Test::Unit::TestCase
 		assert(p.line == (pts << pts[0]), "Didn't decode corner correctly")
 	end
 	def test_foo
-    b = BMPDecoder.new("../../bitmaps/square.bmp")
-    #puts b.line
+    #b = BMPDecoder.new("../../bitmaps/square2.bmp")
+    #puts b.raw_points
+		#puts "================================="
+		#puts b.line
 	end
 end
 
@@ -348,3 +339,17 @@ class FinderTest < Test::Unit::TestCase
 		assert(f.points_at_radius(Point.new(0,0), 2).size == 16, "radius 2 should have yielded 16 points")
 	end
 end
+
+class ArrayToPointsTest < Test::Unit::TestCase
+	def test_convert
+		# Ensure we find the right point (3,1) when given a bitmap with the 12th bit set
+		# 00000000
+		# 00010000
+		# 00000000
+		a2p = ArrayToPoints.new(8,3,[255,239,255])
+		assert(a2p.points[0] == Point.new(3,1), "Didn't find correct point " + a2p.points[0].to_s)
+		pts = ArrayToPoints.new(8,3,[254,255,255]).points
+		assert(pts[0] == Point.new(7,2), "Didn't find correct point " + pts[0].to_s)
+	end
+end
+

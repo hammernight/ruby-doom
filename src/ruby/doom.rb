@@ -110,10 +110,10 @@ class ArrayToPoints
 		@raw_data.each {|byte|
 			# for each bit in the image
 			0.upto(7) {|bit|
-				if (byte & (1 << bit)) == 0
+				test_mask = 128 >> bit	
+				if (byte & test_mask) == 0
 					tmp_pt = @bit_index_to_point_converter.convert(idx, @width)
-					p = Point.new(tmp_pt.x-1, @height-1-tmp_pt.y)
-					pts << p
+					pts << Point.new(tmp_pt.x, @height-1-tmp_pt.y)
 				end
 				idx += 1
 			}
