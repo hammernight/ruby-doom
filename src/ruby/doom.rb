@@ -423,12 +423,19 @@ class Wad
 end
 
 if __FILE__ == $0
-  file = ARGV.include?("-f") ? ARGV[ARGV.index("-f") + 1] : "../../test_wads/simple.wad"
-  w = Wad.new(true)
-  w.read(file)
   if ARGV.include?("-turn")
+ 		 file = ARGV.include?("-f") ? ARGV[ARGV.index("-f") + 1] : "../../test_wads/simple.wad"
+	  w = Wad.new(true)
+	  w.read(file)
     w.lumps.things.player.facing_angle = 90
-  else
+  	w.write("out.wad")
+  elsif ARGV.include?("-create")
+		puts "Creating a map"
+		exit
+	else
+  	file = ARGV.include?("-f") ? ARGV[ARGV.index("-f") + 1] : "../../test_wads/simple.wad"
+	  w = Wad.new(true)
+	  w.read(file)
     puts "The file " + file + " is a " + w.byte_count.to_s + " byte patch WAD" unless !w.pwad
     puts "It's got " + w.lumps.lumps.size.to_s + " lumps, the directory started at byte " + w.header.directory_offset.to_s
     w.lumps.lumps.each {|lump|
@@ -445,7 +452,7 @@ if __FILE__ == $0
 				lump.sectors.each {|x| puts " - " + x.to_s }
 			end
     }
+  	w.write("out.wad")
   end
-  w.write("out.wad")
 end
 
