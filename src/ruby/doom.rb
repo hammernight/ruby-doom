@@ -8,7 +8,7 @@ class DirectoryEntry
 			@size = Wad.unmarshal_long(array.slice(4,4))
 			@name = array.slice(8,8).pack("C*").strip
 	end
-	def save
+	def write
 		Wad.marshal_long(@offset) + Wad.marshal_long(@size) + Wad.marshal_string(@name)
 	end
 	def to_s
@@ -24,7 +24,7 @@ class Header
 		@lump_count = Wad.unmarshal_long(array.slice(4,4))
 		@directory_offset = Wad.unmarshal_long(array.slice(8,4))	
 	end
-	def save
+	def write
 		@type.unpack("C*") + Wad.marshal_long(@lump_count) + Wad.marshal_long(@directory_offset)
 	end
 end
@@ -55,9 +55,10 @@ class Wad
 	end
 	def save(filename)
 		puts "Saving file" unless !@verbose
-		out = []
-		out += @header.save
+		out = @header.save
 		# TODO	
+		# concat lumps
+		# concat directory
 		puts "Done" unless !@verbose
 	end
 	def Wad.marshal_string(n)
