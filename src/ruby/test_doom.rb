@@ -313,14 +313,14 @@ class PointsToLineTest < Test::Unit::TestCase
 		assert(Finder.new(pts).next(Point.new(1,1), pts.slice(0,1)) == Point.new(1,2), "wrong 'next point' found")
 	end
 	def test_points_in_order
-		pts = [Point.new(1,1), Point.new(2,1), Point.new(3,1), Point.new(2,4)]
+		pts = [Point.new(1,1), Point.new(1,2), Point.new(1,3), Point.new(2,4)]
 		p = PointsToLine.new(pts)
-		assert(p.line == [pts[0], pts[1], pts[2], pts[3], pts[0]], "wrong order: " + p.line.to_s)	
+		assert(p.line == pts, "wrong order: " + p.line.to_s)	
 	end
 	def test_corner
 		pts = [Point.new(1,1), Point.new(1,2), Point.new(1,3), Point.new(2,3), Point.new(3,3)]
 		p = PointsToLine.new(pts)
-		assert(p.line == (pts << pts[0]), "Didn't decode corner correctly")
+		assert(p.line == pts, "Didn't decode corner correctly")
 	end
 	def test_foo
     #b = BMPDecoder.new("../../bitmaps/square2.bmp")

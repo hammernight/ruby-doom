@@ -82,7 +82,6 @@ class PointsToLine
 			end
 		end
 		found_so_far << current
-		found_so_far << found_so_far[0]
 		return found_so_far
 	end
 end
@@ -843,9 +842,11 @@ end
 
 if __FILE__ == $0
 	if ARGV.include?("-bmp")
-		#b = BMPDecoder.new("../../bitmaps/square.bmp", true)
-		#puts b.line
-		#exit
+		b = BMPDecoder.new("../../bitmaps/square.bmp")
+		puts b.raw_points
+		puts "=============================="
+		puts b.line
+		exit
 		b = BMPMap.new("../../bitmaps/square.bmp")
 		b.set_player Point.new(200, 400)
 		b.create_wad("new.wad")		
