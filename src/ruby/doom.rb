@@ -24,13 +24,11 @@ class PointSet
 		first = lower_left
 		res << first
 		current = find_next(first, res)
-		previous = first
 		while current != first
 			res << current
 			tmp = current
 			current = find_next(current, res)
 			puts current
-			previous = tmp
 		end
 		res << first
 		return res
