@@ -123,9 +123,13 @@ class DecodedLump < Lump
 	def initialize(name)
 		super(name)
 		@items = []
+		@index = 0
 	end
 	def add(i)
+		i.id = @index
+		@index += 1
 		@items << i
+		return i
 	end
 	def write
 		out = []
@@ -152,17 +156,9 @@ end
 class Sectors < DecodedLump
 	BYTES_EACH=26
 	NAME="SECTORS"
-	attr_accessor :id
   def initialize
     super(NAME)
-		@index = 0
   end
-	def add(i)
-		i.id = @index
-		@index += 1
-		super(i)
-		return i
-	end
   def read(bytes)
     (bytes.size / BYTES_EACH).times {|index|
       s = Sector.new
@@ -203,7 +199,6 @@ class Vertexes < DecodedLump
 	NAME="VERTEXES"
   def initialize
     super(NAME)
-		@index = 0
   end
   def read(bytes)
     (bytes.size / BYTES_EACH).times {|index|
@@ -212,12 +207,6 @@ class Vertexes < DecodedLump
       @items << v
     }
   end
-	def add(i)
-		i.id = @index
-		@index += 1
-		super(i)
-		return i
-	end
 	def size
 		@items.size * BYTES_EACH
 	end
@@ -246,14 +235,7 @@ class Sidedefs < DecodedLump
   NAME="SIDEDEFS"
   def initialize
     super(NAME)
-		@index = 0
   end
-	def add(i)
-		i.id = @index
-		@index += 1
-		super(i)
-		return i
-	end
   def read(bytes)
     (bytes.size / BYTES_EACH).times {|index|
       s = Sidedef.new
@@ -293,14 +275,7 @@ class Things < DecodedLump
   NAME="THINGS"
   def initialize
     super(NAME)
-		@index = 0
   end
-	def add(i)
-		i.id = @index
-		@index += 1
-		super(i)
-		return i
-	end
   def read(bytes)
     (bytes.size / BYTES_EACH).times {|index|
       thing = Thing.new
@@ -343,7 +318,6 @@ class Linedefs < DecodedLump
 	NAME="LINEDEFS"
 	def initialize
 		super(NAME)
-		@index = 0
 	end
   def read(bytes)
     (bytes.size / BYTES_EACH).times {|index|
@@ -352,12 +326,6 @@ class Linedefs < DecodedLump
       @items << linedef
     }
   end
-	def add(i)
-		i.id = @index
-		@index += 1
-		super(i)
-		return i
-	end
 	def size
 		@items.size * BYTES_EACH
 	end
