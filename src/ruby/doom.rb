@@ -13,17 +13,10 @@ class Finder
 	SEARCH_RADIUS=10
 	def Finder.next(points, current, sofar)
 		0.upto(SEARCH_RADIUS) {|x|
-			if (Finder.good(points, c=Point.new(current.x + x, current.y), sofar) ||
-				Finder.good(points, c=Point.new(current.x - x, current.y), sofar) ||
-				Finder.good(points, c=Point.new(current.x, current.y + x), sofar) || 
-				Finder.good(points, c=Point.new(current.x, current.y - x), sofar) ||
-				Finder.good(points, c=Point.new(current.x + x, current.y + x), sofar) ||
-				Finder.good(points, c=Point.new(current.x - x, current.y - x), sofar) ||
-				Finder.good(points, c=Point.new(current.x + x, current.y - x), sofar) ||
-				Finder.good(points, c=Point.new(current.x - x, current.y + x), sofar) 
-				)
-				return c
-			end
+			pts = Finder.surround(current, x)
+			pts.each {|p|
+				return p if Finder.good(points, p, sofar)
+			}
 		}
 		raise "Couldn't find next point!"
 	end
