@@ -23,30 +23,32 @@ class PointSet
 		res = []
 		first = lower_left
 		res << first
-		current = find_next(first, first)
+		current = find_next(first, first, res)
 		previous = first
 		while current != first
 			res << current
 			tmp = current
-			current = find_next(current, previous)
+			current = find_next(current, previous, res)
+			puts current
 			previous = tmp
 		end
 		res << first
 		return res
 	end
-	def find_next(point, previous)
-		-1.upto(1) {|x|
-			-1.upto(1) {|y|
-				if x == 0 && y == 0
-					next
-				end
+	def find_next(point, previous, sofar)
+		0.upto(5) {|x|
+			0.upto(5) {|y|
 				candidate = Point.new(point.x + x, point.y + y)
-				if @points.index(candidate) != nil && candidate != previous
+				if @points.index(candidate) != nil && candidate != previous && sofar.index(candidate) == nil
+					return candidate
+				end	
+				candidate = Point.new(point.x - x, point.y - y)
+				if @points.index(candidate) != nil && candidate != previous && sofar.index(candidate) == nil
 					return candidate
 				end	
 			}
 		}
-		
+		raise "Couldn't find next point!"
 	end
 end
 class BMPDecoder
@@ -94,6 +96,9 @@ class BMPDecoder
 			}
 		}
 		@points = PointSet.new(pts)
+	end
+	def in_order
+		@points.in_order
 	end
 	def decode_word(bytes)
 		bytes.pack("C2").unpack("S")[0] 
@@ -734,6 +739,11 @@ class Nethack
 end
 
 if __FILE__ == $0
+	if ARGV.include?("-bmp")
+		b = BMPDecoder.new("../../test_wads/square.bmp")
+		puts b.in_order
+		exit
+	end
  	file = ARGV.include?("-f") ? ARGV[ARGV.index("-f") + 1] : "../../test_wads/simple.wad"
 	w = Wad.new(ARGV.include?("-v"))
 	w.read(file)

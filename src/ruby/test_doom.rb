@@ -287,6 +287,7 @@ class BMPDecoderTest < Test::Unit::TestCase
 		assert(B.compression == 0, "Wrong compression")
 		assert(B.size_of_image == 40960, "Wrong size_of_image")
 		assert(B.points.size == 1862, "wrong number of points")
+		puts B.in_order
 	end
 end
 
