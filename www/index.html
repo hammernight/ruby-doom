@@ -1,0 +1,24 @@
+<html>
+<head><title>Ruby-DOOM</title></head>
+<body>
+
+<hr>
+<p><b>Status (12/2/03)</b>: Just getting started; so far I'm only able to parse a WAD and determine type and lump count
+<hr>
+
+<p>If you want to generate a DOOM map, you need to use a level editor and manually create the map, either from scratch, or from a template.  Although this works well for most map creation scenarious, it would be nifty if the maps could be generated programmatically.  This would allow maps to be generated for <a href="http://cougaar.org/">Cougaar</a> agent community visualization, or <a href="http://pmd.sf.net/">PMD</a> problem visualization, or from a floor plan. 
+
+<p>Here's an example of what I'd like to be able to do:
+<pre>
+level = Level.new(10,10)
+level.add(Sector.new(0,0,2,2))
+level.add(Sector.new(5,5,7,7))
+level.spawn_point(1,1)
+m = Map.new(level)
+m.write_to_file("simple.wad")
+</pre>
+
+<p>A fair bit of WAD file documentation is already available, but I'll try to document <a href="wad.html">WAD file structure</a> as I go.
+
+</body>
+<html>
