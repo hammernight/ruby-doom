@@ -291,7 +291,7 @@ class PointSetTest < Test::Unit::TestCase
 	def test_find_next
 		pts = [Point.new(1,1), Point.new(1,2), Point.new(2,2)]
 		p = PointSet.new(pts)
-		assert(p.find_next(Point.new(1,1), pts.slice(0,1)) == Point.new(1,2), "wrong 'next point' found")
+		assert(Finder.next(pts, Point.new(1,1), pts.slice(0,1)) == Point.new(1,2), "wrong 'next point' found")
 	end
 	def test_points_in_order
 		pts = [Point.new(1,1), Point.new(2,1), Point.new(2,4)]
