@@ -11,16 +11,16 @@ class Codec
 		ptr = 0
 		format.split(//).each {|x|
 			if x == "s"
-				res << Wad.unmarshal_short(bytes.slice(ptr,2))
+				res << Codec.unmarshal_short(bytes.slice(ptr,2))
 				ptr += 2
 			elsif x == "l"	
-				res << Wad.unmarshal_long(bytes.slice(ptr,4))
+				res << Codec.unmarshal_long(bytes.slice(ptr,4))
 				ptr += 4
 			elsif x == "4"
-				res << Wad.unmarshal_string(bytes.slice(ptr,4))
+				res << Codec.unmarshal_string(bytes.slice(ptr,4))
 				ptr += 4
 			elsif x == "8"
-				res << Wad.unmarshal_string(bytes.slice(ptr,8))
+				res << Codec.unmarshal_string(bytes.slice(ptr,8))
 				ptr += 8
 			else
 				raise "Unknown character in decode format string " + format
@@ -34,19 +34,41 @@ class Codec
 		ptr = 0
 		format.split(//).each {|x|
 			if x == "s"
-				bytes += Wad.marshal_short(values[ptr])
+				bytes += Codec.marshal_short(values[ptr])
 			elsif x == "l"	
-				bytes += Wad.marshal_long(values[ptr])
+				bytes += Codec.marshal_long(values[ptr])
 			elsif x == "4"
-				bytes += Wad.marshal_string(values[ptr],4)
+				bytes += Codec.marshal_string(values[ptr],4)
 			elsif x == "8"
-				bytes += Wad.marshal_string(values[ptr],8)
+				bytes += Codec.marshal_string(values[ptr],8)
 			else
 				raise "Unknown character in decode format string " + format
 			end
 			ptr += 1
 		}
 		return bytes
+	end
+	def Codec.unmarshal_long(a)
+		a.pack("C4").unpack("V")[0]
+	end
+	def Codec.marshal_long(n)
+		[n].pack("N").unpack("C4").reverse
+	end
+	def Codec.unmarshal_short(a)
+		a.reverse.pack("C2").unpack("n")[0]
+	end
+	def Codec.marshal_short(s)
+		[s].pack("n").unpack("C2").reverse
+	end
+	def Codec.unmarshal_string(a)
+		a.pack("C*").strip
+	end
+	def Codec.marshal_string(n,len)
+		arr = n.unpack("C#{len}").compact
+		if arr.size < len
+			arr += Array.new(len-arr.size, 0)
+		end
+		arr
 	end
 end
 
@@ -278,28 +300,6 @@ class Wad
 		File.open(filename, "w") {|f| out.each {|b| f.putc(b) } } unless filename == nil
 		puts "Done" unless !@verbose
 		return out
-	end
-	def Wad.unmarshal_string(a)
-		a.pack("C*").strip
-	end
-	def Wad.marshal_string(n,len)
-		arr = n.unpack("C#{len}").compact
-		if arr.size < len
-			arr += Array.new(len-arr.size, 0)
-		end
-		arr
-	end
-	def Wad.unmarshal_long(a)
-		a.pack("C4").unpack("V")[0]
-	end
-	def Wad.marshal_long(n)
-		[n].pack("N").unpack("C4").reverse
-	end
-	def Wad.unmarshal_short(a)
-		a.reverse.pack("C2").unpack("n")[0]
-	end
-	def Wad.marshal_short(s)
-		[s].pack("n").unpack("C2").reverse
 	end
 end
 
