@@ -61,20 +61,19 @@ class PointSet
 	def initialize(points)
 		@points = points
 	end
-	def lower_left
-		@points.min {|a,b| a.distance_to(Point.new(0,0)) <=> b.distance_to(Point.new(0,0)) }
+	def upper_left
+		#@points.min {|a,b| a.distance_to(Point.new(0,0)) <=> b.distance_to(Point.new(0,0)) }
+		@points[0]
 	end
 	def size
 		@points.size
 	end
 	def in_order
-		found_so_far = []
-		first = lower_left
-		found_so_far << first
-		current = Finder.next(points, first, found_so_far)
+		found_so_far = [upper_left]
+		current = Finder.next(points, found_so_far[0], found_so_far)
 		while found_so_far.size != @points.size - 1 
 			found_so_far << current
-			#puts "Current = " + current.to_s + "; points so far: " + found_so_far.size.to_s
+			puts "Current = " + current.to_s + "; points so far: " + found_so_far.size.to_s
 			begin
 				current = Finder.next(points, current, found_so_far)
 			rescue
@@ -83,7 +82,7 @@ class PointSet
 			end
 		end
 		found_so_far << current
-		found_so_far << first
+		found_so_far << found_so_far[0]
 		return found_so_far
 	end
 end
@@ -695,6 +694,7 @@ end
 class BMPMap
 	def initialize(file)
 		@pp = PointsPath.new(BMPDecoder.new(file).in_order)
+		puts "size = " + @pp.segment_count.to_s
 		@things = Things.new
 	end
 	def set_player(p)
@@ -831,8 +831,8 @@ end
 
 if __FILE__ == $0
 	if ARGV.include?("-bmp")
-		b = BMPMap.new("../../test_wads/circle.bmp")
-		b.set_player Point.new(300, 200)
+		b = BMPMap.new("../../test_wads/square.bmp")
+		b.set_player Point.new(170, 160)
 		b.create_wad("new.wad")		
 		exit
 	end
