@@ -7,17 +7,24 @@ class BMPDecoder
 		File.open(filename, "r").each_byte {|x| bytes << x }
 		
 		# decode BITMAPFILEHEADER 
-		@type = bytes.slice(0,2).pack("C2").unpack("S")[0]
-		@size = bytes.slice(2,4).pack("C4").unpack("L")[0]
-		res1 = bytes.slice(6,2).pack("C2").unpack("S")[0]
-		res2 = bytes.slice(8,2).pack("C2").unpack("S")[0]
-		@offset_to_image_data = bytes.slice(10,4).pack("C4").unpack("L")[0]
+		@type = decode_word(bytes.slice(0,2))
+		@size = decode_dword(bytes.slice(2,4))
+		res1 = decode_word(bytes.slice(6,2))
+		res1 = decode_word(bytes.slice(8,2))
+		@offset_to_image_data = decode_dword(bytes.slice(10,4))
 		
 		# decode BITMAPINFOHEADER
-		@info_header_size = bytes.slice(14,4).pack("C4").unpack("L")[0]
-		@width = bytes.slice(18,4).pack("C4").unpack("L")[0]
-		@height = bytes.slice(22,4).pack("C4").unpack("L")[0]
+		@info_header_size = decode_dword(bytes.slice(14,4))
+		@width = decode_dword(bytes.slice(18,4)) # specified as a LONG... but DWORD works... (?)
+		@height = decode_dword(bytes.slice(22,4)) #  specified as a LONG... but DWORD works... (?)
 		
+	end
+	
+	def decode_word(bytes)
+		bytes.pack("C2").unpack("S")[0] 
+	end
+	def decode_dword(bytes)
+		bytes.pack("C4").unpack("L")[0] 
 	end
 end
 
