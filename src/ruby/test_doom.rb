@@ -174,17 +174,17 @@ class PathTest < Test::Unit::TestCase
 		assert(p.segments.size == 4, "Wrong parts")
 		assert(p.segments[2] == "w500", "wrong order")
 	end
-	def test_verts
+	def test_vertexes
 		p = Path.new(TEST)
-		assert(p.verts.items.size == 4, "wrong vert count")
-		assert(p.verts.items[0].location.x == 0, "wrong initial x for vertex 1")
-		assert(p.verts.items[0].location.y == 500, "wrong y for vertex 1")
-		assert(p.verts.items[1].location.x == 500, "wrong x for vertex 2")
-		assert(p.verts.items[1].location.y == 500, "wrong y for vertex 2")
-		assert(p.verts.items[2].location.x == 500, "wrong x for vertex 3")
-		assert(p.verts.items[2].location.y == 700, "wrong y for vertex 3")
-		assert(p.verts.items[3].location.x == 0, "wrong x for vertex 4")
-		assert(p.verts.items[3].location.y == 700, "wrong y for vertex 4")
+		assert(p.vertexes.items.size == 4, "wrong vert count")
+		assert(p.vertexes.items[0].location.x == 0, "wrong initial x for vertex 1")
+		assert(p.vertexes.items[0].location.y == 500, "wrong y for vertex 1")
+		assert(p.vertexes.items[1].location.x == 500, "wrong x for vertex 2")
+		assert(p.vertexes.items[1].location.y == 500, "wrong y for vertex 2")
+		assert(p.vertexes.items[2].location.x == 500, "wrong x for vertex 3")
+		assert(p.vertexes.items[2].location.y == 700, "wrong y for vertex 3")
+		assert(p.vertexes.items[3].location.x == 0, "wrong x for vertex 4")
+		assert(p.vertexes.items[3].location.y == 700, "wrong y for vertex 4")
 	end
 	def test_sectors
 		p = Path.new(TEST)

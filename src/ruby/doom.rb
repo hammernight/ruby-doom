@@ -468,7 +468,7 @@ class Path
 	def linedefs
 		linedefs = Linedefs.new
 		last = nil
-		verts.items.each {|v|
+		vertexes.items.each {|v|
 			if last == nil
 				last = v
 				next
@@ -477,10 +477,10 @@ class Path
 			linedefs.add ld
 			last = v
 		}
-		linedefs.add Linedef.new(verts.items[0], verts.items[1], sidedefs.items.last)
+		linedefs.add Linedef.new(vertexes.items[0], vertexes.items[1], sidedefs.items.last)
 		return linedefs
 	end
-	def verts
+	def vertexes
 		v = Vertexes.new
 		cur_x = 0
 		cur_y = 500
@@ -523,9 +523,11 @@ if __FILE__ == $0
 		t.add_player Point.new(100,400)
 		w.lumps << t
 
-		w.lumps << p.verts
+		w.lumps << p.vertexes
 		w.lumps << p.sectors
 		w.lumps << p.sidedefs
+		w.lumps << p.linedefs
+
 		w.write("new.wad")
 		exit
   elsif ARGV.include?("-create-explicit")
