@@ -422,6 +422,24 @@ class Wad
 	end
 end
 
+class Map
+	def initialize	
+		@levels = []
+	end
+	def add_level(level)
+		@levels << level
+	end
+	def save(filename)
+	end
+end
+
+class Level
+	def add_room(p,p1)
+	end
+	def set_spawn_point(p)
+	end
+end
+
 if __FILE__ == $0
   if ARGV.include?("-turn")
  		 file = ARGV.include?("-f") ? ARGV[ARGV.index("-f") + 1] : "../../test_wads/simple.wad"
@@ -431,6 +449,12 @@ if __FILE__ == $0
   	w.write("out.wad")
   elsif ARGV.include?("-create")
 		puts "Creating a map"
+		m = Map.new
+		level = Level.new
+		level.add_room(Point.new(0,0), Point.new(10,10))
+		level.set_spawn_point(Point.new(2,2))
+		m.add_level(level)
+		m.save("out.wad")
 		exit
 	else
   	file = ARGV.include?("-f") ? ARGV[ARGV.index("-f") + 1] : "../../test_wads/simple.wad"
