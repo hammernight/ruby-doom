@@ -11,6 +11,7 @@ m.set_player Point.new(50,900)
 550.step(900, 40) {|x|
  m.add_barrel Point.new(x,900)
 }
+m.add_sergeant Point.new(400,700)
 m.create_wad("new.wad")
 =============================
 
@@ -18,6 +19,7 @@ Or, you can convert a bitmap into a map like this:
 
 =============================
 b = BMPMap.new("wiggly.bmp")
+b.set_player Point.new(400, 200)
 b.set_player Point.new(400, 200)
 b.create_wad("new.wad")
 =============================
