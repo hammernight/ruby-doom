@@ -194,7 +194,7 @@ class Sector
 		Codec.encode(FORMAT, [@floor_height, @ceiling_height, @floor_texture, @ceiling_texture, @light_level, @special, @tag])
 	end
 	def to_s
-		" Sector floor/ceiling heights " + @floor_height.to_s + "/" + @ceiling_height.to_s + "; floor/ceiling textures " + @floor_texture.to_s + "/" + @ceiling_textures.to_s + "; light = " + @light_level.to_s + "; special = " + @special.to_s + "; tag = " + @tag.to_s
+		" Sector floor/ceiling heights " + @floor_height.to_s + "/" + @ceiling_height.to_s + "; floor/ceiling textures " + @floor_texture.to_s + "/" + @ceiling_texture.to_s + "; light = " + @light_level.to_s + "; special = " + @special.to_s + "; tag = " + @tag.to_s
 	end
 end
 
@@ -259,18 +259,18 @@ class Sidedef
 		@x_offset=0
 		@y_offset=0
 		@upper_texture="-"
-		@lower_texture="BROWN96"
-		@middle_texture="-"
+		@lower_texture="-"
+		@middle_texture="BROWN96"
 		@sector_id=0
 	end
   def read(bytes)
 		@x_offset, @y_offset, @upper_texture, @lower_texture, @middle_texture, @sector_id = Codec.decode(FORMAT, bytes)
   end
 	def write
-		Codec.encode(FORMAT, [@x_offset, @y_offset, @upper_texture, @middle_texture, @lower_texture, @sector_id])
+		Codec.encode(FORMAT, [@x_offset, @y_offset, @upper_texture, @lower_texture, @middle_texture, @sector_id])
 	end
 	def to_s
-		" Sidedef for sector " + @sector_id.to_s + "; upper/middle/lower textures are " + @upper_texture + "/" + @middle_texture + "/" + @lower_texture
+		" Sidedef for sector " + @sector_id.to_s + "; upper/lower/middle textures are " + @upper_texture + "/" + @lower_texture + "/" + @middle_texture + " with offsets of " + @x_offset.to_s + "/" + @y_offset.to_s
 	end
 end
 
@@ -480,7 +480,7 @@ if __FILE__ == $0
     w.lumps.things.player.facing_angle = 90
   	w.write("out.wad")
   elsif ARGV.include?("-create")
-		puts "Creating a nice, simple, square using counterclockwise linedefs; diagonal from 64,-512 to 128,-320"
+		puts "Creating a nice, simple, square using counterclockwise linedefs"
 		w = Wad.new(true)
 	
 		w.lumps.add UndecodedLump.new("MAP01")
