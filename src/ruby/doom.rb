@@ -215,7 +215,7 @@ end
 
 
 class DirectoryEntry
-	SIZE=16
+	BYTES_EACH=16
 	attr_accessor :offset, :size, :name
 	def initialize(offset=nil,size=nil,name=nil)
 		@offset = offset
@@ -246,7 +246,7 @@ class DirectoryEntry
 end
 
 class Header
-	SIZE=12
+	BYTES_EACH=12
 	attr_reader :type, :lump_count
 	attr_accessor :directory_offset
 	def read(array)
@@ -269,10 +269,10 @@ class Wad
 		File.new(filename).each_byte {|b| @bytes << b }
 		puts "Done reading, building the object model" unless !@verbose
 		@header = Header.new
-		@header.read(@bytes.slice(0,Header::SIZE))
+		@header.read(@bytes.slice(0,Header::BYTES_EACH))
 		@header.lump_count.times {|directory_entry_index|
 			de = DirectoryEntry.new
-			de.read(@bytes.slice((directory_entry_index*DirectoryEntry::SIZE)+@header.directory_offset,DirectoryEntry::SIZE))
+			de.read(@bytes.slice((directory_entry_index*DirectoryEntry::BYTES_EACH)+@header.directory_offset,DirectoryEntry::BYTES_EACH))
 			@lumps.add(de.create_lump(@bytes))
 		}
 		puts "Object model built" unless !@verbose
@@ -286,7 +286,7 @@ class Wad
 	def write(filename=nil)
 		puts "Writing WAD" unless !@verbose
 		out = []
-		ptr = Header::SIZE
+		ptr = Header::BYTES_EACH
 		entries = []
 		@lumps.lumps.each {|lump|
 			entries << DirectoryEntry.new(ptr, lump.size, lump.name)
