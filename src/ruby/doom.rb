@@ -18,9 +18,10 @@ class Lump
 end
 
 class Header
-	attr_reader :type, :directory_offset
+	attr_reader :type, :directory_offset, :lump_count
 	def initialize(array)
 		@type = Wad.convert_string(array.slice(0,4))
+		@lump_count = Wad.convert_long(array.slice(4,4))
 		@directory_offset = Wad.convert_long(array.slice(8,4))	
 	end
 end
@@ -34,23 +35,16 @@ class Wad
 		@lumps = []
 
 		puts "Reading WAD into memory" unless !@verbose
-
-		file = File.new(filename)
-		file.each_byte {|b|
-			@bytes << b
-		}
-
+		File.new(filename).each_byte {|b| @bytes << b }
 		puts "Done reading, building the object model" unless !@verbose
 	
 		@header = Header.new(@bytes.slice(0,12))
-		
-		directory_entry_index = @header.directory_offset
-		while directory_entry_index < byte_count-15
+	
+		@header.lump_count.times {|lump_index|
 			lump = Lump.new
-			lump.read(@bytes.slice(directory_entry_index,16))
+			lump.read(@bytes.slice((lump_index*16)+@header.directory_offset,16))
 			@lumps << lump
-			directory_entry_index += 16
-		end
+		}
 	
 		puts "Object model built" unless !@verbose
 	end
