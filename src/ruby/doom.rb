@@ -139,6 +139,9 @@ class UndecodedLump < Lump
 	def size
 		@bytes.size
 	end
+	def items
+		[]
+	end
 end
 
 class Sectors < DecodedLump
@@ -455,17 +458,7 @@ if __FILE__ == $0
     puts "It's got " + w.lumps.lumps.size.to_s + " lumps, the directory started at byte " + w.header.directory_offset.to_s
     w.lumps.lumps.each {|lump|
       puts lump.name + " (" + lump.size.to_s + " bytes)"
-			if lump.name == "THINGS"
-				lump.items.each {|t| puts " - " + t.to_s }
-			elsif lump.name == "LINEDEFS"
-				lump.items.each {|x| puts " - " + x.to_s }
-			elsif lump.name == "SIDEDEFS"
-				lump.items.each {|x| puts " - " + x.to_s }
-			elsif lump.name == "VERTEXES"
-				lump.items.each {|x| puts " - " + x.to_s }
-			elsif lump.name == "SECTORS"
-				lump.items.each {|x| puts " - " + x.to_s }
-			end
+			lump.items.each {|t| puts " - " + t.to_s }
     }
   	w.write("out.wad")
   end
