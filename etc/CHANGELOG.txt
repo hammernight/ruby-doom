@@ -1,3 +1,10 @@
+Dec 12 2003 - 0.3:
+Added a higher level API - maps can now be generated using expressions like
+"e200/s400/w200/n400" which would make a 400 x 200 rectangle.  Note that these
+paths need to run clockwise and must be a closed figure with no crossing
+lines.
+Moved the usage examples into separate files.
+
 Dec 12 2003 - 0.2:
 Fixed bug - shorts are no longer decoded as unsigned values.
 DOOM primitive wrappers (i.e., Linedefs, Sidedefs) are in place and can be
