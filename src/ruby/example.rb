@@ -6,7 +6,8 @@ if __FILE__ == $0
 	if ARGV.include?("-bitmap")
 		puts "Creating a map from a bitmap"
     b = BMPMap.new("../../bitmaps/wiggly.bmp")
-    b.set_player Point.new(400, 200)
+		b.scale_factor = 2
+    b.set_player Point.new(400, 400)
     b.create_wad("new.wad")
 	elsif ARGV.include?("-path")
 		puts "Creating a simple map using an encoded path"

@@ -140,6 +140,7 @@ class BMPDecoder
 	def initialize(filename, debug=false)
 		@debug = debug
 		@filename = filename
+		@scale_factor = 1
 	end
 	def decode
 		bytes = []
@@ -178,6 +179,9 @@ class BMPDecoder
 		@raw_image = bytes.slice(62, bytes.size-62)
 		return self
 	end
+	def scale_factor(factor)
+		@scale_factor = factor
+	end
 	def raw_points
 		if @raw_image == nil
 			decode
@@ -188,7 +192,8 @@ class BMPDecoder
 		PointsToLine.new(raw_points, @debug).line
 	end
 	def thin
-		PointThinner.new(line).thin
+		pts = PointThinner.new(line).thin
+		pts.collect {|p| p.scale(@scale_factor) }	
 	end
 	def decode_word(bytes)
 		bytes.pack("C2").unpack("S")[0] 
@@ -303,6 +308,9 @@ class Point
 	def initialize(x,y)
 		@x=x
 		@y=y
+	end
+	def scale(factor)
+		Point.new(x * factor, y * factor)
 	end
 	def ==(other)
 		return other.x == @x && other.y == @y
@@ -728,20 +736,23 @@ class SimpleLineMap
 end
 
 class BMPMap
+	attr_accessor :scale_factor
 	def initialize(file)
-		line = BMPDecoder.new(file).thin
-		@pp = PointsPath.new(line)
 		@things = Things.new
+		@scale_factor = 1
+		@bitmap_file = file
 	end
 	def set_player(p)
 		@things.add_player p
 	end
 	def create_wad(filename)
+		b = BMPDecoder.new(@bitmap_file)
+		b.scale_factor(@scale_factor)
 		w = Wad.new
 		w.lumps << UndecodedLump.new("MAP01")
 		w.lumps << @things
-		pc = PathCompiler.new(@pp)
-		w.lumps.concat pc.lumps
+		pc = PathCompiler.new(PointsPath.new(b.thin))
+		w.lumps.concat(pc.lumps)
 		w.write(filename)
 	end
 end
