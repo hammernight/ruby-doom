@@ -340,13 +340,13 @@ class Linedef
 		@attributes=1
 		@special_effects_type=0
 		@right_sidedef=s
-		@left_sidedef=0
+		@left_sidedef=-1
 	end
 	def read(bytes)
 		@start_vertex, @end_vertex, @attributes, @special_effects_type, @tag, @right_sidedef, @left_sidedef = Codec.decode(FORMAT, bytes)
 	end
 	def write
-		Codec.encode(FORMAT, [@start_vertex.id, @end_vertex.id, @attributes, @special_effects_type, @tag, @right_sidedef.id, @left_sidedef.id])
+		Codec.encode(FORMAT, [@start_vertex.id, @end_vertex.id, @attributes, @special_effects_type, @tag, @right_sidedef.id, -1])
 	end
 	def to_s
 		"Linedef from " + @start_vertex.to_s + " to " + @end_vertex.to_s + "; attribute flag is " + @attributes.to_s + "; special fx is " + @special_effects_type.to_s + "; tag is " + @tag.to_s + "; right sidedef is " + @right_sidedef.to_s + "; left sidedef is " + @left_sidedef.to_s
@@ -406,8 +406,8 @@ end
 
 class Header
 	BYTES_EACH=12
-	attr_reader :type, :lump_count
-	attr_accessor :directory_offset
+	attr_reader :type
+	attr_accessor :directory_offset, :lump_count
 	def initialize(type=nil)	
 		@type = type
 	end
@@ -460,6 +460,7 @@ class Wad
 		# now go back and fill in the directory offset in the header
 		h = Header.new("PWAD")
 		h.directory_offset = ptr
+		h.lump_count = @lumps.lumps.size
 		out = h.write + out
 		File.open(filename, "w") {|f| out.each {|b| f.putc(b) } } unless filename == nil
 		puts "Done" unless !@verbose
@@ -475,7 +476,7 @@ if __FILE__ == $0
     w.lumps.things.player.facing_angle = 90
   	w.write("out.wad")
   elsif ARGV.include?("-create")
-		puts "Creating a nice, simple, square using counterclockwise linedefs from 64,-512 to 128,-320"
+		puts "Creating a nice, simple, square using counterclockwise linedefs; diagonal from 64,-512 to 128,-320"
 		w = Wad.new(true)
 	
 		v = Vertexes.new
@@ -528,7 +529,6 @@ if __FILE__ == $0
 				|t| puts " - " + t.to_s 
 			}
     }
-  	w.write("out.wad")
   end
 end
 
