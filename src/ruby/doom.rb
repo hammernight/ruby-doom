@@ -258,8 +258,8 @@ class Sidedef
 	def initialize()
 		@x_offset=0
 		@y_offset=0
-		@upper_texture="-"
-		@lower_texture="-"
+		@upper_texture="BROWN96"
+		@lower_texture="BROWN96"
 		@middle_texture="BROWN96"
 		@sector_id=0
 	end
@@ -490,10 +490,10 @@ if __FILE__ == $0
 		w.lumps.add(t)
 
 		v = Vertexes.new
-		v1 = v.add Vertex.new(Point.new(64,-512))
-		v2 = v.add Vertex.new(Point.new(256,-512))
-		v3 = v.add Vertex.new(Point.new(256,-320))
-		v4 = v.add Vertex.new(Point.new(64, -320))
+		v1 = v.add Vertex.new(Point.new(64, -320))
+		v2 = v.add Vertex.new(Point.new(256, -320))
+		v3 = v.add Vertex.new(Point.new(256,-512))
+		v4 = v.add Vertex.new(Point.new(64, -512))
 		v5 = v.add Vertex.new(Point.new(300,-512))
 		v6 = v.add Vertex.new(Point.new(400,-512))
 		v7 = v.add Vertex.new(Point.new(400,-320))
