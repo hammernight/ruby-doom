@@ -331,6 +331,7 @@ class Linedefs < DecodedLump
 	NAME="LINEDEFS"
 	def initialize
 		super(NAME)
+		@index = 0
 	end
   def read(bytes)
     (bytes.size / BYTES_EACH).times {|index|
@@ -339,6 +340,12 @@ class Linedefs < DecodedLump
       @items << linedef
     }
   end
+	def add(i)
+		i.id = @index
+		@index += 1
+		super(i)
+		return i
+	end
 	def size
 		@items.size * BYTES_EACH
 	end
@@ -346,7 +353,15 @@ end
 
 class Linedef
 	FORMAT="sssssss"
-	attr_reader :start_vertex, :end_vertex, :attributes, :special_effects_type, :right_sidedef, :left_sidedef
+	attr_accessor :start_vertex, :end_vertex, :attributes, :special_effects_type, :right_sidedef, :left_sidedef, :id
+	def initialize(v1=0,v2=0,s=0)
+		@start_vertex=v1
+		@end_vertex=v2
+		@attributes=1
+		@special_effects_type=0
+		@right_sidedef=s
+		@left_sidedef=0
+	end
 	def read(bytes)
 		@start_vertex, @end_vertex, @attributes, @special_effects_type, @tag, @right_sidedef, @left_sidedef = Codec.decode(FORMAT, bytes)
 	end
@@ -498,8 +513,11 @@ if __FILE__ == $0
 		sd4 = sidedefs.add Sidedef.new
 		sd4.sector_id = s1.id
 
-		#linedefs = Linedefs.new
-		#linedefs.add Linedef.new(v1,v2)
+		linedefs = Linedefs.new
+		linedefs.add Linedef.new(v1,v2,sd1)
+		linedefs.add Linedef.new(v2,v3,sd2)
+		linedefs.add Linedef.new(v3,v4,sd3)
+		linedefs.add Linedef.new(v4,v1,sd4)
 
 		#w.write("out.wad")
 		exit
