@@ -183,7 +183,7 @@ class Sector
 		@ceiling_height=128
 		@floor_texture="FLAT14"
 		@ceiling_texture="FLAT14"
-		@light_level=255
+		@light_level=128
 		@special=0
 		@tag=0
 	end
@@ -194,7 +194,7 @@ class Sector
 		Codec.encode(FORMAT, [@floor_height, @ceiling_height, @floor_texture, @ceiling_texture, @light_level, @special, @tag])
 	end
 	def to_s
-		" Sector floor/ceiling heights " + @floor_height.to_s + "/" + @ceiling_height.to_s + "; floor/ceiling textures " + @floor_texture.to_s + "/" + @ceiling_textures.to_s
+		" Sector floor/ceiling heights " + @floor_height.to_s + "/" + @ceiling_height.to_s + "; floor/ceiling textures " + @floor_texture.to_s + "/" + @ceiling_textures.to_s + "; light = " + @light_level.to_s
 	end
 end
 
@@ -490,12 +490,10 @@ if __FILE__ == $0
 		v2 = v.add Vertex.new(Point.new(128,-512))
 		v3 = v.add Vertex.new(Point.new(128,-320))
 		v4 = v.add Vertex.new(Point.new(64, -320))
-
 		w.lumps.add(v)
 
 		sectors = Sectors.new
 		s1 = sectors.add Sector.new
-
 		w.lumps.add(sectors)
 	
 		sidedefs = Sidedefs.new
@@ -507,7 +505,6 @@ if __FILE__ == $0
 		sd3.sector_id = s1.id
 		sd4 = sidedefs.add Sidedef.new
 		sd4.sector_id = s1.id
-		
 		w.lumps.add(sidedefs)
 
 		linedefs = Linedefs.new
@@ -515,20 +512,12 @@ if __FILE__ == $0
 		linedefs.add Linedef.new(v2,v3,sd2)
 		linedefs.add Linedef.new(v3,v4,sd3)
 		linedefs.add Linedef.new(v4,v1,sd4)
-		
 		w.lumps.add(linedefs)
 		
 		t = Things.new
 		t.add Thing.new(Point.new(120,-400), 1)
-		
 		w.lumps.add(t)
 	
-		w.lumps.add UndecodedLump.new("SSEGS")
-		w.lumps.add UndecodedLump.new("SSECTORS")
-		w.lumps.add UndecodedLump.new("NODES")
-		w.lumps.add UndecodedLump.new("REJECT")
-		w.lumps.add UndecodedLump.new("BLOCKMAP")
-
 		w.write("new.wad")
 		exit
 	else
