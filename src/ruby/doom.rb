@@ -76,7 +76,7 @@ class Header
 	attr_reader :type, :lump_count
 	attr_accessor :directory_offset
 	def read(array)
-		@type = array.slice(0,4).pack("C*").strip
+		@type = Wad.unmarshal_string(array.slice(0,4))
 		@lump_count = Wad.unmarshal_long(array.slice(4,4))
 		@directory_offset = Wad.unmarshal_long(array.slice(8,4))	
 	end
