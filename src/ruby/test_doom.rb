@@ -208,6 +208,14 @@ class PathTest < Test::Unit::TestCase
 		assert(p.linedefs.items[3].start_vertex.id == 3, "wrong start vertex on last linedef")	
 		assert(p.linedefs.items[3].end_vertex.id == 0, "wrong end vertex on last linedef")
 	end
+	def test_add
+		p = Path.new(0,0,"")
+		assert(p.path == "", "initial path wrong")
+		p.add "e200/"
+		assert(p.path == "e200/", "adding path failed")
+		p.add("e100/",2)
+		assert(p.path == "e200/e100/e100/", "adding multiple paths failed: " + p.path)
+	end
 end
 
 class PointTest < Test::Unit::TestCase

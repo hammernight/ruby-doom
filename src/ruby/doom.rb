@@ -485,13 +485,16 @@ end
 
 class Path
 	NETHACK_DEFAULT_SIZE=20
-	attr_reader :sectors
+	attr_reader :sectors, :path
 	def initialize(start_x, start_y, path)
 		@path = path
 		@start_x = start_x
 		@start_y = start_y
 		@sectors = Sectors.new
 		@sectors.add Sector.new
+	end
+	def add(p,count=1)
+		count.times {@path += p }
 	end
 	def segments
 		@path.split(/\//)
