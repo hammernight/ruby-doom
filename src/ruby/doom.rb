@@ -449,8 +449,10 @@ end
 
 class Path
 	attr_reader :sectors
-	def initialize(path)
+	def initialize(start_x, start_y, path)
 		@path = path
+		@start_x = start_x
+		@start_y = start_y
 		@sectors = Sectors.new
 		@sectors.add Sector.new
 	end
@@ -482,8 +484,8 @@ class Path
 	end
 	def vertexes
 		v = Vertexes.new
-		cur_x = 0
-		cur_y = 500
+		cur_x = @start_x
+		cur_y = @start_y
 		v.add Vertex.new(Point.new(cur_x, cur_y))
 		segments.each {|x|
 			dir = x[0].chr
@@ -512,24 +514,7 @@ if __FILE__ == $0
 	  w = Wad.new(ARGV.include?("-v"))
 	  w.read(file)
     w.lumps.things.player.facing_angle = 90
-  	w.write("out.wad")
-	elsif ARGV.include?("-create-path")
-		puts "Creating a simple rectangle using an encoded path"
-		w = Wad.new(true)
-		p = Path.new("e600/n400/w600/s400")
-		w.lumps << UndecodedLump.new("MAP01")
-		
-		t = Things.new
-		t.add_player Point.new(100,400)
-		w.lumps << t
-
-		w.lumps << p.vertexes
-		w.lumps << p.sectors
-		w.lumps << p.sidedefs
-		w.lumps << p.linedefs
-
-		w.write("new.wad")
-		exit
+  	w.write("new.wad")
   elsif ARGV.include?("-create-explicit")
 		puts "Creating a simple rectangle using clockwise linedefs"
 		w = Wad.new(true)
