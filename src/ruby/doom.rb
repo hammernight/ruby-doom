@@ -1,17 +1,29 @@
 #!/usr/local/bin/ruby
 
 class Lump
+	attr_reader :name
+	def initialize(name)
+		@name = name
+	end
 	def read(bytes)
 		@bytes = bytes
 	end
 	def write
 		@bytes
 	end
+	def size
+		@bytes.size
+	end
 end
 
 class DirectoryEntry
 	SIZE=16
 	attr_accessor :offset, :size, :name
+	def initialize(offset=nil,size=nil,name=nil)
+		@offset = offset
+		@size = size
+		@name = name
+	end
 	def read(array)
 			@offset = Wad.unmarshal_long(array.slice(0,4))
 			@size = Wad.unmarshal_long(array.slice(4,4))
@@ -21,7 +33,7 @@ class DirectoryEntry
 		Wad.marshal_long(@offset) + Wad.marshal_long(@size) + Wad.marshal_string(@name)
 	end
 	def create_lump(bytes)
-		lump=Lump.new
+		lump=Lump.new(@name)
 		lump.read(bytes.slice(@offset, @size))
 		lump
 	end
@@ -41,7 +53,6 @@ class Header
 	def write
 		# note that we're leaving room to come back and fill in the directory offset
 		@type.unpack("C*") + Wad.marshal_long(@lump_count) + [0,0,0,0]
-		#@type.unpack("C*") + Wad.marshal_long(@lump_count) + Wad.marshal_long(@directory_offset)
 	end
 end
 
@@ -67,22 +78,28 @@ class Wad
 		}
 		puts "Object model built" unless !@verbose
 	end
-	def write
-		[]
-	end
 	def pwad
 		@header.type=="PWAD"
 	end
 	def byte_count
 		@bytes.size
 	end
-	def write(filename)
+	def write(filename=nil)
 		puts "Writing WAD" unless !@verbose
-		out = @header.save
-		# TODO	
-		# concat lumps
-		# concat directory
+		out = @header.write
+		entries = []
+		@lumps.each {|lump|
+			entries << DirectoryEntry.new(out.size, lump.size, lump.name)
+			out += lump.write
+		}
+		entries.each {|e| 
+			out += e.write
+		}
+		if filename != nil
+			puts "TODO: write to file"
+		end
 		puts "Done" unless !@verbose
+		return out
 	end
 	def Wad.marshal_string(n)
 		arr = n.unpack("C8").compact
