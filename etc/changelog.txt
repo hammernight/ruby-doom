@@ -1,3 +1,0 @@
-Dec 10 2003 - 0.1:
-Initial release.
-Able to parse any DOOM 2 WAD or PWAD file into a Ruby object model.

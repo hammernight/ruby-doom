@@ -1,3 +1,14 @@
 Here's how to do the next release:
 
-update the version number in the changelog
+Update the version number in this file
+Update CHANGELOG.txt
+Update README.txt to reflect current capabilities
+Make sure the tests run
+Check everything in
+
+cd ~/data/
+cvs -q rtag -D tomorrow "ruby_doom_release_0_1" ruby-doom
+mkdir ruby-doom-0.1
+cp ruby-doom/etc/README.txt ruby-doom-0.1/
+cp ruby-doom/etc/CHANGELOG.txt ruby-doom-0.1/
+cp ruby-doom/src/ruby/doom.rb ruby-doom-0.1/

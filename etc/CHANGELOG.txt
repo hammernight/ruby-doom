@@ -1,0 +1,4 @@
+Dec 10 2003 - 0.1:
+Initial release - mostly wad reading functionality.
+Can parse any DOOM 2 wad file into a Ruby object model.
+Can change the angle the player is facing and save that change.
