@@ -59,6 +59,16 @@ class Thing
 	end
 end
 
+class Lumps
+	attr_reader :lumps
+	def initialize
+		@lumps = []
+	end
+	def add(lump)
+		@lumps << lump
+	end
+end
+
 
 class DirectoryEntry
 	SIZE=16
@@ -110,7 +120,7 @@ class Wad
 	def initialize(verbose=false)
 		@verbose = verbose
 		@bytes = []
-		@lumps = []
+		@lumps = Lumps.new
 	end
 	def read(filename)
 		puts "Reading WAD into memory" unless !@verbose
@@ -121,7 +131,7 @@ class Wad
 		@header.lump_count.times {|directory_entry_index|
 			de = DirectoryEntry.new
 			de.read(@bytes.slice((directory_entry_index*DirectoryEntry::SIZE)+@header.directory_offset,DirectoryEntry::SIZE))
-			@lumps << de.create_lump(@bytes)
+			@lumps.add(de.create_lump(@bytes))
 		}
 		puts "Object model built" unless !@verbose
 	end
@@ -136,7 +146,7 @@ class Wad
 		out = []
 		ptr = Header::SIZE
 		entries = []
-		@lumps.each {|lump|
+		@lumps.lumps.each {|lump|
 			entries << DirectoryEntry.new(ptr, lump.size, lump.name)
 			out += lump.write
 			ptr += lump.size
@@ -178,12 +188,12 @@ if __FILE__ == $0
   w = Wad.new(true)
   w.read(file)
   if ARGV.include?("-turn")
-    w.things.player.facing_angle = 90
+    w.lumps.things.player.facing_angle = 90
   else
     puts "The file " + file + " is a " + w.byte_count.to_s + " byte patch WAD" unless !w.pwad
-    puts "It's got " + w.lumps.size.to_s + " lumps, the directory started at byte " + w.header.directory_offset.to_s
+    puts "It's got " + w.lumps.lumps.size.to_s + " lumps, the directory started at byte " + w.header.directory_offset.to_s
     puts "Lump".ljust(10) + "Size ".ljust(6)
-    w.lumps.each {|lump|
+    w.lumps.lumps.each {|lump|
       puts lump.name.ljust(10) + lump.size.to_s.ljust(6)
     }
   end
