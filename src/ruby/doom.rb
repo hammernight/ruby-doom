@@ -22,10 +22,14 @@ class Wad
 		type=="PWAD"
 	end
 	def lumps
-		@bytes.slice(4,4).pack("V").unpack("V")
+		y=""
+		@bytes.slice(4,4).each {|x| y << x.chr } 
+		y.unpack("V")
 	end
 	def directory
-		@bytes.slice(8,4).pack("V").unpack("V")
+		y=""
+		@bytes.slice(8,4).each {|x| y << x.chr } 
+		y.unpack("V")
 	end
 end
 
