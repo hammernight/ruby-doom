@@ -109,7 +109,6 @@ class ArrayToPoints
 			0.upto(7) {|bit|
 				if (byte & (1 << bit)) == 0
 					tmp_pt = @bit_index_to_point_converter.convert(idx, @width)
-					#p = tmp_pt
 					p = Point.new(tmp_pt.x, @height-1-tmp_pt.y)
 					pts << p
 				end
