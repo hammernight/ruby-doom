@@ -48,6 +48,10 @@ end
 class WadTest < Test::Unit::TestCase
 	W1 = WadFile.new("../../test_wads/simple.wad", 900)
 	W2 = WadFile.new("../../test_wads/stepstep.wad", 59436)
+	def test_short_readwrite
+		assert(Wad.unmarshal_short([2,1]) == 258, "unmarshalling short failed")
+		assert(Wad.marshal_short(258) == [2,1], "marshalling short failed")
+	end
 	def test_readwrite_simple
 		working = W1
 		w = Wad.new
@@ -73,5 +77,13 @@ class LumpTest < Test::Unit::TestCase
 		lump.read([1,2,3])
 		assert(lump.write == [1,2,3], "lump byte array doesn't stay const")
 		assert(lump.name == "FOO", "lump name corrupted")
+	end
+end
+
+class ThingTest < Test::Unit::TestCase
+	def test_type
+		t = Thing.new
+		t.read([224,0,96,254,0,0,1,0,7,0])	
+		assert(t.type_id == 1, "type id decode failed")
 	end
 end

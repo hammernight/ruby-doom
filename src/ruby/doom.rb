@@ -1,5 +1,16 @@
 #!/usr/local/bin/ruby
 
+def Point
+	attr_accessor :x, :y
+	def initialize(x,y)
+		@x=x
+		@y=y
+	end
+	def to_s
+		@x.to_s + "," + @y.to_s
+	end
+end
+
 class Lump
 	attr_reader :name
 	def initialize(name)
@@ -13,6 +24,18 @@ class Lump
 	end
 	def size
 		@bytes.size
+	end
+end
+
+class Thing < Lump
+	def initialize
+		super("THING")
+	end
+	def type_id
+		return Wad.unmarshal_short(@bytes.slice(6,2))	
+	end
+	def location
+		Point.new()
 	end
 end
 
@@ -33,7 +56,12 @@ class DirectoryEntry
 		Wad.marshal_long(@offset) + Wad.marshal_long(@size) + Wad.marshal_string(@name)
 	end
 	def create_lump(bytes)
-		lump=Lump.new(@name)
+		lump=nil
+		if @name == "THING"
+			lump=Thing.new
+		else
+			lump=Lump.new(@name)
+		end
 		lump.read(bytes.slice(@offset, @size))
 		lump
 	end
@@ -113,11 +141,17 @@ class Wad
 		end
 		arr
 	end
+	def Wad.unmarshal_long(a)
+		a.pack("C4").unpack("V")[0]
+	end
 	def Wad.marshal_long(n)
 		[n].pack("N").unpack("C4").reverse
 	end
-	def Wad.unmarshal_long(a)
-		a.pack("C4").unpack("V")[0]
+	def Wad.unmarshal_short(a)
+		a.reverse.pack("C2").unpack("n")[0]
+	end
+	def Wad.marshal_short(s)
+		[s].pack("n").unpack("C2").reverse
 	end
 end
 
