@@ -113,13 +113,20 @@ end
 class DictionaryTest  < Test::Unit::TestCase
 	def test_id_to_name
 		assert(Dictionary.get.name_for_type_id(1) == "Player 1", "couldn't find name for id == 1")
-		assert(Dictionary.get.name_for_type_id(-999) == "Unknown", "unknown key should return 'Unknown'")
+		assert(Dictionary.get.name_for_type_id(-999) == "Unknown thing", "unknown key should return 'Unknown'")
 	end
 	def test_angle
 		assert(Dictionary.get.direction_for_angle(22) == "east", "east failed")
 		assert(Dictionary.get.direction_for_angle(100) == "north", "north failed")
 		assert(Dictionary.get.direction_for_angle(190) == "west", "west failed")
 		assert(Dictionary.get.direction_for_angle(310) == "south", "south failed")
+	end
+end
+
+class LinedefsTest < Test::Unit::TestCase
+	def test_basic
+		linedefs = Linedefs.new
+		assert(linedefs.name == Linedefs::NAME, "Wrong name")
 	end
 end
 

@@ -64,9 +64,9 @@ class Things < Lump
   end
   def read(bytes)
     super(bytes)
-    (@bytes.size / BYTES_EACH).times {|thing_index|
+    (@bytes.size / BYTES_EACH).times {|index|
       thing = Thing.new
-      thing.read(@bytes.slice(thing_index*BYTES_EACH, BYTES_EACH))
+      thing.read(@bytes.slice(index*BYTES_EACH, BYTES_EACH))
       @things << thing
     }
   end
@@ -78,6 +78,42 @@ class Things < Lump
 	def player
 		@things.find {|t| t.type_id == 1 } 
 		raise "Couldn't find player Thing"
+	end
+end
+
+class Linedefs < Lump
+  BYTES_EACH=12
+	attr_reader :linedefs
+	NAME="LINEDEFS"
+	def initialize
+		super(NAME)
+		@linedefs = []
+	end
+  def read(bytes)
+    super(bytes)
+    (@bytes.size / BYTES_EACH).times {|index|
+      linedef = Linedef.new
+      linedef.read(@bytes.slice(index*BYTES_EACH, BYTES_EACH))
+      @linedefs << linedef
+    }
+  end
+end
+
+class Linedef
+	attr_reader :start_vertex, :end_vertex, :attributes, :special_effects_type, :right_sidedef, :left_sidedef
+	def read(bytes)
+		@start_vertex = Wad.unmarshal_short(bytes.slice(0,2))
+		@end_vertex = Wad.unmarshal_short(bytes.slice(2,2))
+		@attributes = Wad.unmarshal_short(bytes.slice(4,2))
+		@special_effects_type = Wad.unmarshal_short(bytes.slice(6,2))
+		@right_sidedef = Wad.unmarshal_short(bytes.slice(8,2))
+		@left_sidedef = Wad.unmarshal_short(bytes.slice(10,2))
+	end
+	def write
+		Wad.marshal_short(@start_vertex) + Wad.marshal_short(@end_vertex) + Wad.marshal_short(@attributes) + Wad.marshal_short(@special_effects_type) + Wad.marshal_short(@right_sidedef) + Wad.marshal_short(@left_sidedef)
+	end
+	def to_s
+		"Linedef from " + @start_vertex.to_s + " to " + @end_vertex.to_s
 	end
 end
 
@@ -133,6 +169,8 @@ class DirectoryEntry
 		lump=nil
 		if @name == Things::NAME
 			lump=Things.new
+		elsif @name == Linedefs::NAME
+			lump=Linedefs.new
 		else
 			lump=Lump.new(@name)
 		end
@@ -240,6 +278,8 @@ if __FILE__ == $0
       puts lump.name.ljust(10) + lump.size.to_s.ljust(6)
 			if lump.name == "THINGS"
 				lump.things.each {|t| puts " - " + t.to_s }
+			elsif lump.name == "LINEDEFS"
+				lump.linedefs.each {|x| puts " - " + x.to_s }
 			end
     }
   end
