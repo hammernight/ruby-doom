@@ -87,7 +87,9 @@ class PointsToLine
 end
 
 class IndexToCoordinates
-	# converts an index into an array of width blah to a point on an x/y coordinate
+	# converts an index into an array of width blah to a point on an x/y coordinate plane
+	# with 0,0 in the upper left hand corner
+	# so in an array that's 8 units wide, unit 12 converts to a point 4 across, 1 down
 	def convert(idx, width)
 		Point.new(idx % width, idx/width)
 	end
@@ -109,7 +111,7 @@ class ArrayToPoints
 			0.upto(7) {|bit|
 				if (byte & (1 << bit)) == 0
 					tmp_pt = @bit_index_to_point_converter.convert(idx, @width)
-					p = Point.new(tmp_pt.x, @height-1-tmp_pt.y)
+					p = Point.new(tmp_pt.x-1, @height-1-tmp_pt.y)
 					pts << p
 				end
 				idx += 1

@@ -303,12 +303,12 @@ end
 
 class ArrayToPointsTest < Test::Unit::TestCase
 	def test_convert
-		# Ensure we find the right point (4,1) when given a bitmap with the 12th bit set
+		# Ensure we find the right point (3,1) when given a bitmap with the 12th bit set
 		# 00000000
 		# 00010000
 		# 00000000
 		a2p = ArrayToPoints.new(8,3,[255,239,255])
-		assert(a2p.points[0] == Point.new(4,1), "Didn't find correct point " + a2p.points[0].to_s)
+		assert(a2p.points[0] == Point.new(3,1), "Didn't find correct point " + a2p.points[0].to_s)
 	end
 end
 
