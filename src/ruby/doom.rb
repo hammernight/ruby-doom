@@ -46,11 +46,6 @@ class Finder
 			p = p.translate(0,1)
 			res << p
 		}
-		# move back east to just north of the origin
-		#1.upto(r) {|y|
-		#	p = p.translate(1,0)
-		#	res << p
-		#}
 		puts "points array = " + res.to_s
 		return res
 	end
