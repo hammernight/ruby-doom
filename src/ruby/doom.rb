@@ -65,7 +65,7 @@ if __FILE__ == $0
 	puts "The file " + file + " is a " + w.byte_count.to_s + " byte patch WAD" unless !w.pwad
 	puts "It's got " + w.lumps.size.to_s + " lumps"
 	puts "The directory starts at byte " + w.directory_offset.to_s
-	puts "Lump name".ljust(10) + "Size (bytes) ".ljust(15) + "Starts at offset".ljust(20)
+	puts "Lump".ljust(10) + "Size (bytes) ".ljust(15) + "Starts at offset".ljust(20)
 	w.lumps.each {|lump|
 		puts lump.name.ljust(10) + lump.size.to_s.ljust(15) + lump.offset.to_s.ljust(20)
 	}
