@@ -3,11 +3,6 @@
 class DirectoryEntry
 	SIZE=16
 	attr_accessor :offset, :size, :name
-	def initialize(offset=nil, size=nil, name=nil)
-		@offset = offset
-		@size = size
-		@name = name
-	end
 	def read(array)
 			@offset = Wad.unmarshal_long(array.slice(0,4))
 			@size = Wad.unmarshal_long(array.slice(4,4))
@@ -21,7 +16,7 @@ end
 class Header
 	SIZE=12
 	attr_reader :type, :directory_offset, :lump_count
-	def initialize(array)
+	def read(array)
 		@type = array.slice(0,4).pack("C*").strip
 		@lump_count = Wad.unmarshal_long(array.slice(4,4))
 		@directory_offset = Wad.unmarshal_long(array.slice(8,4))	
@@ -40,7 +35,8 @@ class Wad
 		puts "Reading WAD into memory" unless !@verbose
 		File.new(filename).each_byte {|b| @bytes << b }
 		puts "Done reading, building the object model" unless !@verbose
-		@header = Header.new(@bytes.slice(0,Header::SIZE))
+		@header = Header.new
+		@header.read(@bytes.slice(0,Header::SIZE))
 		@header.lump_count.times {|directory_entry_index|
 			de = DirectoryEntry.new
 			de.read(@bytes.slice((directory_entry_index*DirectoryEntry::SIZE)+@header.directory_offset,DirectoryEntry::SIZE))
