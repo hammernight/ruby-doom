@@ -42,7 +42,7 @@ class PointSet
 		current = Finder.next(points, first, found_so_far)
 		while found_so_far.size != @points.size - 1 
 			found_so_far << current
-			#puts "Found " + current.to_s
+			#puts "Points so far: " + found_so_far.size.to_s
 			begin
 				current = Finder.next(points, current, found_so_far)
 			rescue
@@ -59,7 +59,7 @@ class ArrayToPoints
 	def ArrayToPoints.idx_to_xy(width, idx)
 		[idx % width, idx/width]
 	end
-	def ArrayToPoints.convert(width, img)
+	def ArrayToPoints.convert(width, height, img)
 		pts = []
 		# for each byte in the image
 		idx = 0
@@ -68,7 +68,7 @@ class ArrayToPoints
 			0.upto(7) {|bit|
 				if (byte & (1 << bit)) == 0
 					x,y = *ArrayToPoints.idx_to_xy(width, idx)
-					p = Point.new(x,y)
+					p = Point.new(x,height-1-y)
 					pts << Point.new(x,y)
 				end
 				idx += 1
@@ -116,7 +116,7 @@ class BMPDecoder
 		rgb1 = RGBQuad.new(bytes.slice(54,4))
 		rgb2 = RGBQuad.new(bytes.slice(58,4))
 		
-		@points = PointSet.new(ArrayToPoints.convert(@width, bytes.slice(62, bytes.size-62)))
+		@points = PointSet.new(ArrayToPoints.convert(@width, @height, bytes.slice(62, bytes.size-62)))
 	end
 	def in_order
 		@points.in_order
@@ -797,8 +797,12 @@ end
 
 if __FILE__ == $0
 	if ARGV.include?("-bmp")
-		b = BMPMap.new("../../test_wads/square.bmp")
-		b.set_player Point.new(200, 200)
+		b = BMPDecoder.new("../../test_wads/small.bmp")
+		#puts b.points.points
+		exit
+			
+		b = BMPMap.new("../../test_wads/circle.bmp")
+		b.set_player Point.new(300, 200)
 		b.create_wad("new.wad")		
 		exit
 	end

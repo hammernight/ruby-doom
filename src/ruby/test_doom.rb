@@ -318,7 +318,7 @@ class ArrayToPointsTest < Test::Unit::TestCase
 		# 00000000
 		# 00010000
 		# 00000000
-		pts = ArrayToPoints.convert(8, [255,239,255])
+		pts = ArrayToPoints.convert(8, 3, [255,239,255])
 		assert(pts[0] == Point.new(4,1), "Didn't find correct point " + pts[0].to_s)
 	end
 end
