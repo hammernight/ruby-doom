@@ -12,6 +12,6 @@ m.set_player Point.new(50,900)
 m.create_wad("new.wad")
 
 if ARGV.include?("-nethack")
-  puts m.path.nethack
+  puts m.nethack
   puts "Map generated from " + m.path.to_s
 end

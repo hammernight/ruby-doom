@@ -95,11 +95,11 @@ end
 
 class DictionaryTest  < Test::Unit::TestCase
 	def test_id_to_name
-		assert(Dictionary.get.name_for_type_id(1) == "Player 1", "couldn't find name for id == 1")
-		assert(Dictionary.get.name_for_type_id(-999) == "Unknown thing", "unknown key should return 'Unknown'")
+		assert(Dictionary.get.thing_for_type_id(1).name == "Player 1", "couldn't find name for id == 1")
+		assert(Dictionary.get.thing_for_type_id(-999).name == "Unknown thing", "unknown key should return 'Unknown'")
 	end
 	def test_name_to_id
-		assert(Dictionary.get.type_id_for_name("Player 1") == 1, "couldn't find id for name = 'player 1' == 1")
+		assert(Dictionary.get.thing_for_name("Player 1").id == 1, "couldn't find id for name = 'player 1' == 1")
 	end
 	def test_angle
 		assert(Dictionary.get.direction_for_angle(22) == "east", "east failed")

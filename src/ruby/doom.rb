@@ -60,6 +60,13 @@ class Codec
 	end
 end
 
+class ThingInfo
+	attr_reader :id, :name, :symbol
+	def initialize(id,name,symbol)
+		@id, @name, @symbol = id,name,symbol
+	end
+end
+
 class Dictionary
 	def Dictionary.get
 		if @self == nil
@@ -68,15 +75,19 @@ class Dictionary
 		return @self
 	end
 	def initialize
-		@type_id_to_name=Hash.new("Unknown thing")
-		@type_id_to_name[1]="Player 1"
-		@type_id_to_name[2035]="Barrel"
+		@things = []
+		@things << ThingInfo.new(1, "Player 1", "@")
+		@things << ThingInfo.new(2035, "Barrel", "b")
 	end
-	def name_for_type_id(id) 
-		@type_id_to_name[id]
+	def thing_for_type_id(id) 
+		t = @things.find {|x| x.id == id}
+		if t == nil
+			return ThingInfo.new(-999, "Unknown thing", "?")
+		end
+		return t
 	end
-	def type_id_for_name(name) 
-		@type_id_to_name.index(name)
+	def thing_for_name(name) 
+		@things.find {|x| x.name == name}
 	end
 	def direction_for_angle(angle)
 		case angle
@@ -318,16 +329,16 @@ class Things < DecodedLump
     }
   end
 	def add_barrel(p)
-		items << Thing.new(p, Dictionary.get.type_id_for_name("Barrel"))
+		items << Thing.new(p, Dictionary.get.thing_for_name("Barrel").id)
 	end
 	def size
 		@items.size * BYTES_EACH
 	end
 	def add_player(p)	
-		items << Thing.new(p, Dictionary.get.type_id_for_name("Player 1"))
+		items << Thing.new(p, Dictionary.get.thing_for_name("Player 1").id)
 	end
 	def player
-		@items.find {|t| t.type_id == Dictionary.get.type_id_for_name("Player 1")} 
+		@items.find {|t| t.type_id == Dictionary.get.thing_for_name("Player 1").id} 
 	end
 end
 
@@ -348,7 +359,7 @@ class Thing
 		Codec.encode("sssss", [@location.x, @location.y, @facing_angle, @type_id, @flags])
 	end
 	def to_s
-		Dictionary.get.name_for_type_id(@type_id)	+ " at " + @location.to_s + " facing " + Dictionary.get.direction_for_angle(@facing_angle) + "; flags = " + @flags.to_s
+		Dictionary.get.thing_for_type_id(@type_id).name	+ " at " + @location.to_s + " facing " + Dictionary.get.direction_for_angle(@facing_angle) + "; flags = " + @flags.to_s
 	end
 end
 
@@ -507,6 +518,12 @@ class SimpleLineMap
 	end
 	def add_barrel(p)
 		@things.add_barrel p	
+	end	
+	def nethack(size=Nethack::DEFAULT_SIZE)
+		n = Nethack.new(@path.start, size)
+		@path.visit(n)
+		@things.items.each {|t| n.thing(t) }
+		return n.render
 	end
 	def create_wad(filename)
 		w = Wad.new
@@ -604,6 +621,10 @@ class Nethack
 	def line_to(current)
 		@prev.lineto(current).each {|pt| @map[pt.y/100][pt.x/100] = "X" }
 		@prev = current
+	end
+	def thing(t)
+		puts (t.location.y/100).to_s + "," + ((@map.size-1) - (t.location.x/100)).to_s + " -> " + Dictionary.get.thing_for_type_id(t.type_id).symbol
+		@map[t.location.y/100][(@map.size-1) - (t.location.x/100)] = Dictionary.get.thing_for_type_id(t.type_id).symbol
 	end
 	def render
 		res = ""
