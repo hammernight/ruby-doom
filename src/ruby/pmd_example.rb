@@ -43,9 +43,9 @@ p.add("w200/s200/w200/n200/w200/", pmd.nooks)
 p.add("n400/")
 
 puts "Placing the barrels"
-1.upto(pmd.nooks) {|x|
-	t.add_barrel Point.new(x*300, 1100)
-	t.add_barrel Point.new(x*300, 500)
+0.upto(pmd.nooks-1) {|x|
+	t.add_barrel Point.new((x*600)+300, 1100)
+	t.add_barrel Point.new((x*600)+300, 500)
 }
 
 puts "Assembling the rest of the map"
