@@ -423,7 +423,7 @@ class Wad
 		}
 		puts "Object model built" unless !@verbose
     puts "The file " + filename + " is a " + @bytes.size.to_s + " byte " + @header.type unless !@verbose
-    puts "It's got " + @lumps.lumps.size.to_s + " lumps, the directory started at byte " + @header.directory_offset.to_s unless !@verbose
+    puts "It's got " + @lumps.size.to_s + " lumps, the directory started at byte " + @header.directory_offset.to_s unless !@verbose
 	end
 	def write(filename=nil)
 		puts "Writing WAD" unless !@verbose
