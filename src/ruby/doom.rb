@@ -454,6 +454,12 @@ class Path
 	def segments
 		@path.split(/\//)
 	end
+	def sectors
+	end
+	def sidedefs
+	end
+	def linedefs
+	end
 	def verts
 		res = []
 		cur_x = 0

@@ -177,6 +177,12 @@ class PathTest < Test::Unit::TestCase
 	def test_verts
 		p = Path.new(TEST)
 		assert(p.verts.size == 4, "wrong vert count")
-		#assert(p.verts[0].x == 0, "wrong initial x for starting vertex")
+		assert(p.verts[0].location.x == 0, "wrong initial x for starting vertex")
+		assert(p.verts[0].location.y == -500, "wrong y for starting vertex")
+		assert(p.verts[1].location.x == 500, "wrong x for vertex 1")
+		assert(p.verts[1].location.y == -500, "wrong y for vertex 1")
+		assert(p.verts[2].location.x == 500, "wrong x for vertex 2")
+		#puts p.verts[2].location.y
+		#assert(p.verts[2].location.y == -300, "wrong y for vertex 2")
 	end
 end
