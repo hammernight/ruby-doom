@@ -22,9 +22,10 @@ class Finder
 	end
 	def Finder.points_at_radius(p, r)
 		res = []
-		p = p.translate(0, -r)
+		# move up and then west to the upper left hand corner of the search box
+		p = p.translate(-r, -r)
 		# move east
-		1.upto(r) {
+		1.upto(r*2) {
 			p = p.translate(1,0)
 			res << p
 		}
@@ -44,10 +45,10 @@ class Finder
 			res << p
 		}
 		# move back east to just north of the origin
-		1.upto(r) {|y|
-			p = p.translate(1,0)
-			res << p
-		}
+		#1.upto(r) {|y|
+		#	p = p.translate(1,0)
+		#	res << p
+		#}
 		return res
 	end
 	def Finder.good(points, candidate, sofar)	

@@ -275,7 +275,7 @@ end
 
 
 class BMPDecoderTest < Test::Unit::TestCase
-	B = BMPDecoder.new(TEST="../../test_wads/square.bmp")
+	B = BMPDecoder.new(TEST="../../bitmaps/square.bmp")
 	def test_header
 		assert(B.type == 19778, "That's not a bitmap")
 		assert(B.size == File.size(TEST), "Wrong size")
@@ -310,7 +310,7 @@ end
 
 class PointSetTest < Test::Unit::TestCase
 	def test_lower_left
-		assert(BMPDecoderTest::B.points.upper_left == Point.new(64,446), "upper left point: " + BMPDecoderTest::B.points.upper_left.to_s)
+		assert(BMPDecoderTest::B.points.lower_left == Point.new(64,61), "lower left point: " + BMPDecoderTest::B.points.lower_left.to_s)
 	end
 	def test_find_next
 		pts = [Point.new(1,1), Point.new(1,2), Point.new(2,2)]
