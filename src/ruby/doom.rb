@@ -125,9 +125,44 @@ class Lump
 	end
 end
 
+class Sidedefs < Lump
+	BYTES_EACH=30
+  NAME="SIDEDEFS"
+	attr_reader :sidedefs
+  def initialize
+    super(NAME)
+    @sidedefs = []
+  end
+  def read(bytes)
+    super(bytes)
+    (@bytes.size / BYTES_EACH).times {|index|
+      s = Sidedef.new
+      s.read(@bytes.slice(index*BYTES_EACH, BYTES_EACH))
+      @sidedefs << s
+    }
+  end
+	def write
+		out = []
+		@sidedefs.each {|s| out += s.write }
+		out
+	end
+end
+
+class Sidedef
+	FORMAT="ss888s"
+  def read(bytes)
+		@x_offset, @y_offset, @upper_texture, @lower_texture, @middle_texture, @sector_id = Codec.decode(FORMAT, bytes)
+  end
+	def write
+		Codec.encode(FORMAT, [@x_offset, @y_offset, @upper_texture, @lower_texture, @middle_texture, @sector_id])
+	end
+	def to_s
+		" Sidedef for sector " + @sector_id.to_s
+	end
+end
+
 class Things < Lump
   BYTES_EACH=10
-	DIRECTION_FOR_ANGLE=Hash[{0=>"east",90=>"north",180=>"west",270=>"south"}]
   NAME="THINGS"
 	attr_reader :things
   def initialize
@@ -177,12 +212,13 @@ class Linedefs < Lump
 end
 
 class Linedef
+	FORMAT="sssssss"
 	attr_reader :start_vertex, :end_vertex, :attributes, :special_effects_type, :right_sidedef, :left_sidedef
 	def read(bytes)
-		@start_vertex, @end_vertex, @attributes, @special_effects_type, @tag, @right_sidedef, @left_sidedef = Codec.decode("sssssss", bytes)
+		@start_vertex, @end_vertex, @attributes, @special_effects_type, @tag, @right_sidedef, @left_sidedef = Codec.decode(FORMAT, bytes)
 	end
 	def write
-		Codec.encode("sssssss", [@start_vertex, @end_vertex, @attributes, @special_effects_type, @tag, @right_sidedef, @left_sidedef])
+		Codec.encode(FORMAT, [@start_vertex, @end_vertex, @attributes, @special_effects_type, @tag, @right_sidedef, @left_sidedef])
 	end
 	def to_s
 		"Linedef from " + @start_vertex.to_s + " to " + @end_vertex.to_s + "; attribute flag is " + @attributes.to_s + "; special fx is " + @special_effects_type.to_s + "; tag is " + @tag.to_s + "; right sidedef is " + @right_sidedef.to_s + "; left sidedef is " + @left_sidedef.to_s
@@ -238,6 +274,8 @@ class DirectoryEntry
 			lump=Things.new
 		elsif @name == Linedefs::NAME
 			lump=Linedefs.new
+		elsif @name == Sidedefs::NAME
+			lump=Sidedefs.new
 		else
 			lump=Lump.new(@name)
 		end
@@ -323,6 +361,8 @@ if __FILE__ == $0
 				lump.things.each {|t| puts " - " + t.to_s }
 			elsif lump.name == "LINEDEFS"
 				lump.linedefs.each {|x| puts " - " + x.to_s }
+			elsif lump.name == "SIDEDEFS"
+				lump.sidedefs.each {|x| puts " - " + x.to_s }
 			end
     }
   end
