@@ -161,7 +161,6 @@ class Sector
 	end
 end
 
-
 class Vertexes < Lump
 	BYTES_EACH=4
 	NAME="VERTEXES"
@@ -261,6 +260,22 @@ class Things < Lump
 	end
 end
 
+class Thing
+  attr_reader :type_id, :location
+  attr_accessor :facing_angle
+  def read(bytes)
+		x, y, @facing_angle, @type_id, @flags = Codec.decode("sssss", bytes)
+		@location = Point.new(x,y)
+  end
+	def write
+		Codec.encode("sssss", [@location.x, @location.y, @facing_angle, @type_id, @flags])
+	end
+	def to_s
+		Dictionary.get.name_for_type_id(@type_id)	+ " at " + @location.to_s + " facing " + Dictionary.get.direction_for_angle(@facing_angle)
+	end
+end
+
+
 class Linedefs < Lump
   BYTES_EACH=14
 	attr_reader :linedefs
@@ -295,21 +310,6 @@ class Linedef
 	end
 	def to_s
 		"Linedef from " + @start_vertex.to_s + " to " + @end_vertex.to_s + "; attribute flag is " + @attributes.to_s + "; special fx is " + @special_effects_type.to_s + "; tag is " + @tag.to_s + "; right sidedef is " + @right_sidedef.to_s + "; left sidedef is " + @left_sidedef.to_s
-	end
-end
-
-class Thing
-  attr_reader :type_id, :location
-  attr_accessor :facing_angle
-  def read(bytes)
-		x, y, @facing_angle, @type_id, @flags = Codec.decode("sssss", bytes)
-		@location = Point.new(x,y)
-  end
-	def write
-		Codec.encode("sssss", [@location.x, @location.y, @facing_angle, @type_id, @flags])
-	end
-	def to_s
-		Dictionary.get.name_for_type_id(@type_id)	+ " at " + @location.to_s + " facing " + Dictionary.get.direction_for_angle(@facing_angle)
 	end
 end
 
