@@ -125,6 +125,43 @@ class Lump
 	end
 end
 
+class Sectors < Lump
+	BYTES_EACH=26
+	NAME="SECTORS"
+	attr_reader :sectors
+  def initialize
+    super(NAME)
+    @sectors = []
+  end
+  def read(bytes)
+    super(bytes)
+    (@bytes.size / BYTES_EACH).times {|index|
+      s = Sector.new
+      s.read(@bytes.slice(index*BYTES_EACH, BYTES_EACH))
+      @sectors << s
+    }
+  end
+	def write
+		out = []
+		@sectors.each {|s| out += s.write }
+		out
+	end
+end
+
+class Sector
+	FORMAT="ss88sss"
+  def read(bytes)
+		@floor_height, @ceiling_height, @floor_texture, @ceiling_texture, @light_level, @special, @tag = Codec.decode(FORMAT, bytes)
+  end
+	def write
+		Codec.encode(FORMAT, [@floor_height, @ceiling_height, @floor_texture, @ceiling_texture, @light_level, @special, @tag])
+	end
+	def to_s
+		" Sector with floor texture " + @floor_texture.to_s
+	end
+end
+
+
 class Vertexes < Lump
 	BYTES_EACH=4
 	NAME="VERTEXES"
@@ -314,6 +351,8 @@ class DirectoryEntry
 			lump=Sidedefs.new
 		elsif @name == Vertexes::NAME
 			lump=Vertexes.new
+		elsif @name == Sectors::NAME
+			lump=Sectors.new
 		else
 			lump=Lump.new(@name)
 		end
@@ -402,6 +441,8 @@ if __FILE__ == $0
 				lump.sidedefs.each {|x| puts " - " + x.to_s }
 			elsif lump.name == "VERTEXES"
 				lump.vertexes.each {|x| puts " - " + x.to_s }
+			elsif lump.name == "SECTORS"
+				lump.sectors.each {|x| puts " - " + x.to_s }
 			end
     }
   end
