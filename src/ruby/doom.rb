@@ -1,5 +1,26 @@
 #!/usr/local/bin/ruby
 
+class BMPDecoder
+	attr_reader :type, :size, :offset_to_image_data, :info_header_size, :width, :height
+	def initialize(filename)
+		bytes = []
+		File.open(filename, "r").each_byte {|x| bytes << x }
+		
+		# decode BITMAPFILEHEADER 
+		@type = bytes.slice(0,2).pack("C2").unpack("S")[0]
+		@size = bytes.slice(2,4).pack("C4").unpack("L")[0]
+		res1 = bytes.slice(6,2).pack("C2").unpack("S")[0]
+		res2 = bytes.slice(8,2).pack("C2").unpack("S")[0]
+		@offset_to_image_data = bytes.slice(10,4).pack("C4").unpack("L")[0]
+		
+		# decode BITMAPINFOHEADER
+		@info_header_size = bytes.slice(14,4).pack("C4").unpack("L")[0]
+		@width = bytes.slice(18,4).pack("C4").unpack("L")[0]
+		@height = bytes.slice(22,4).pack("C4").unpack("L")[0]
+		
+	end
+end
+
 # s - short
 # l - long
 # 4 - 4 byte string

@@ -272,3 +272,16 @@ class PointTest < Test::Unit::TestCase
 		assert(Point.new(0,0).translate(0,1) == Point.new(0,1), "pos y translation failed")
 	end
 end
+
+class BMPDecoderTest < Test::Unit::TestCase
+	def test_header
+		file = "../../test_wads/square.bmp"
+		b = BMPDecoder.new(file)
+		assert(b.type == 19778, "That's not a bitmap")
+		assert(b.size == File.size(file), "Wrong size")
+		assert(b.offset_to_image_data == 62, "Wrong offset to image data")
+		assert(b.info_header_size == 40, "Wrong info header size")
+		assert(b.width == 640, "Wrong width")
+		assert(b.height == 512, "Wrong height")
+	end
+end
