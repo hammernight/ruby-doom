@@ -8,7 +8,7 @@ t = Things.new
 t.add_player Point.new(50,100)
 w.lumps << t
 
-p = Path.new(0, 500, "e900/s500/w900/n500")
+p = Path.new(0, 500, "e600/n200/e400/s200/e200/s500/w200/s200/w400/n200/w600/n500")
 w.lumps << p.vertexes
 w.lumps << p.sectors
 w.lumps << p.sidedefs
