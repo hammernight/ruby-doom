@@ -16,8 +16,7 @@ class HeaderTest < Test::Unit::TestCase
 		data = [80, 87, 65, 68, 11, 0, 0, 0, 212, 2, 0, 0]
 		h = Header.new()
 		h.read(data)
-		assert(h.write.slice(0,8) == data.slice(0,8), "didn't marshal right")
-		assert(h.write.slice(8,12) == [0,0,0,0], "directory offset should be zero'd out for later population")
+		assert(h.write == data, "didn't marshal right")
 	end
 end
 
@@ -38,13 +37,33 @@ class DirectoryEntryTest < Test::Unit::TestCase
 	end
 end
 
+class WadFile
+	attr_accessor :name, :bytes
+	def initialize(name,bytes)
+		@name=name
+		@bytes=bytes
+	end
+end
+
 class WadTest < Test::Unit::TestCase
-	def test_init
+	W1 = WadFile.new("../../test_wads/simple.wad", 900)
+	W2 = WadFile.new("../../test_wads/stepstep.wad", 59436)
+	def test_readwrite_simple
+		working = W1
 		w = Wad.new
-		w.read("../../test_wads/stepstep.wad")
-		assert(w.byte_count == 59436, "wrong byte count")
+		w.read(working.name)
+		assert(w.byte_count == working.bytes, "wrong byte count")
 		assert(w.pwad, "pwad not verified")
-		assert(w.write.size == w.bytes.size, "write failed")
+		assert(w.write.size == w.byte_count-1, "size difference, " + w.write.size.to_s + " != " + w.byte_count.to_s)
+	end
+	def test_readwrite_stepstep
+		working = W2
+		w = Wad.new
+		w.read(working.name)
+		assert(w.byte_count == working.bytes, "wrong byte count")
+		assert(w.pwad, "pwad not verified")
+		assert(w.write.size == w.byte_count, "size difference, " + w.write.size.to_s + " != " + w.byte_count.to_s)
+		assert(w.write.slice(0,12) == w.bytes.slice(0,12), "content difference")
 	end
 end
 

@@ -44,15 +44,15 @@ end
 
 class Header
 	SIZE=12
-	attr_reader :type, :directory_offset, :lump_count
+	attr_reader :type, :lump_count
+	attr_accessor :directory_offset
 	def read(array)
 		@type = array.slice(0,4).pack("C*").strip
 		@lump_count = Wad.unmarshal_long(array.slice(4,4))
 		@directory_offset = Wad.unmarshal_long(array.slice(8,4))	
 	end
 	def write
-		# note that we're leaving room to come back and fill in the directory offset
-		@type.unpack("C*") + Wad.marshal_long(@lump_count) + [0,0,0,0]
+		@type.unpack("C*") + Wad.marshal_long(@lump_count) + Wad.marshal_long(@directory_offset)
 	end
 end
 
@@ -86,17 +86,24 @@ class Wad
 	end
 	def write(filename=nil)
 		puts "Writing WAD" unless !@verbose
-		out = @header.write
+		out = []
+		ptr = Header::SIZE
 		entries = []
 		@lumps.each {|lump|
-			entries << DirectoryEntry.new(out.size, lump.size, lump.name)
+			entries << DirectoryEntry.new(ptr, lump.size, lump.name)
 			out += lump.write
+			ptr += lump.size
 		}
 		entries.each {|e| 
 			out += e.write
 		}
+		# now go back and fill in the directory offset in the header
+		header.directory_offset = ptr
+		out = header.write + out
 		if filename != nil
-			puts "TODO: write to file"
+			File.open(filename, "w") {|f| 
+				out.each {|b| f.putc(b) }
+			}
 		end
 		puts "Done" unless !@verbose
 		return out
@@ -117,7 +124,7 @@ class Wad
 end
 
 if __FILE__ == $0
-	file = ARGV.include?("-f") ? ARGV[ARGV.index("-f") + 1] : "../../test_wads/simple.wad"
+	file = ARGV.include?("-f") ? ARGV[ARGV.index("-f") + 1] : "simple.wad"
 	w = Wad.new(true)
 	w.read(file)
 	puts "The file " + file + " is a " + w.byte_count.to_s + " byte patch WAD" unless !w.pwad
@@ -126,4 +133,5 @@ if __FILE__ == $0
 	w.directory_entries.each {|lump|
 		puts lump.name.ljust(10) + lump.size.to_s.ljust(6) + lump.offset.to_s.ljust(10)
 	}
+	w.write("test.wad")
 end
