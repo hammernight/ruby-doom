@@ -64,10 +64,8 @@ class Wad
 	def Wad.marshal_long(n)
 		[n].pack("N").unpack("C4").reverse
 	end
-	def Wad.unmarshal_long(array)
-		y=""
-		array.each {|x| y << x.chr } 
-		y.unpack("V")[0]
+	def Wad.unmarshal_long(a)
+		a.pack("C4").unpack("V")[0]
 	end
 end
 
