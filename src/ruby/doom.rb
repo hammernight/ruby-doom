@@ -645,6 +645,24 @@ class SimpleLineMap
 	end
 end
 
+class BMPMap
+	def initialize(file)
+		@pp = PointsPath.new(BMPDecoder.new(file).in_order)
+		@things = Things.new
+	end
+	def set_player(p)
+		@things.add_player p
+	end
+	def create_wad(filename)
+		w = Wad.new
+		w.lumps << UndecodedLump.new("MAP01")
+		w.lumps << @things
+		pc = PathCompiler.new(@pp)
+		w.lumps.concat pc.lumps
+		w.write(filename)
+	end
+end
+
 class PathCompiler
 	def initialize(path)
 		@path = path
@@ -654,7 +672,7 @@ class PathCompiler
 		@vertexes.add Vertex.new(@path.start)
 		@path.visit(self)
 		@sidedefs = Sidedefs.new
-		@path.segments.size.times {|v|
+		@path.segment_count.times {|v|
 			s = @sidedefs.add Sidedef.new
 			s.sector_id = @sectors.items[0].id	
 		}
@@ -679,6 +697,21 @@ class PathCompiler
 	end
 end
 
+class PointsPath
+	def initialize(points)
+		@points = points
+	end
+	def segment_count
+		@points.size
+	end
+	def visit(visitor)
+		@points.each {|p| visitor.line_to(p) }
+	end
+	def start	
+		@points[0]
+	end
+end
+
 class Path
 	attr_reader :path, :start
 	def initialize(startx, starty, path="")
@@ -690,6 +723,9 @@ class Path
 	end
 	def segments
 		@path.split(/\//)
+	end
+	def segment_count
+		segments.size
 	end
 	def visit(visitor)
 		cur = @start
@@ -748,8 +784,9 @@ end
 
 if __FILE__ == $0
 	if ARGV.include?("-bmp")
-		b = BMPDecoder.new("../../test_wads/square.bmp")
-		puts b.in_order
+		b = BMPMap.new("../../test_wads/square.bmp")
+		b.set_player Point.new(90, 90)
+		b.create_wad("new.wad")		
 		exit
 	end
  	file = ARGV.include?("-f") ? ARGV[ARGV.index("-f") + 1] : "../../test_wads/simple.wad"
