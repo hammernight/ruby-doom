@@ -379,14 +379,19 @@ class Wad
 	end
 	def read(filename)
 		puts "Reading WAD into memory" unless !@verbose
-		File.new(filename).each_byte {|b| @bytes << b }
+		File.new(filename).each_byte {|b| 
+			@bytes << b 
+			puts "Read " + (@bytes.size/1000).to_s + " KB so far " unless (!@verbose or @bytes.size % 500000 != 0)
+		}
 		puts "Done reading, building the object model" unless !@verbose
 		@header = Header.new
 		@header.read(@bytes.slice(0,Header::BYTES_EACH))
 		@header.lump_count.times {|directory_entry_index|
 			de = DirectoryEntry.new
 			de.read(@bytes.slice((directory_entry_index*DirectoryEntry::BYTES_EACH)+@header.directory_offset,DirectoryEntry::BYTES_EACH))
-			@lumps.add(de.create_lump(@bytes))
+			lump = de.create_lump(@bytes)
+			puts "Created " + lump.name unless !@verbose
+			@lumps.add(lump)
 		}
 		puts "Object model built" unless !@verbose
     puts "The file " + filename + " is a " + @bytes.size.to_s + " byte " + @header.type unless !@verbose
