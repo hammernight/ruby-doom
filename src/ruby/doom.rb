@@ -13,15 +13,22 @@ class Finder
 	SEARCH_RADIUS=10
 	def Finder.next(points, current, sofar)
 		0.upto(SEARCH_RADIUS) {|x|
-			0.upto(SEARCH_RADIUS) {|y|
-				if Finder.good(points, c=Point.new(current.x + x, current.y + y), sofar) || Finder.good(points, c=Point.new(current.x - x, current.y - y), sofar) || Finder.good(points, c=Point.new(current.x + y, current.y + x), sofar) || Finder.good(points, c=Point.new(current.x - y, current.y - x), sofar) || Finder.good(points, c=Point.new(current.x - x, current.y + y), sofar) || Finder.good(points, c=Point.new(current.x + x, current.y - y), sofar)
-					return c
-				end
-			}
+			if (Finder.good(points, c=Point.new(current.x + x, current.y), sofar) ||
+				Finder.good(points, c=Point.new(current.x - x, current.y), sofar) ||
+				Finder.good(points, c=Point.new(current.x, current.y + x), sofar) || 
+				Finder.good(points, c=Point.new(current.x, current.y - x), sofar) ||
+				Finder.good(points, c=Point.new(current.x + x, current.y + x), sofar) ||
+				Finder.good(points, c=Point.new(current.x - x, current.y - x), sofar) ||
+				Finder.good(points, c=Point.new(current.x + x, current.y - x), sofar) ||
+				Finder.good(points, c=Point.new(current.x - x, current.y + x), sofar) 
+				)
+				return c
+			end
 		}
 		raise "Couldn't find next point!"
 	end
 	def Finder.good(points, candidate, sofar)	
+		puts "testing " + candidate.to_s
 		points.include?(candidate) && !sofar.include?(candidate)
 	end
 end
@@ -44,7 +51,7 @@ class PointSet
 		current = Finder.next(points, first, found_so_far)
 		while found_so_far.size != @points.size - 1 
 			found_so_far << current
-			#puts "Current = " + current.to_s + "; points so far: " + found_so_far.size.to_s
+			puts "Current = " + current.to_s + "; points so far: " + found_so_far.size.to_s
 			begin
 				current = Finder.next(points, current, found_so_far)
 			rescue
