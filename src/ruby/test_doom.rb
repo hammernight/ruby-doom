@@ -63,7 +63,7 @@ class WadTest < Test::Unit::TestCase
 		assert(w.byte_count == working.bytes, "wrong byte count")
 		assert(w.pwad, "pwad not verified")
 		assert(w.write.size == w.byte_count, "size difference, " + w.write.size.to_s + " != " + w.byte_count.to_s)
-		assert(w.write.slice(0,12) == w.bytes.slice(0,12), "content difference")
+		assert(w.write == w.bytes, "content difference")
 	end
 end
 
