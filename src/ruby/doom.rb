@@ -92,6 +92,47 @@ class Point
 		@x=x
 		@y=y
 	end
+	def lineto(p1)
+		res = []
+		dist = Math.sqrt(((p1.x - @x) ** 2) + ((p1.y - @y) ** 2))
+		slope = nil
+		if (p1.x - @x) != 0
+			slope = (p1.y - @y) / (p1.x - @x)
+		end
+		startx = @x
+		starty = @y
+		res << Point.new(startx, starty)
+		dist.to_i.times {|s|
+			if slope == 0
+					if p1.x < @x
+						startx -= 1
+					else
+						startx += 1
+					end
+			else
+				if slope != nil
+					if p1.x < @x
+						startx -= 1
+					else
+						startx += 1
+					end
+				end
+				startx += slope unless slope == nil
+			end
+			if slope == nil
+				if p1.y < @y
+					starty -= 1
+				else
+					starty += 1
+				end
+			else
+				starty += (1/slope) unless slope == 0 
+			end
+			res << Point.new(startx, starty)
+		}
+		res << p1
+		return res
+	end
 	def to_s
 		"(" + @x.to_s + "," + @y.to_s + ")"
 	end
@@ -515,6 +556,8 @@ class Path
 		cur_x = @start_x
 		cur_y = @start_y
 		map[cur_x][cur_y] = "#"
+		prevx = cur_x
+		prevy = cur_y
 		segments.each {|x|
 			dir = x[0].chr
 			len = x.slice(1, x.length-1).to_i
@@ -530,6 +573,14 @@ class Path
 				raise "Unrecognized direction " + dir.to_s + " in segment " + x.to_s
 			end
 			map[cur_y][cur_x] = "#"
+		
+			p1 = Point.new(prevx, prevy)
+			p2 = Point.new(cur_x, cur_y)
+			p1.lineto(p2).each {|ptmp|
+				map[ptmp.y][ptmp.x] = "X"
+			}
+			prevx = cur_x
+			prevy = cur_y
 		}
 		res = ""
 		map.each_index {|x|
@@ -550,8 +601,10 @@ if __FILE__ == $0
     w.lumps.things.player.facing_angle = 90
   	w.write("new.wad")
 	elsif ARGV.include?("-nethack")
-    p = Path.new(0,0,"e5/n4/e4/s4/e4")
+		spec="e5/n4/e4/s4/e4/s5/w13/n4"
+    p = Path.new(0,6,"e5/n4/e4/s4/e4/s5/w13/n4")
     puts p.nethack
+		puts spec
 	else
     w.lumps.each {|lump|
       puts lump.name + " (" + lump.size.to_s + " bytes)"

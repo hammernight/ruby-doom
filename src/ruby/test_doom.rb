@@ -209,3 +209,24 @@ class PathTest < Test::Unit::TestCase
 		assert(p.linedefs.items[3].end_vertex.id == 0, "wrong end vertex on last linedef")
 	end
 end
+
+class PointTest < Test::Unit::TestCase
+	def test_lineto
+		p = Point.new(0,0)
+		p1 = Point.new(3,0)
+		assert(p.lineto(p1).size == 5, "not enough points")
+		assert(p.lineto(p1)[0].x == 0 && p.lineto(p1)[0].y == 0, "wrong start")
+		assert(p.lineto(p1)[1].x == 1 && p.lineto(p1)[1].y == 0, "wrong pt1 " + p.lineto(p1)[1].to_s)
+	end
+	def test_lineto_negy
+		p = Point.new(0,3)
+		p1 = Point.new(0,0)
+		assert(p.lineto(p1)[1].x == 0 && p.lineto(p1)[1].y == 2, "wrong pt1 " + p.lineto(p1)[1].to_s)
+	end
+	def test_lineto_negx
+		p = Point.new(3,0)
+		p1 = Point.new(0,0)
+		assert(p.lineto(p1)[1].x == 2 && p.lineto(p1)[1].y == 0, "wrong pt1 " + p.lineto(p1)[1].to_s)
+	end
+	
+end
