@@ -277,6 +277,7 @@ class Dictionary
 	def initialize
 		@things = []
 		@things << ThingInfo.new(1, "Player 1", "@")
+		@things << ThingInfo.new(9, "Sergeant", "s")
 		@things << ThingInfo.new(2035, "Barrel", "b")
 	end
 	def thing_for_type_id(id) 
@@ -525,11 +526,14 @@ class Things < DecodedLump
       @items << thing
     }
   end
-	def add_barrel(p)
-		items << Thing.new(p, Dictionary.get.thing_for_name("Barrel").id)
-	end
 	def size
 		@items.size * BYTES_EACH
+	end
+	def add_sergeant(p)
+		items << Thing.new(p, Dictionary.get.thing_for_name("Sergeant").id)
+	end
+	def add_barrel(p)
+		items << Thing.new(p, Dictionary.get.thing_for_name("Barrel").id)
 	end
 	def add_player(p)	
 		items << Thing.new(p, Dictionary.get.thing_for_name("Player 1").id)
@@ -716,6 +720,9 @@ class SimpleLineMap
 	def add_barrel(p)
 		@things.add_barrel p	
 	end	
+	def add_sergeant(p)
+		@things.add_sergeant p	
+	end	
 	def nethack(size=Nethack::DEFAULT_SIZE)
 		n = Nethack.new(@path.start, size)
 		@path.visit(n)
@@ -742,6 +749,9 @@ class BMPMap
 	end
 	def set_player(p)
 		@things.add_player p
+	end
+	def add_sergeant(p)
+		@things.add_sergeant p
 	end
 	def create_wad(filename)
 		b = BMPDecoder.new(@bitmap_file)
