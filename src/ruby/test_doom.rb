@@ -353,3 +353,11 @@ class ArrayToPointsTest < Test::Unit::TestCase
 	end
 end
 
+class LineSmootherTest < Test::Unit::TestCase
+	def test_simple
+		pts = [Point.new(1,1), Point.new(1,2), Point.new(1,3),Point.new(1,4),Point.new(1,5),Point.new(1,6),Point.new(1,7)]
+		thinner = PointThinner.new(pts)	
+		assert(thinner.thin == [Point.new(1,1), Point.new(1,6)], "Thinner gone wrong " + thinner.thin.to_s)
+	end
+end
+

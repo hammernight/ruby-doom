@@ -59,6 +59,21 @@ class Finder
 	end
 end
 
+class PointThinner
+	def initialize(p)
+		@points = p
+	end
+	def thin
+		newline = [@points[0]]
+		1.upto(@points.size-1) {|x|
+			if x % 5 == 0
+				newline << @points[x]
+			end
+		}
+		return newline	
+	end
+end
+
 class PointsToLine
 	def initialize(points, debug=false)
 		@points = points
@@ -165,6 +180,9 @@ class BMPDecoder
 	end
 	def line
 		PointsToLine.new(raw_points, @debug).line
+	end
+	def thin
+		PointThinner.new(line).thin
 	end
 	def decode_word(bytes)
 		bytes.pack("C2").unpack("S")[0] 
@@ -705,7 +723,14 @@ end
 
 class BMPMap
 	def initialize(file)
-		@pp = PointsPath.new(BMPDecoder.new(file).line)
+		line = BMPDecoder.new(file).thin
+		#line = [Point.new(0,0), Point.new(0,500),Point.new(500,500), Point.new(500,0)]
+		#499.downto(1) {|x| 
+			#if x % 2 == 0
+				#line << Point.new(x,0) 
+			#end
+		#}
+		@pp = PointsPath.new(line)
 		@things = Things.new
 	end
 	def set_player(p)
@@ -747,8 +772,9 @@ class PathCompiler
 		@linedefs.add Linedef.new(@vertexes.items.last, @vertexes.items.first, @sidedefs.items.last)
 	end
 	def line_to(p)
-		vert = Vertex.new p
-		@vertexes.add vert unless @vertexes.items.find {|x| x.location == vert.location } != nil
+		if @vertexes.items.find {|x| x.location == p } == nil
+			@vertexes.add Vertex.new(p)
+		end
 	end
 	def lumps
 		[@vertexes, @sectors, @linedefs, @sidedefs]
@@ -842,13 +868,13 @@ end
 
 if __FILE__ == $0
 	if ARGV.include?("-bmp")
-		b = BMPDecoder.new("../../bitmaps/square.bmp")
-		puts b.raw_points
-		puts "=============================="
-		puts b.line
-		exit
+		#b = BMPDecoder.new("../../bitmaps/square.bmp")
+		#puts b.raw_points
+		#puts "=============================="
+		#puts b.line
+		#exit
 		b = BMPMap.new("../../bitmaps/square.bmp")
-		b.set_player Point.new(200, 400)
+		b.set_player Point.new(200, 200)
 		b.create_wad("new.wad")		
 		exit
 	end
