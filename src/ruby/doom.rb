@@ -13,7 +13,7 @@ class Finder
 	def Finder.next(points, current, sofar)
 		0.upto(SEARCH_RADIUS) {|x|
 			0.upto(SEARCH_RADIUS) {|y|
-				if Finder.good(points, c=Point.new(current.x - x, current.y - y), sofar) || Finder.good(points, c=Point.new(current.x + x, current.y + y), sofar)
+				if Finder.good(points, c=Point.new(current.x + x, current.y + y), sofar) || Finder.good(points, c=Point.new(current.x - x, current.y - y), sofar)
 					return c
 				end
 			}
@@ -21,9 +21,7 @@ class Finder
 		raise "Couldn't find next point!"
 	end
 	def Finder.good(points, candidate, sofar)	
-		if points.include?(candidate) && !sofar.include?(candidate)
-			return true
-		end	
+		points.include?(candidate) && !sofar.include?(candidate)
 	end
 end
 class PointSet
@@ -42,12 +40,9 @@ class PointSet
 		first = lower_left
 		found_so_far << first
 		current = Finder.next(points, first, found_so_far)
-		while current != first
+		while found_so_far.size != @points.size - 1 
 			found_so_far << current
 			#puts "Found " + current.to_s
-			if found_so_far.size == @points.size
-				break
-			end
 			begin
 				current = Finder.next(points, current, found_so_far)
 			rescue
@@ -55,23 +50,28 @@ class PointSet
 				break
 			end
 		end
+		found_so_far << current
 		found_so_far << first
 		return found_so_far
 	end
 end
 class ArrayToPoints
-	def ArrayToPoints.convert(width, height, img)
+	def ArrayToPoints.idx_to_xy(width, idx)
+		[idx % width, idx/width]
+	end
+	def ArrayToPoints.convert(width, img)
 		pts = []
-		0.upto(height-1) {|y|
-			0.upto(width-1) {|x|
-				# convert x,y to an index into the bit array
-				bit_index = (width*y) + x
-				byte_to_check = bit_index / 8
-				byte_to_check -= 1 unless byte_to_check == 0
-				mask = (1 << (bit_index % 8))
-				if (img[byte_to_check] & mask) == 0
+		# for each byte in the image
+		idx = 0
+		img.each {|byte|
+			# for each bit in the image
+			0.upto(7) {|bit|
+				if (byte & (1 << bit)) == 0
+					x,y = *ArrayToPoints.idx_to_xy(width, idx)
+					p = Point.new(x,y)
 					pts << Point.new(x,y)
 				end
+				idx += 1
 			}
 		}
 		return pts
@@ -116,7 +116,7 @@ class BMPDecoder
 		rgb1 = RGBQuad.new(bytes.slice(54,4))
 		rgb2 = RGBQuad.new(bytes.slice(58,4))
 		
-		@points = PointSet.new(ArrayToPoints.convert(@width, @height, bytes.slice(62, bytes.size-62)))
+		@points = PointSet.new(ArrayToPoints.convert(@width, bytes.slice(62, bytes.size-62)))
 	end
 	def in_order
 		@points.in_order
@@ -797,10 +797,7 @@ end
 
 if __FILE__ == $0
 	if ARGV.include?("-bmp")
-		b = BMPDecoder.new("../../test_wads/wiggly.bmp")
-		puts b.in_order
-		exit
-		b = BMPMap.new("../../test_wads/wiggly.bmp")
+		b = BMPMap.new("../../test_wads/square.bmp")
 		b.set_player Point.new(200, 200)
 		b.create_wad("new.wad")		
 		exit
