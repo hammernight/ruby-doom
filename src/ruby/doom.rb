@@ -458,14 +458,14 @@ if __FILE__ == $0
     w.lumps.things.player.facing_angle = 90
   	w.write("out.wad")
   elsif ARGV.include?("-create")
-		puts "Creating a nice, simple, square from 64,64000 to 128,63000"
+		puts "Creating a nice, simple, square using counterclockwise linedefs from 64,-512 to 128,-320"
 		w = Wad.new(true)
 	
 		v = Vertexes.new
-		v1 = v.add Vertex.new(Point.new(64,64000))
-		v2 = v.add Vertex.new(Point.new(128,64000))
-		v3 = v.add Vertex.new(Point.new(128,63000))
-		v4 = v.add Vertex.new(Point.new(64, 63000))
+		v1 = v.add Vertex.new(Point.new(64,-512))
+		v2 = v.add Vertex.new(Point.new(128,-512))
+		v3 = v.add Vertex.new(Point.new(128,-320))
+		v4 = v.add Vertex.new(Point.new(64, -320))
 
 		sectors = Sectors.new
 		s1 = sectors.add Sector.new
