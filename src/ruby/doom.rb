@@ -510,14 +510,14 @@ if __FILE__ == $0
 		w.lumps << UndecodedLump.new("MAP01")
 	
 		t = Things.new
-		t.add_player Point.new(120,-400)
+		t.add_player Point.new(100,400)
 		w.lumps << t
 
 		v = Vertexes.new
-		v1 = v.add Vertex.new(Point.new(64, -320))
-		v2 = v.add Vertex.new(Point.new(300, -320))
-		v3 = v.add Vertex.new(Point.new(300, -512))
-		v4 = v.add Vertex.new(Point.new(64, -512))
+		v1 = v.add Vertex.new(Point.new(60, 500))
+		v2 = v.add Vertex.new(Point.new(600, 500))
+		v3 = v.add Vertex.new(Point.new(600, 200))
+		v4 = v.add Vertex.new(Point.new(60, 200))
 		w.lumps << v
 
 		sectors = Sectors.new
