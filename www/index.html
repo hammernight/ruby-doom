@@ -36,9 +36,69 @@ m.write_to_file("simple.wad")
 <hr>
 <a name="userdocs"></a><a href="#top">Top</a>
 <p>Ruby-DOOM requires a Ruby (<a href="http://rubyforge.org/project/showfiles.php?group_id=30">Linux/Unix</a>, <a href="http://rubyinstaller.sourceforge.net/">Windows</a>) interpreter to run.
-<p>Here's a sample run from the current version of <code>doom.rb</code>:
+<p>To generate a map, you need to write Ruby code like this:
 <pre>
-[tom@rubyforge ruby]$ ./doom.rb -v
+                puts "Creating a nice, simple, square using counterclockwise linedefs"
+                w = Wad.new(true)
+
+                w.lumps.add UndecodedLump.new("MAP01")
+
+                t = Things.new
+                t.add Thing.new(Point.new(120,-400), 1)
+                w.lumps.add(t)
+
+                v = Vertexes.new
+                v1 = v.add Vertex.new(Point.new(64, -320))
+                v2 = v.add Vertex.new(Point.new(256, -320))
+                v3 = v.add Vertex.new(Point.new(256,-512))
+                v4 = v.add Vertex.new(Point.new(64, -512))
+                v5 = v.add Vertex.new(Point.new(300,-512))
+                v6 = v.add Vertex.new(Point.new(400,-512))
+                v7 = v.add Vertex.new(Point.new(400,-320))
+                v8 = v.add Vertex.new(Point.new(300, -320))
+                w.lumps.add(v)
+
+                sectors = Sectors.new
+                s1 = sectors.add Sector.new
+                s2 = sectors.add Sector.new
+                w.lumps.add(sectors)
+
+                sidedefs = Sidedefs.new
+                sd1 = sidedefs.add Sidedef.new
+                sd1.sector_id = s1.id
+                sd2 = sidedefs.add Sidedef.new
+                sd2.sector_id = s1.id
+                sd3 = sidedefs.add Sidedef.new
+                sd3.sector_id = s1.id
+                sd4 = sidedefs.add Sidedef.new
+                sd4.sector_id = s1.id
+                sd5 = sidedefs.add Sidedef.new
+                sd5.sector_id = s2.id
+                sd6 = sidedefs.add Sidedef.new
+                sd6.sector_id = s2.id
+                sd7 = sidedefs.add Sidedef.new
+                sd7.sector_id = s2.id
+                sd8 = sidedefs.add Sidedef.new
+                sd8.sector_id = s2.id
+                w.lumps.add(sidedefs)
+
+                linedefs = Linedefs.new
+                linedefs.add Linedef.new(v1,v2,sd1)
+                linedefs.add Linedef.new(v2,v3,sd2)
+                linedefs.add Linedef.new(v3,v4,sd3)
+                linedefs.add Linedef.new(v4,v1,sd4)
+                linedefs.add Linedef.new(v5,v6,sd5)
+                linedefs.add Linedef.new(v6,v7,sd6)
+                linedefs.add Linedef.new(v7,v8,sd7)
+                linedefs.add Linedef.new(v8,v5,sd8)
+                w.lumps.add(linedefs)
+
+                w.write("new.wad")
+</pre>
+<p>Ridiculous, eh?  Well, it's only at version 0.2 - future versions will include a higher level API :-)
+<p>You can also read in wads and see information about them; here's a sample run:
+<pre>
+[tom@hal ruby]$ ./doom.rb -v
 Reading WAD into memory
 Done reading, building the object model
 Created MAP01
@@ -57,7 +117,7 @@ The file ../../test_wads/simple.wad is a 900 byte PWAD
 It's got 11 lumps, the directory started at byte 724
 MAP01 (0 bytes)
 THINGS (10 bytes)
- - Player 1 at (224,-416) facing east
+ - Player 1 at (224,-416) facing east; flags = 7
 LINEDEFS (112 bytes)
  - Linedef from 0 to 1; attribute flag is 1; special fx is 0; tag is 0; right sidedef is 0; left sidedef is -1
  - Linedef from 1 to 2; attribute flag is 1; special fx is 0; tag is 0; right sidedef is 1; left sidedef is -1
@@ -68,14 +128,14 @@ LINEDEFS (112 bytes)
  - Linedef from 6 to 7; attribute flag is 1; special fx is 0; tag is 0; right sidedef is 6; left sidedef is -1
  - Linedef from 7 to 4; attribute flag is 1; special fx is 0; tag is 0; right sidedef is 7; left sidedef is -1
 SIDEDEFS (240 bytes)
- -  Sidedef for sector 0
- -  Sidedef for sector 0
- -  Sidedef for sector 0
- -  Sidedef for sector 0
- -  Sidedef for sector 1
- -  Sidedef for sector 1
- -  Sidedef for sector 1
- -  Sidedef for sector 1
+ -  Sidedef for sector 0; upper/lower/middle textures are -/-/BROWN96 with offsets of 0/0
+ -  Sidedef for sector 0; upper/lower/middle textures are -/-/BROWN96 with offsets of 0/0
+ -  Sidedef for sector 0; upper/lower/middle textures are -/-/BROWN96 with offsets of 0/0
+ -  Sidedef for sector 0; upper/lower/middle textures are -/-/BROWN96 with offsets of 0/0
+ -  Sidedef for sector 1; upper/lower/middle textures are -/-/BROWN96 with offsets of 0/0
+ -  Sidedef for sector 1; upper/lower/middle textures are -/-/BROWN96 with offsets of 0/0
+ -  Sidedef for sector 1; upper/lower/middle textures are -/-/BROWN96 with offsets of 0/0
+ -  Sidedef for sector 1; upper/lower/middle textures are -/-/BROWN96 with offsets of 0/0
 VERTEXES (32 bytes)
  -  Vertex at (64,-320)
  -  Vertex at (384,-320)
@@ -89,12 +149,10 @@ SEGS (96 bytes)
 SSECTORS (8 bytes)
 NODES (28 bytes)
 SECTORS (52 bytes)
- -  Sector floor/ceiling heights 0/128; floor/ceiling textures FLAT14/
- -  Sector floor/ceiling heights 0/128; floor/ceiling textures FLAT14/
+ -  Sector floor/ceiling heights 0/128; floor/ceiling textures FLAT14/FLAT14; light = 128; special = 0; tag = 0
+ -  Sector floor/ceiling heights 0/128; floor/ceiling textures FLAT14/FLAT14; light = 128; special = 0; tag = 0
 REJECT (1 bytes)
 BLOCKMAP (132 bytes)
-Writing WAD
-Done
 </pre>
 
 <hr>
