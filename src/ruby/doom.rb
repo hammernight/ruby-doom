@@ -92,41 +92,45 @@ class Point
 		@x=x
 		@y=y
 	end
+	def slope_to(p1)
+		if (p1.x - @x) == 0
+			return nil
+		end
+		(p1.y - @y) / (p1.x - @x)
+	end
+	def distance_to(p1)
+		Math.sqrt(((p1.x - @x) ** 2) + ((p1.y - @y) ** 2))
+	end
 	def lineto(p1)
 		res = []
-		dist = Math.sqrt(((p1.x - @x) ** 2) + ((p1.y - @y) ** 2))
-		slope = nil
-		if (p1.x - @x) != 0
-			slope = (p1.y - @y) / (p1.x - @x)
-		end
 		startx = @x
 		starty = @y
 		res << Point.new(startx, starty)
-		dist.to_i.times {|s|
-			if slope == 0
+		distance_to(p1).to_i.times {|s|
+			if slope_to(p1) == 0
 					if p1.x < @x
 						startx -= 1
 					else
 						startx += 1
 					end
 			else
-				if slope != nil
+				if slope_to(p1) != nil
 					if p1.x < @x
 						startx -= 1
 					else
 						startx += 1
 					end
 				end
-				startx += slope unless slope == nil
+				startx += slope_to(p1) unless slope_to(p1) == nil
 			end
-			if slope == nil
+			if slope_to(p1) == nil
 				if p1.y < @y
 					starty -= 1
 				else
 					starty += 1
 				end
 			else
-				starty += (1/slope) unless slope == 0 
+				starty += (1/slope_to(p1)) unless slope_to(p1) == 0 
 			end
 			res << Point.new(startx, starty)
 		}

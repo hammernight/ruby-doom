@@ -228,5 +228,16 @@ class PointTest < Test::Unit::TestCase
 		p1 = Point.new(0,0)
 		assert(p.lineto(p1)[1].x == 2 && p.lineto(p1)[1].y == 0, "wrong pt1 " + p.lineto(p1)[1].to_s)
 	end
+	def test_slope
+		p = Point.new(0,0)
+		assert(p.slope_to(Point.new(0,3)) == nil, "line straight north should have infinite (nil) slope")
+		assert(p.slope_to(Point.new(3,0)) == 0, "line straight east should have 0 slope")
+	end
+	def test_distance
+		p = Point.new(0,0)
+		assert(p.distance_to(Point.new(0,3)) == 3, "straight line distance failed")
+		assert((p.distance_to(Point.new(3,3))*10).to_i == 42, "diagonal line distance failed ")
+		assert(p.distance_to(Point.new(-3,0)) == 3, "just checking")
+	end
 	
 end
