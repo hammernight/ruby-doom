@@ -469,7 +469,7 @@ if __FILE__ == $0
 		s1 = sectors.add Sector.new
 
 		#sidedefs = Sidedefs.new
-		#sidedefs.add Sidedef.new(
+		#sidedefs.add Sidedef.new
 
 		#linedefs = Linedefs.new
 		#linedefs.add Linedef.new(v1,v2)
