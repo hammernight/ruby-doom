@@ -13,7 +13,7 @@ mkdir ruby-doom-0.8
 cp ruby-doom/etc/README ruby-doom-0.8/
 cp ruby-doom/etc/CHANGELOG ruby-doom-0.8/
 cp ruby-doom/etc/LICENSE ruby-doom-0.8/
-cp ruby-doom/src/ruby/*.rb ruby-doom-0.8/
+cp ruby-doom/lib/*.rb ruby-doom-0.8/
 cp ruby-doom/test_wads/simple.wad ruby-doom-0.8/
 cp ruby-doom/bitmaps/wiggly.bmp ruby-doom-0.8/
 zip -q -r ruby-doom-0.8.zip ruby-doom-0.8/
