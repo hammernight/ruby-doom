@@ -16,7 +16,8 @@ class HeaderTest < Test::Unit::TestCase
 		data = [80, 87, 65, 68, 11, 0, 0, 0, 212, 2, 0, 0]
 		h = Header.new()
 		h.read(data)
-		assert(h.write == data, "didn't marshal right")
+		assert(h.write.slice(0,8) == data.slice(0,8), "didn't marshal right")
+		assert(h.write.slice(8,12) == [0,0,0,0], "directory offset should be zero'd out for later population")
 	end
 end
 

@@ -39,7 +39,9 @@ class Header
 		@directory_offset = Wad.unmarshal_long(array.slice(8,4))	
 	end
 	def write
-		@type.unpack("C*") + Wad.marshal_long(@lump_count) + Wad.marshal_long(@directory_offset)
+		# note that we're leaving room to come back and fill in the directory offset
+		@type.unpack("C*") + Wad.marshal_long(@lump_count) + [0,0,0,0]
+		#@type.unpack("C*") + Wad.marshal_long(@lump_count) + Wad.marshal_long(@directory_offset)
 	end
 end
 
@@ -74,8 +76,8 @@ class Wad
 	def byte_count
 		@bytes.size
 	end
-	def save(filename)
-		puts "Saving file" unless !@verbose
+	def write(filename)
+		puts "Writing WAD" unless !@verbose
 		out = @header.save
 		# TODO	
 		# concat lumps
