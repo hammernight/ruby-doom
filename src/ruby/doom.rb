@@ -140,8 +140,11 @@ class BMPDecoder
 	attr_reader :type, :size, :offset_to_image_data, :info_header_size, :width, :height, :bit_planes, :bits_per_pixel, :compression, :size_of_image, :xpixels_per_meter, :ypixels_per_meter, :colors_used, :colors_important
 	def initialize(filename, debug=false)
 		@debug = debug
+		@filename = filename
+	end
+	def decode
 		bytes = []
-		File.open(filename, "r").each_byte {|x| bytes << x }
+		File.open(@filename, "r").each_byte {|x| bytes << x }
 		
 		# decode BITMAPFILEHEADER 
 		@type = decode_word(bytes.slice(0,2))
@@ -174,8 +177,12 @@ class BMPDecoder
 		rgb2 = RGBQuad.new(bytes.slice(58,4))
 	
 		@raw_image = bytes.slice(62, bytes.size-62)
+		return self
 	end
 	def raw_points
+		if @raw_image == nil
+			decode
+		end
 		ArrayToPoints.new(@width, @height, @raw_image).points
 	end
 	def line
@@ -861,12 +868,6 @@ class Nethack
 end
 
 if __FILE__ == $0
-	if ARGV.include?("-bmp")
-		b = BMPMap.new("../../bitmaps/wiggly.bmp")
-		b.set_player Point.new(400, 200)
-		b.create_wad("new.wad")		
-		exit
-	end
  	file = ARGV.include?("-f") ? ARGV[ARGV.index("-f") + 1] : "../../test_wads/simple.wad"
 	w = Wad.new(ARGV.include?("-v"))
 	w.read(file)

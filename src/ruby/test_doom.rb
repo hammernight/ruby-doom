@@ -274,7 +274,7 @@ class PointTest < Test::Unit::TestCase
 end
 
 class BMPDecoderTest < Test::Unit::TestCase
-	B = BMPDecoder.new(TEST="../../bitmaps/square.bmp")
+	B = BMPDecoder.new(TEST="../../bitmaps/square.bmp").decode
 	def test_header
 		assert(B.type == 19778, "That's not a bitmap")
 		assert(B.size == File.size(TEST), "Wrong size")
