@@ -680,7 +680,7 @@ class PathCompiler
 end
 
 class Path
-	attr_reader :sectors, :path, :start
+	attr_reader :path, :start
 	def initialize(startx, starty, path="")
 		@path = path
 		@start = Point.new(startx, starty)
