@@ -83,7 +83,7 @@ class ThingTest < Test::Unit::TestCase
 		t.read(BYTES)	
 		assert(t.type_id == 1, "type id decode failed")
 		assert(t.location.x == 224, "location.x decode failed")
-		assert(t.location.y == 65120, "location.y decode failed")
+		assert(t.location.y == -416, "location.y decode failed")
 		assert(t.facing_angle == 0, "facing angle decode failed")
 	end
 	def test_write

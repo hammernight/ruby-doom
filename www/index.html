@@ -37,24 +37,35 @@ m.write_to_file("simple.wad")
 <a name="userdocs"></a><a href="#top">Top</a>
 <p>Here's a sample run from the current version of <code>doom.rb</code>:
 <pre>
-[tom@rubyforge ruby]$ ./doom.rb
+[tom@rubyforge ruby]$ ./doom.rb -v
 Reading WAD into memory
 Done reading, building the object model
+Created MAP01
+Created THINGS
+Created LINEDEFS
+Created SIDEDEFS
+Created VERTEXES
+Created SEGS
+Created SSECTORS
+Created NODES
+Created SECTORS
+Created REJECT
+Created BLOCKMAP
 Object model built
-The file ../../test_wads/simple.wad is a 900 byte patch WAD
+The file ../../test_wads/simple.wad is a 900 byte PWAD
 It's got 11 lumps, the directory started at byte 724
 MAP01 (0 bytes)
 THINGS (10 bytes)
- - Player 1 at (224,65120) facing east
+ - Player 1 at (224,-416) facing east
 LINEDEFS (112 bytes)
- - Linedef from 0 to 1; attribute flag is 1; special fx is 0; tag is 0; right sidedef is 0; left sidedef is 65535
- - Linedef from 1 to 2; attribute flag is 1; special fx is 0; tag is 0; right sidedef is 1; left sidedef is 65535
- - Linedef from 2 to 3; attribute flag is 1; special fx is 0; tag is 0; right sidedef is 2; left sidedef is 65535
- - Linedef from 3 to 0; attribute flag is 1; special fx is 0; tag is 0; right sidedef is 3; left sidedef is 65535
- - Linedef from 4 to 5; attribute flag is 1; special fx is 0; tag is 0; right sidedef is 4; left sidedef is 65535
- - Linedef from 5 to 6; attribute flag is 1; special fx is 0; tag is 0; right sidedef is 5; left sidedef is 65535
- - Linedef from 6 to 7; attribute flag is 1; special fx is 0; tag is 0; right sidedef is 6; left sidedef is 65535
- - Linedef from 7 to 4; attribute flag is 1; special fx is 0; tag is 0; right sidedef is 7; left sidedef is 65535
+ - Linedef from 0 to 1; attribute flag is 1; special fx is 0; tag is 0; right sidedef is 0; left sidedef is -1
+ - Linedef from 1 to 2; attribute flag is 1; special fx is 0; tag is 0; right sidedef is 1; left sidedef is -1
+ - Linedef from 2 to 3; attribute flag is 1; special fx is 0; tag is 0; right sidedef is 2; left sidedef is -1
+ - Linedef from 3 to 0; attribute flag is 1; special fx is 0; tag is 0; right sidedef is 3; left sidedef is -1
+ - Linedef from 4 to 5; attribute flag is 1; special fx is 0; tag is 0; right sidedef is 4; left sidedef is -1
+ - Linedef from 5 to 6; attribute flag is 1; special fx is 0; tag is 0; right sidedef is 5; left sidedef is -1
+ - Linedef from 6 to 7; attribute flag is 1; special fx is 0; tag is 0; right sidedef is 6; left sidedef is -1
+ - Linedef from 7 to 4; attribute flag is 1; special fx is 0; tag is 0; right sidedef is 7; left sidedef is -1
 SIDEDEFS (240 bytes)
  -  Sidedef for sector 0
  -  Sidedef for sector 0
@@ -65,20 +76,20 @@ SIDEDEFS (240 bytes)
  -  Sidedef for sector 1
  -  Sidedef for sector 1
 VERTEXES (32 bytes)
- -  Vertex at (64,65216)
- -  Vertex at (384,65216)
- -  Vertex at (384,65024)
- -  Vertex at (64,65024)
- -  Vertex at (640,65216)
- -  Vertex at (896,65216)
- -  Vertex at (896,65024)
- -  Vertex at (640,65024)
+ -  Vertex at (64,-320)
+ -  Vertex at (384,-320)
+ -  Vertex at (384,-512)
+ -  Vertex at (64,-512)
+ -  Vertex at (640,-320)
+ -  Vertex at (896,-320)
+ -  Vertex at (896,-512)
+ -  Vertex at (640,-512)
 SEGS (96 bytes)
 SSECTORS (8 bytes)
 NODES (28 bytes)
 SECTORS (52 bytes)
- -  Sector with floor texture FLAT14
- -  Sector with floor texture FLAT14
+ -  Sector floor/ceiling heights 0/128; floor/ceiling textures FLAT14/
+ -  Sector floor/ceiling heights 0/128; floor/ceiling textures FLAT14/
 REJECT (1 bytes)
 BLOCKMAP (132 bytes)
 Writing WAD
@@ -158,7 +169,7 @@ Done
 </ul>
 <hr>
 <ul>
-<li><a name="long"/>All long integers are 32 bit unsigned longs in little-endian format (shorts are unsigned, 16 bits, little-endian as well).  So the byte sequence <font color="blue">212 2 0 0</font> is really <font color="blue">0 0 2 212</font> which translates to <font color="blue">724</font> decimal.  I'm using the following Ruby snippet to do this transformation:
+<li><a name="long"/>All long integers are 32 bit unsigned longs in little-endian format (shorts are signed, 16 bits, little-endian as well).  So the byte sequence <font color="blue">212 2 0 0</font> is really <font color="blue">0 0 2 212</font> which translates to <font color="blue">724</font> decimal.  I'm using the following Ruby snippet to do this transformation:
 <pre>
 bytes.pack("C4").unpack("V")[0]
 </pre>

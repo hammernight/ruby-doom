@@ -55,10 +55,12 @@ class Codec
 		[n].pack("N").unpack("C4").reverse
 	end
 	def Codec.unmarshal_short(a)
-		a.reverse.pack("C2").unpack("n")[0]
+		#a.reverse.pack("C2").unpack("n")[0]
+		a.pack("c2").unpack("s")[0]
 	end
 	def Codec.marshal_short(s)
-		[s].pack("n").unpack("C2").reverse
+		#[s].pack("n").unpack("C2").reverse
+		[s].pack("S").unpack("C2")
 	end
 	def Codec.unmarshal_string(a)
 		a.pack("C*").strip
