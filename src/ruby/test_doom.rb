@@ -321,7 +321,7 @@ class PointsToLineTest < Test::Unit::TestCase
 	def test_find_next
 		pts = [Point.new(1,1), Point.new(1,2), Point.new(2,2)]
 		p = PointsToLine.new(pts)
-		assert(Finder.new.next(pts, Point.new(1,1), pts.slice(0,1)) == Point.new(1,2), "wrong 'next point' found")
+		assert(Finder.new(pts).next(Point.new(1,1), pts.slice(0,1)) == Point.new(1,2), "wrong 'next point' found")
 	end
 	def test_points_in_order
 		pts = [Point.new(1,1), Point.new(2,1), Point.new(3,1), Point.new(2,4)]
@@ -334,14 +334,15 @@ class PointsToLineTest < Test::Unit::TestCase
 		assert(p.line == (pts << pts[0]), "Didn't decode corner correctly")
 	end
 	def test_foo
-    #b = BMPDecoder.new("../../bitmaps/square.bmp")
+    b = BMPDecoder.new("../../bitmaps/square.bmp")
     #puts b.line
 	end
 end
 
 class FinderTest < Test::Unit::TestCase
 	def test_surrounding
-		f = Finder.new
+		pts = [Point.new(1,1), Point.new(1,2), Point.new(2,2)]
+		f = Finder.new(pts)
 		pts = f.points_at_radius(Point.new(0,0), 1)
 		assert(pts.size == 8, "Should have been 8 points at radius 1; was " + pts.size.to_s)
 		assert(f.points_at_radius(Point.new(0,0), 2).size == 16, "radius 2 should have yielded 16 points")

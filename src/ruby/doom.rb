@@ -10,15 +10,16 @@ class RGBQuad
 end
 
 class Finder
-	SEARCH_RADIUS=5
-	def initialize(debug=false)
+	def initialize(points, max_radius=5, debug=false)
 		@debug=debug
+		@max_radius = max_radius
+		@points = points
 	end
-	def next(points, current, sofar)
-		1.upto(SEARCH_RADIUS) {|x|
+	def next(current, sofar)
+		1.upto(@max_radius) {|x|
 			pts = points_at_radius(current, x)
 			pts.each {|p|
-				return p if good(points, p, sofar)
+				return p if good(p, sofar)
 			}
 		}
 		raise "Couldn't find next point!"
@@ -52,9 +53,9 @@ class Finder
 		puts "points array = " + res.to_s unless !@debug
 		return res
 	end
-	def good(points, candidate, sofar)	
+	def good(candidate, sofar)	
 		puts "Testing " + candidate.to_s unless !@debug
-		points.include?(candidate) && !sofar.include?(candidate)
+		@points.include?(candidate) && !sofar.include?(candidate)
 	end
 end
 
@@ -67,14 +68,14 @@ class PointsToLine
 		@points.min {|a,b| a.distance_to(Point.new(0,0)) <=> b.distance_to(Point.new(0,0)) }
 	end
 	def line
-		@f = Finder.new(@debug)
+		@f = Finder.new(@points, 5, @debug)
 		found_so_far = [lower_left]
-		current = @f.next(@points, found_so_far[0], found_so_far)
+		current = @f.next(found_so_far[0], found_so_far)
 		while found_so_far.size != @points.size - 1 
 			found_so_far << current
 			puts "Current = " + current.to_s + "; points so far: " + found_so_far.size.to_s unless !@debug
 			begin
-				current = @f.next(@points, current, found_so_far)
+				current = @f.next(current, found_so_far)
 			rescue
 				puts "Couldn't find next point, so skipping back to the origin" unless !@debug
 				break
