@@ -316,19 +316,25 @@ class PointsToLineTest < Test::Unit::TestCase
 	def test_find_next
 		pts = [Point.new(1,1), Point.new(1,2), Point.new(2,2)]
 		p = PointsToLine.new(pts)
-		assert(Finder.next(pts, Point.new(1,1), pts.slice(0,1)) == Point.new(1,2), "wrong 'next point' found")
+		assert(Finder.new.next(pts, Point.new(1,1), pts.slice(0,1)) == Point.new(1,2), "wrong 'next point' found")
 	end
 	def test_points_in_order
 		pts = [Point.new(1,1), Point.new(2,1), Point.new(3,1), Point.new(2,4)]
 		p = PointsToLine.new(pts)
 		assert(p.line == [pts[0], pts[1], pts[2], pts[3], pts[0]], "wrong order: " + p.line.to_s)	
 	end
+	def test_corner
+		pts = [Point.new(1,1), Point.new(2,1), Point.new(3,1), Point.new(3,2), Point.new(3,3)]
+		p = PointsToLine.new(pts, true)
+		puts p.line
+	end
 end
 
 class FinderTest < Test::Unit::TestCase
 	def test_surrounding
-		pts = Finder.points_at_radius(Point.new(0,0), 1)
+		f = Finder.new
+		pts = f.points_at_radius(Point.new(0,0), 1)
 		assert(pts.size == 8, "Should have been 8 points at radius 1; was " + pts.size.to_s)
-		assert(Finder.points_at_radius(Point.new(0,0), 2).size == 16, "radius 2 should have yielded 16 points")
+		assert(f.points_at_radius(Point.new(0,0), 2).size == 16, "radius 2 should have yielded 16 points")
 	end
 end
