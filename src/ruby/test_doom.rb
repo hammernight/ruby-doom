@@ -290,6 +290,17 @@ class BMPDecoderTest < Test::Unit::TestCase
 	end
 end
 
+
+class ArrayToPointsTest < Test::Unit::TestCase
+	def test_convert
+		# Ensure we find the right point when given this bitmap
+		# 00000000
+		# 00010000
+		# 00000000
+		assert(ArrayToPoints.convert(8, 3, [255,239,255])[0] == Point.new(4,2), "Didn't find correct point")
+	end
+end
+
 class PointSetTest < Test::Unit::TestCase
 	def test_lower_left
 		assert(BMPDecoderTest::B.points.lower_left == Point.new(72,65), "wrong lower left point")
@@ -300,17 +311,8 @@ class PointSetTest < Test::Unit::TestCase
 		assert(p.find_next(Point.new(1,1), pts.slice(0,1)) == Point.new(1,2), "wrong 'next point' found")
 	end
 	def test_points_in_order
-		pts = [Point.new(1,1), Point.new(1,2), Point.new(2,2)]
+		pts = [Point.new(1,1), Point.new(2,1), Point.new(2,4)]
 		p = PointSet.new(pts)
-	end
-end
-
-class ArrayToPointsTest < Test::Unit::TestCase
-	def test_convert
-		# Ensure we find the right point when given this bitmap
-		# 00000000
-		# 00010000
-		# 00000000
-		assert(ArrayToPoints.convert(8, 3, [255,239,255])[0] == Point.new(4,2), "Didn't find correct point")
+		assert(p.in_order == [pts[0], pts[1], pts[2], pts[0]], "wrong order")	
 	end
 end

@@ -26,6 +26,9 @@ class PointSet
 		current = find_next(first, res)
 		while current != first
 			res << current
+			if res.size == @points.size
+				break
+			end
 			current = find_next(current, res)
 		end
 		res << first
