@@ -4,9 +4,10 @@
 <p>Props go out to the many folks out there who have figured out this stuff before I did.  Hopefully I can summarize some of what I consider to be the important points here.
 <p>Header information
 <ul>
-<li>Bytes 00-04: WAD type - either PWAD or IWAD
+<li>Bytes 00-03: WAD type - either PWAD or IWAD
+<li>Bytes 04-07: Number of lumps (long)
 </ul>
 
-<p>All long integers in WAD files are 32 bit unsigned longs in little-endian format.  So <code>30 02 00 00</code> is <code>00 00 02 30</code> is 
+<p>All long integers in WAD files are 32 bit unsigned longs in little-endian format.  So <code>11 00 00 00</code> is <code>00 00 00 11</code> is <code>11</code>.  I'm using the following Ruby snippet to do this transformation: <code>[11,0,0,0].pack("V").unpack("V")</code>.
 </body>
 </html>
