@@ -47,7 +47,7 @@ m.write_to_file("simple.wad")
 </ul>
 <p><b>Lumps</b> - a bunch of different kinds of data of variable length.
 <ul>
-<li>THINGS - 10 byte sequence
+<li>THINGS - 10 bytes 
 <ul>
 <li>Bytes 0-2: Location (x) (short) 
 <li>Bytes 2-4: Location (y) (short)
@@ -56,7 +56,7 @@ m.write_to_file("simple.wad")
 <li>Bytes 8-10: Flags (short)
 </ul>
 
-<li>LINEDEFS - 12 byte sequence
+<li>LINEDEFS - 12 bytes 
 <ul>
 <li>Bytes 0-2: Start VERTEX (short) 
 <li>Bytes 2-4: End VERTEX (short)
@@ -65,6 +65,22 @@ m.write_to_file("simple.wad")
 <li>Bytes 8-10: Tag (short)
 <li>Bytes 10-12: Right SIDEDEF (short)
 <li>Bytes 12-14: Left SIDEDEF (short)
+</ul>
+
+<li>SIDEDEFS - 30 bytes
+<ul>
+<li>Bytes 0-2: Texture x offset (short)
+<li>Bytes 0-4: Texture y offset (short)
+<li>Bytes 4-12: Upper texture name (8 byte string)
+<li>Bytes 12-20: Lower texture name (8 byte string)
+<li>Bytes 20-28: Middle texture name (8 byte string)
+<li>Bytes 28-30: Sector id (short)
+</ul>
+
+<li>VERTEXES - 4 bytes
+<ul>
+<li>Bytes 0-2: x coordinate (short)
+<li>Bytes 2-4: y coordinate (short)
 </ul>
 
 </ul>
@@ -76,27 +92,42 @@ Done reading, building the object model
 Object model built
 The file ../../test_wads/simple.wad is a 900 byte patch WAD
 It's got 11 lumps, the directory started at byte 724
-Lump      Size
-MAP01     0
-THINGS    10
- - Player 1 at 224,65120 facing east
-LINEDEFS  112
- - Linedef from 0 to 1; attribute flag is 1; special fx is 0
- - Linedef from 1 to 2; attribute flag is 1; special fx is 0
- - Linedef from 2 to 3; attribute flag is 1; special fx is 0
- - Linedef from 3 to 0; attribute flag is 1; special fx is 0
- - Linedef from 4 to 5; attribute flag is 1; special fx is 0
- - Linedef from 5 to 6; attribute flag is 1; special fx is 0
- - Linedef from 6 to 7; attribute flag is 1; special fx is 0
- - Linedef from 7 to 4; attribute flag is 1; special fx is 0
-SIDEDEFS  240
-VERTEXES  32
-SEGS      96
-SSECTORS  8
-NODES     28
-SECTORS   52
-REJECT    1
-BLOCKMAP  132
+MAP01 (0 bytes)
+THINGS (10 bytes)
+ - Player 1 at (224,65120) facing east
+LINEDEFS (112 bytes)
+ - Linedef from 0 to 1; attribute flag is 1; special fx is 0; tag is 0; right sidedef is 0; left sidedef is 65535
+ - Linedef from 1 to 2; attribute flag is 1; special fx is 0; tag is 0; right sidedef is 1; left sidedef is 65535
+ - Linedef from 2 to 3; attribute flag is 1; special fx is 0; tag is 0; right sidedef is 2; left sidedef is 65535
+ - Linedef from 3 to 0; attribute flag is 1; special fx is 0; tag is 0; right sidedef is 3; left sidedef is 65535
+ - Linedef from 4 to 5; attribute flag is 1; special fx is 0; tag is 0; right sidedef is 4; left sidedef is 65535
+ - Linedef from 5 to 6; attribute flag is 1; special fx is 0; tag is 0; right sidedef is 5; left sidedef is 65535
+ - Linedef from 6 to 7; attribute flag is 1; special fx is 0; tag is 0; right sidedef is 6; left sidedef is 65535
+ - Linedef from 7 to 4; attribute flag is 1; special fx is 0; tag is 0; right sidedef is 7; left sidedef is 65535
+SIDEDEFS (240 bytes)
+ -  Sidedef for sector 0
+ -  Sidedef for sector 0
+ -  Sidedef for sector 0
+ -  Sidedef for sector 0
+ -  Sidedef for sector 1
+ -  Sidedef for sector 1
+ -  Sidedef for sector 1
+ -  Sidedef for sector 1
+VERTEXES (32 bytes)
+ -  Vertex at (64,65216)
+ -  Vertex at (384,65216)
+ -  Vertex at (384,65024)
+ -  Vertex at (64,65024)
+ -  Vertex at (640,65216)
+ -  Vertex at (896,65216)
+ -  Vertex at (896,65024)
+ -  Vertex at (640,65024)
+SEGS (96 bytes)
+SSECTORS (8 bytes)
+NODES (28 bytes)
+SECTORS (52 bytes)
+REJECT (1 bytes)
+BLOCKMAP (132 bytes)
 Writing WAD
 Done
 </pre>
@@ -104,7 +135,7 @@ Done
 
 <hr>
 <ul>
-<li><a name="long"/>All long integers in WAD files are 32 bit unsigned longs in little-endian format (shorts are unsigned, 16 bits, little-endian as well).  So the byte sequence <font color="blue">212 2 0 0</font> is really <font color="blue">0 0 2 212</font> which translates to <font color="blue">724</font> decimal.  I'm using the following Ruby snippet to do this transformation:
+<li><a name="long"/>All long integers are 32 bit unsigned longs in little-endian format (shorts are unsigned, 16 bits, little-endian as well).  So the byte sequence <font color="blue">212 2 0 0</font> is really <font color="blue">0 0 2 212</font> which translates to <font color="blue">724</font> decimal.  I'm using the following Ruby snippet to do this transformation:
 <pre>
 bytes.pack("C4").unpack("V")[0]
 </pre>
