@@ -54,6 +54,32 @@ w.write("new.wad")
 </pre>
 <p>The important part is the <code>Path.new</code> line - that's where the map outline is specified.  Note that the path needs to run clockwise, it must be a closed path (i.e., the last leg should stop at the starting point), and it can't cross back on itself.  
 <p>After running that code, you'll need to run the generated wad file through a binary partition space calculator - I've been using <a href="http://doombsp.sf.net/">DOOM BSP</a>.  
+<p>To make it easier to prototype stuff, you can also render small maps using a Nethack-style renderer (currently in CVS, will be in v0.4), i.e.:
+<pre>
+[tom@rubyforge ruby]$ ./doom.rb -nethack
+. . . . . . . . . . . . . . . . . . . .
+. . . . . . . . . . . . . . . . . . . .
+. . . . . . . . . . . . . . . . . . . .
+. . . . . . . . . . . . . . . . . . . .
+. . . . . . . . . . . . . . . . . . . .
+. . . . . . . . . . . . . . . . . . . .
+. . . . . . . . . . . . . . . . . . . .
+. . . . . . . . . . . . . . . . . . . .
+. . . . . . . . . . . . . . . . . . . .
+. . . . . . . . . . . . . . . . . . . .
+. . . . . . X X X X X . . . . . . . . .
+. . . . . . X . . . X . . . . . . . . .
+X X X X X X X . . . X X X . . . . . . .
+X . . . . . . . . . . . X . . . . . . .
+X . . . . . . . . . . . X . . . . . . .
+X . . . . . . . . . . . X . . . . . . .
+X . . . . . . . . . . . X . . . . . . .
+X X X X X X X . . . X X X . . . . . . .
+. . . . . . X . . . X . . . . . . . . .
+. . . . . . X X X X X . . . . . . . . .
+Map generated from e6/n2/e4/s2/e2/s5/w2/s2/w4/n2/w6/n5
+[tom@rubyforge ruby]$
+</pre>
 <p>You can also read in wads and see information about them; here's a sample run:
 <pre>
 [tom@hal ruby]$ ./doom.rb -v

@@ -601,10 +601,10 @@ if __FILE__ == $0
     w.lumps.things.player.facing_angle = 90
   	w.write("new.wad")
 	elsif ARGV.include?("-nethack")
-		spec="e5/n4/e4/s4/e4/s5/w13/n4"
-    p = Path.new(0,6,"e5/n4/e4/s4/e4/s5/w13/n4")
+		spec="e6/n2/e4/s2/e2/s5/w2/s2/w4/n2/w6/n5"
+    p = Path.new(0, 7, spec)
     puts p.nethack
-		puts spec
+		puts "Map generated from " + spec
 	else
     w.lumps.each {|lump|
       puts lump.name + " (" + lump.size.to_s + " bytes)"
