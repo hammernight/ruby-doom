@@ -108,27 +108,15 @@ class Point
 		res << Point.new(startx, starty)
 		distance_to(p1).to_i.times {|s|
 			if slope_to(p1) == 0
-					if p1.x < @x
-						startx -= 1
-					else
-						startx += 1
-					end
+					startx += (p1.x < @x ? -1 : 1)
 			else
 				if slope_to(p1) != nil
-					if p1.x < @x
-						startx -= 1
-					else
-						startx += 1
-					end
+					startx += (p1.x < @x ? -1 : 1)
 				end
 				startx += slope_to(p1) unless slope_to(p1) == nil
 			end
 			if slope_to(p1) == nil
-				if p1.y < @y
-					starty -= 1
-				else
-					starty += 1
-				end
+				starty += (p1.y < @y ? -1 : 1)
 			else
 				starty += (1/slope_to(p1)) unless slope_to(p1) == 0 
 			end
