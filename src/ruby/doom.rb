@@ -134,9 +134,7 @@ class Point
 		return res
 	end
 	def translate(x,y)
-		@x += x
-		@y += y	
-		self
+		Point.new(@x + x, @y + y)
 	end
 	def to_s
 		"(" + @x.to_s + "," + @y.to_s + ")"
@@ -567,23 +565,22 @@ class Path
 		@path.split(/\//)
 	end
 	def visit(visitor)
-		cur_x = @start.x
-		cur_y = @start.y
+		cur = @start
 		segments.each {|x|
 			dir = x[0].chr
 			len = x.slice(1, x.length-1).to_i
 			if dir == "e"
-				cur_x += len
+				cur = cur.translate(len, 0)
 			elsif dir == "n"
-				cur_y += len
+				cur = cur.translate(0, len)
 			elsif dir == "w"
-				cur_x -= len
+				cur = cur.translate(-len, 0)
 			elsif dir == "s"
-				cur_y -= len
+				cur = cur.translate(0, -len)
 			else
 				raise "Unrecognized direction " + dir.to_s + " in segment " + x.to_s
 			end
-			visitor.line_to(Point.new(cur_x, cur_y))
+			visitor.line_to(cur)
 		}
 	end
 	def nethack(size=Nethack::DEFAULT_SIZE)
