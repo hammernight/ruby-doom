@@ -133,6 +133,11 @@ class Point
 		res << p1
 		return res
 	end
+	def translate(x,y)
+		@x += x
+		@y += y	
+		self
+	end
 	def to_s
 		"(" + @x.to_s + "," + @y.to_s + ")"
 	end

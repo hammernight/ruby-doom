@@ -265,4 +265,10 @@ class PointTest < Test::Unit::TestCase
 		assert(Point.new(0,0) == Point.new(0,0), "should have been equal")
 		assert(Point.new(0,0) != Point.new(1,0), "should have been not equal")
 	end
+	def test_translate
+		assert(Point.new(0,0).translate(1,0) == Point.new(1,0), "pos x translation failed")
+		assert(Point.new(0,0).translate(-1,0) == Point.new(-1,0), "neg x translation failed")
+		assert(Point.new(0,0).translate(-1,-1) == Point.new(-1,-1), "neg y translation failed")
+		assert(Point.new(0,0).translate(0,1) == Point.new(0,1), "pos y translation failed")
+	end
 end
