@@ -28,7 +28,8 @@ class Header
 	end
 	def save
 		out = @type.unpack("C*")
-		#out += 
+		out += [@lump_count].pack("N").unpack("C4").reverse 
+		out += [@directory_offset].pack("N").unpack("C4").reverse 
 	end
 end
 
