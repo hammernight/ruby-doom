@@ -8,6 +8,47 @@ class RGBQuad
 		return @r.to_s + "," + @g.to_s + "," + @b.to_s
 	end
 end
+class PointSet
+	attr_reader :points
+	def initialize(points)
+		@points = points
+	end
+	def lower_left
+		@points.min {|a,b| a.distance_to(Point.new(0,0)) <=> b.distance_to(Point.new(0,0)) }
+	end
+	def size
+		@points.size
+	end
+	def in_order
+		res = []
+		first = lower_left
+		res << first
+		current = find_next(first, first)
+		previous = first
+		while current != first
+			res << current
+			tmp = current
+			current = find_next(current, previous)
+			previous = tmp
+		end
+		res << first
+		return res
+	end
+	def find_next(point, previous)
+		-1.upto(1) {|x|
+			-1.upto(1) {|y|
+				if x == 0 && y == 0
+					next
+				end
+				candidate = Point.new(point.x + x, point.y + y)
+				if @points.index(candidate) != nil && candidate != previous
+					return candidate
+				end	
+			}
+		}
+		
+	end
+end
 class BMPDecoder
 	attr_reader :type, :size, :offset_to_image_data, :info_header_size, :width, :height, :bit_planes, :bits_per_pixel, :compression, :size_of_image, :xpixels_per_meter, :ypixels_per_meter, :colors_used, :colors_important, :points
 	def initialize(filename)
@@ -42,16 +83,17 @@ class BMPDecoder
 		@image = bytes.slice(62, bytes.size-62)
 
 		# convert image data to points
-		@points = []
+		pts = []
 		0.upto(@height-1) {|y|
 			0.upto(@width-1) {|x|
 				# convert x,y to an index into the bit array
 				bit_index = (@width*y) + x
 				byte_to_check = bit_index / 8
 				byte_to_check -= 1 unless byte_to_check == 0
-				@points << Point.new(x,y) if (@image[byte_to_check] & (1 << (bit_index % 8))) == 0
+				pts << Point.new(x,y) if (@image[byte_to_check] & (1 << (bit_index % 8))) == 0
 			}
 		}
+		@points = PointSet.new(pts)
 	end
 	def decode_word(bytes)
 		bytes.pack("C2").unpack("S")[0] 
@@ -281,13 +323,7 @@ class Sector
 	FORMAT="ss88sss"
 	attr_accessor :floor_height, :ceiling_height, :floor_texture, :ceiling_texture, :light_level, :special, :tag, :id
 	def initialize
-		@floor_height=0
-		@ceiling_height=128
-		@floor_texture="FLAT14"
-		@ceiling_texture="FLAT14"
-		@light_level=160
-		@special=0
-		@tag=0
+		@floor_height, @ceiling_height, @floor_texture, @ceiling_texture, @light_level, @special, @tag = 0, 128, "FLAT14", "FLAT14", 160, 0, 0
 	end
   def read(bytes)
 		@floor_height, @ceiling_height, @floor_texture, @ceiling_texture, @light_level, @special, @tag = Codec.decode(FORMAT, bytes)

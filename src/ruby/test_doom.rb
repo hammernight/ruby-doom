@@ -274,7 +274,7 @@ class PointTest < Test::Unit::TestCase
 end
 
 class BMPDecoderTest < Test::Unit::TestCase
-		B = BMPDecoder.new(TEST="../../test_wads/square.bmp")
+	B = BMPDecoder.new(TEST="../../test_wads/square.bmp")
 	def test_header
 		assert(B.type == 19778, "That's not a bitmap")
 		assert(B.size == File.size(TEST), "Wrong size")
@@ -287,5 +287,20 @@ class BMPDecoderTest < Test::Unit::TestCase
 		assert(B.compression == 0, "Wrong compression")
 		assert(B.size_of_image == 40960, "Wrong size_of_image")
 		assert(B.points.size == 1862, "wrong number of points")
+	end
+end
+
+class PointSetTest < Test::Unit::TestCase
+	def test_lower_left
+		assert(BMPDecoderTest::B.points.lower_left == Point.new(72,65), "wrong lower left point")
+	end
+	def test_find_next
+		pts = [Point.new(1,1), Point.new(1,2), Point.new(2,2)]
+		p = PointSet.new(pts)
+		assert(p.find_next(Point.new(1,1), Point.new(1,1)) == Point.new(1,2), "wrong 'next point' found")
+	end
+	def test_points_in_order
+		pts = [Point.new(1,1), Point.new(1,2), Point.new(2,2)]
+		p = PointSet.new(pts)
 	end
 end
