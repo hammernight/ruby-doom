@@ -150,6 +150,7 @@ end
 class CodecTest  < Test::Unit::TestCase
 	def test_decode
 		assert(Codec.decode("s", ThingTest::BYTES.slice(0,2))[0] == 224, "bad short decode") 
+		assert(Codec.decode("s", [255,255])[0] == -1, "bad signed short decode") 
 		assert(Codec.decode("l", [13, 0, 0, 0])[0] == 13, "bad long decode") 
 		assert(Codec.decode("4", [84, 72, 73, 78])[0] == "THIN", "bad 4 byte string decode") 
 		assert(Codec.decode("8", [84, 72, 73, 78, 71, 83, 0, 0])[0] == "THINGS", "bad 8 byte string decode") 
