@@ -22,13 +22,14 @@ class Wad
 		type=="PWAD"
 	end
 	def lumps
-		y=""
-		@bytes.slice(4,4).each {|x| y << x.chr } 
-		y.unpack("V")
+		convert_long(@bytes.slice(4,4))
 	end
-	def directory
+	def directory_offset
+		convert_long(@bytes.slice(8,4))
+	end
+	def convert_long(array)
 		y=""
-		@bytes.slice(8,4).each {|x| y << x.chr } 
+		array.each {|x| y << x.chr } 
 		y.unpack("V")
 	end
 end
@@ -37,6 +38,6 @@ if __FILE__ == $0
 	w = Wad.new("../../test_wads/simple.wad", true)
 	puts "It's a patch WAD" unless !w.pwad
 	puts "It's got " + w.lumps.to_s + " lumps"
-	puts "The directory offset is " + w.directory.to_s
+	puts "The directory offset is " + w.directory_offset.to_s
 end
 
