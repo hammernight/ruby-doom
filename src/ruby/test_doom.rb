@@ -47,7 +47,6 @@ end
 
 class WadTest < Test::Unit::TestCase
 	W1 = WadFile.new("../../test_wads/simple.wad", 900)
-	W2 = WadFile.new("../../test_wads/stepstep.wad", 59436)
 	def test_readwrite_simple
 		working = W1
 		w = Wad.new
