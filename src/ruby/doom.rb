@@ -13,43 +13,41 @@ class Finder
 	SEARCH_RADIUS=10
 	def Finder.next(points, current, sofar)
 		0.upto(SEARCH_RADIUS) {|x|
-			pts = Finder.surround(current, x)
+			pts = Finder.points_at_radius(current, x)
 			pts.each {|p|
 				return p if Finder.good(points, p, sofar)
 			}
 		}
 		raise "Couldn't find next point!"
 	end
-	def Finder.surround(p, r)
+	def Finder.points_at_radius(p, r)
 		res = []
-		1.upto(r) {|x|
-			p = p.translate(0,-r)
-			# move east
-			1.upto(r) {|y|
-				p = p.translate(1,0)
-				res << p
-			}
-			# move south
-			1.upto(r*2) {|y|
-				p = p.translate(0,1)
-				res << p
-			}
-			# move west
-			1.upto(r*2) {|y|
-				p = p.translate(-1,0)
-				res << p
-			}
-			# move north
-			1.upto(r*2) {|y|
-				p = p.translate(0,-1)
-				res << p
-			}
-			# move back east to origin
-			1.upto(r) {|y|
-				p = p.translate(1,0)
-				res << p
-			}
-		}	
+		p = p.translate(0, -r)
+		# move east
+		1.upto(r) {
+			p = p.translate(1,0)
+			res << p
+		}
+		# move south
+		1.upto(r*2) {
+			p = p.translate(0,1)
+			res << p
+		}
+		# move west
+		1.upto(r*2) {
+			p = p.translate(-1,0)
+			res << p
+		}
+		# move north
+		1.upto(r*2) {
+			p = p.translate(0,-1)
+			res << p
+		}
+		# move back east to just north of the origin
+		1.upto(r) {|y|
+			p = p.translate(1,0)
+			res << p
+		}
 		return res
 	end
 	def Finder.good(points, candidate, sofar)	
@@ -76,7 +74,7 @@ class PointSet
 		current = Finder.next(points, first, found_so_far)
 		while found_so_far.size != @points.size - 1 
 			found_so_far << current
-			puts "Current = " + current.to_s + "; points so far: " + found_so_far.size.to_s
+			#puts "Current = " + current.to_s + "; points so far: " + found_so_far.size.to_s
 			begin
 				current = Finder.next(points, current, found_so_far)
 			rescue
