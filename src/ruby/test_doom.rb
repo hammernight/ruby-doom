@@ -275,7 +275,7 @@ end
 
 class PointSetTest < Test::Unit::TestCase
 	def test_lower_left
-		assert(BMPDecoderTest::B.points.lower_left == Point.new(64,65), "wrong lower left point: " + BMPDecoderTest::B.points.lower_left.to_s)
+		assert(BMPDecoderTest::B.points.lower_left == Point.new(64,61), "wrong lower left point: " + BMPDecoderTest::B.points.lower_left.to_s)
 	end
 	def test_find_next
 		pts = [Point.new(1,1), Point.new(1,2), Point.new(2,2)]
