@@ -621,9 +621,9 @@ end
 
 class Path
 	attr_reader :sectors, :path, :start
-	def initialize(start, path="")
+	def initialize(startx, starty, path="")
 		@path = path
-		@start = start
+		@start = Point.new(startx, starty)
 	end
 	def add(p,count=1)
 		count.times {@path += p }

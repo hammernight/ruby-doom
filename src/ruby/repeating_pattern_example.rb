@@ -3,7 +3,7 @@
 require "doom.rb"
 puts "Creating a map using a repeated path"
 
-p = Path.new(Point.new(0, 1000))
+p = Path.new(0, 1000)
 p.add("e200/n200/e200/s200/e200/",6)
 p.add("s400/")
 p.add("w200/s200/w200/n200/w200/",6)

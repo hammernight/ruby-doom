@@ -172,12 +172,12 @@ end
 class PathTest < Test::Unit::TestCase
 	TEST="e500/n200/w500/s200"
 	def test_parse
-		p = Path.new(Point.new(0,0),TEST)
+		p = Path.new(0,0,TEST)
 		assert(p.segments.size == 4, "Wrong parts")
 		assert(p.segments[2] == "w500", "wrong order")
 	end
 	def test_add
-		p = Path.new(Point.new(0,0),"")
+		p = Path.new(0,0)
 		assert(p.path == "", "initial path wrong")
 		p.add "e200/"
 		assert(p.path == "e200/", "adding path failed")
@@ -185,7 +185,7 @@ class PathTest < Test::Unit::TestCase
 		assert(p.path == "e200/e100/e100/", "adding multiple paths failed: " + p.path)
 	end
 	def test_visit
-		p = Path.new(Point.new(0,0),TEST)
+		p = Path.new(0,0,TEST)
 		@points = []
 		p.visit(self)
 	assert(@points.size == 4, "wrong number of callbacks")
@@ -197,13 +197,13 @@ end
 
 class PathCompilerTest < Test::Unit::TestCase
 	def test_sectors
-		pc = PathCompiler.new(Path.new(Point.new(0,0),PathTest::TEST))
+		pc = PathCompiler.new(Path.new(0,0,PathTest::TEST))
 		s = pc.lumps.find {|x| x.name == Sectors::NAME }	
 		assert(s.items[0].id == 0, "wrong id")
 		assert(s.items[0].id == 0, "wrong id when called twice, should return same sector")
 	end
 	def test_sidedefs
-		pc = PathCompiler.new(Path.new(Point.new(0,0),PathTest::TEST))
+		pc = PathCompiler.new(Path.new(0,0,PathTest::TEST))
 		s = pc.lumps.find {|x| x.name == Sidedefs::NAME }	
 		assert(s.items.size == 4, "wrong count")
 		assert(s.items[0].sector_id == 0, "wrong sector id")
@@ -211,7 +211,7 @@ class PathCompilerTest < Test::Unit::TestCase
 		assert(s.items[1].id == 1, "wrong sidedef id")
 	end
 	def test_linedefs
-		pc = PathCompiler.new(Path.new(Point.new(0,0),PathTest::TEST))
+		pc = PathCompiler.new(Path.new(0,0,PathTest::TEST))
 		ld = pc.lumps.find {|x| x.name == Linedefs::NAME }	
 		assert(ld.items.size == 4, "wrong count")
 		assert(ld.items[0].right_sidedef.id == 0, "wrong first sidedef")
@@ -222,7 +222,7 @@ class PathCompilerTest < Test::Unit::TestCase
 		assert(ld.items[3].end_vertex.id == 0, "wrong end vertex on last linedef")
 	end
 	def test_vertexes
-		pc = PathCompiler.new(Path.new(Point.new(0,0),PathTest::TEST))
+		pc = PathCompiler.new(Path.new(0,0,PathTest::TEST))
 		v = pc.lumps.find {|x| x.name == Vertexes::NAME }	
 		assert(v.items.size == 4, "wrong vert count")
 		assert(v.items[0].location == Point.new(0,0), "wrong values for vertex 1")
