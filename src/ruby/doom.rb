@@ -27,9 +27,7 @@ class Header
 		@directory_offset = Wad.convert_long(array.slice(8,4))	
 	end
 	def save
-		out = @type.unpack("C*")
-		out += [@lump_count].pack("N").unpack("C4").reverse 
-		out += [@directory_offset].pack("N").unpack("C4").reverse 
+		@type.unpack("C*") + Wad.marshal_long(@lump_count) + Wad.marshal_long(@directory_offset)
 	end
 end
 
@@ -39,19 +37,15 @@ class Wad
 		@verbose = verbose
 		@bytes = []
 		@directory_entries = []
-
 		puts "Reading WAD into memory" unless !@verbose
 		File.new(filename).each_byte {|b| @bytes << b }
 		puts "Done reading, building the object model" unless !@verbose
-	
 		@header = Header.new(@bytes.slice(0,Header::SIZE))
-	
 		@header.lump_count.times {|directory_entry_index|
 			de = DirectoryEntry.new
 			de.read(@bytes.slice((directory_entry_index*DirectoryEntry::SIZE)+@header.directory_offset,DirectoryEntry::SIZE))
 			@directory_entries << de
 		}
-	
 		puts "Object model built" unless !@verbose
 	end
 	def pwad
@@ -66,6 +60,9 @@ class Wad
 		out += @header.save
 		# TODO	
 		puts "Done" unless !@verbose
+	end
+	def Wad.marshal_long(n)
+		[n].pack("N").unpack("C4").reverse
 	end
 	def Wad.convert_long(array)
 		y=""
