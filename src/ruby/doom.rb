@@ -480,7 +480,7 @@ if __FILE__ == $0
     w.lumps.things.player.facing_angle = 90
   	w.write("out.wad")
   elsif ARGV.include?("-create")
-		puts "Creating a nice, simple, square using counterclockwise linedefs"
+		puts "Creating a simple rectangle using clockwise linedefs"
 		w = Wad.new(true)
 	
 		w.lumps.add UndecodedLump.new("MAP01")
