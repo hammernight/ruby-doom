@@ -8,12 +8,13 @@ class RGBQuad
 		return @r.to_s + "," + @g.to_s + "," + @b.to_s
 	end
 end
+
 class Finder
 	SEARCH_RADIUS=10
 	def Finder.next(points, current, sofar)
 		0.upto(SEARCH_RADIUS) {|x|
 			0.upto(SEARCH_RADIUS) {|y|
-				if Finder.good(points, c=Point.new(current.x + x, current.y + y), sofar) || Finder.good(points, c=Point.new(current.x - x, current.y - y), sofar)
+				if Finder.good(points, c=Point.new(current.x + x, current.y + y), sofar) || Finder.good(points, c=Point.new(current.x - x, current.y - y), sofar) || Finder.good(points, c=Point.new(current.x + y, current.y + x), sofar) || Finder.good(points, c=Point.new(current.x - y, current.y - x), sofar) || Finder.good(points, c=Point.new(current.x - x, current.y + y), sofar) || Finder.good(points, c=Point.new(current.x + x, current.y - y), sofar)
 					return c
 				end
 			}
@@ -24,6 +25,7 @@ class Finder
 		points.include?(candidate) && !sofar.include?(candidate)
 	end
 end
+
 class PointSet
 	attr_reader :points
 	def initialize(points)
@@ -42,7 +44,7 @@ class PointSet
 		current = Finder.next(points, first, found_so_far)
 		while found_so_far.size != @points.size - 1 
 			found_so_far << current
-			puts "Current = " + current.to_s + "; points so far: " + found_so_far.size.to_s
+			#puts "Current = " + current.to_s + "; points so far: " + found_so_far.size.to_s
 			begin
 				current = Finder.next(points, current, found_so_far)
 			rescue
@@ -55,6 +57,7 @@ class PointSet
 		return found_so_far
 	end
 end
+
 class ArrayToPoints
 	def ArrayToPoints.idx_to_xy(width, idx)
 		[idx % width, idx/width]
@@ -77,6 +80,7 @@ class ArrayToPoints
 		return pts
 	end
 end
+
 class BMPDecoder
 	attr_reader :type, :size, :offset_to_image_data, :info_header_size, :width, :height, :bit_planes, :bits_per_pixel, :compression, :size_of_image, :xpixels_per_meter, :ypixels_per_meter, :colors_used, :colors_important, :points
 	def initialize(filename)
@@ -798,7 +802,7 @@ end
 if __FILE__ == $0
 	if ARGV.include?("-bmp")
 		b = BMPDecoder.new("../../test_wads/small.bmp")
-		#puts b.points.points
+		#puts b.points.points.sort {|a,b| a.x <=> b.x }
 		puts b.in_order
 		exit
 			

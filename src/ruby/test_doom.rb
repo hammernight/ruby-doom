@@ -273,21 +273,6 @@ class PointTest < Test::Unit::TestCase
 	end
 end
 
-class PointSetTest < Test::Unit::TestCase
-	def test_lower_left
-		assert(BMPDecoderTest::B.points.lower_left == Point.new(64,61), "wrong lower left point: " + BMPDecoderTest::B.points.lower_left.to_s)
-	end
-	def test_find_next
-		pts = [Point.new(1,1), Point.new(1,2), Point.new(2,2)]
-		p = PointSet.new(pts)
-		assert(Finder.next(pts, Point.new(1,1), pts.slice(0,1)) == Point.new(1,2), "wrong 'next point' found")
-	end
-	def test_points_in_order
-		pts = [Point.new(1,1), Point.new(2,1), Point.new(2,4)]
-		p = PointSet.new(pts)
-		assert(p.in_order == [pts[0], pts[1], pts[2], pts[0]], "wrong order: " + p.in_order.to_s)	
-	end
-end
 
 class BMPDecoderTest < Test::Unit::TestCase
 	B = BMPDecoder.new(TEST="../../test_wads/square.bmp")
@@ -323,4 +308,18 @@ class ArrayToPointsTest < Test::Unit::TestCase
 	end
 end
 
-
+class PointSetTest < Test::Unit::TestCase
+	def test_lower_left
+		assert(BMPDecoderTest::B.points.lower_left == Point.new(64,61), "wrong lower left point: " + BMPDecoderTest::B.points.lower_left.to_s)
+	end
+	def test_find_next
+		pts = [Point.new(1,1), Point.new(1,2), Point.new(2,2)]
+		p = PointSet.new(pts)
+		assert(Finder.next(pts, Point.new(1,1), pts.slice(0,1)) == Point.new(1,2), "wrong 'next point' found")
+	end
+	def test_points_in_order
+		pts = [Point.new(1,1), Point.new(2,1), Point.new(2,4)]
+		p = PointSet.new(pts)
+		assert(p.in_order == [pts[0], pts[1], pts[2], pts[0]], "wrong order: " + p.in_order.to_s)	
+	end
+end
