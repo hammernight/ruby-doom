@@ -46,6 +46,27 @@ m.write_to_file("simple.wad")
 <li>Bytes 8-15: The name of the lump padded with zeros (characters).  <font color="blue">84, 72, 73, 78, 71, 83, 0, 0</font>
 </ul>
 <p><b>Lumps</b> - a bunch of different kinds of data of variable length.
+<ul>
+<li>THINGS - 10 byte sequence
+<ul>
+<li>Bytes 0-2: Location (x) (short) 
+<li>Bytes 2-4: Location (y) (short)
+<li>Bytes 4-6: Facing angle (short)
+<li>Bytes 6-8: Type ID (short)
+<li>Bytes 8-10: Flags (short)
+</ul>
+
+<li>LINEDEFS - 12 byte sequence
+<ul>
+<li>Bytes 0-2: Start VERTEX (short) 
+<li>Bytes 2-4: End VERTEX (short)
+<li>Bytes 4-6: Attributes (short)
+<li>Bytes 6-8: Special effects type (short)
+<li>Bytes 8-10: Right SIDEDEF (short)
+<li>Bytes 10-12: Left SIDEDEF (short)
+</ul>
+
+</ul>
 <p>Here's a sample run from the current version of <code>doom.rb</code>:
 <pre>
 [tom@rubyforge ruby]$ ./doom.rb

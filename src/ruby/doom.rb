@@ -121,9 +121,9 @@ class Thing
   attr_reader :type_id, :location
   attr_accessor :facing_angle
   def read(bytes)
-    @type_id = Wad.unmarshal_short(bytes.slice(6,2))
-    @facing_angle = Wad.unmarshal_short(bytes.slice(4,2))
     @location = Point.new(Wad.unmarshal_short(bytes.slice(0,2)), Wad.unmarshal_short(bytes.slice(2,2)))
+    @facing_angle = Wad.unmarshal_short(bytes.slice(4,2))
+    @type_id = Wad.unmarshal_short(bytes.slice(6,2))
     @flags = Wad.unmarshal_short(bytes.slice(8,2))
   end
 	def write
