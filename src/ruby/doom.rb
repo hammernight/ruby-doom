@@ -114,14 +114,18 @@ class Lump
 	def initialize(name)
 		@name = name
 	end
-	def read(bytes)
-		@bytes = bytes
+end
+
+class DecodedLump < Lump
+	attr_reader :items
+	def initialize(name)
+		super(name)
+		@items = []
 	end
 	def write
-		@bytes
-	end
-	def size
-		@bytes.size
+		out = []
+		@items.each {|s| out += s.write }
+		out
 	end
 end
 
@@ -137,26 +141,21 @@ class UndecodedLump < Lump
 	end
 end
 
-class Sectors < Lump
+class Sectors < DecodedLump
 	BYTES_EACH=26
 	NAME="SECTORS"
-	attr_reader :sectors
   def initialize
     super(NAME)
-    @sectors = []
   end
   def read(bytes)
-    super(bytes)
-    (@bytes.size / BYTES_EACH).times {|index|
+    (bytes.size / BYTES_EACH).times {|index|
       s = Sector.new
-      s.read(@bytes.slice(index*BYTES_EACH, BYTES_EACH))
-      @sectors << s
+      s.read(bytes.slice(index*BYTES_EACH, BYTES_EACH))
+      @items << s
     }
   end
-	def write
-		out = []
-		@sectors.each {|s| out += s.write }
-		out
+	def size
+		@items.size * BYTES_EACH
 	end
 end
 
@@ -173,26 +172,21 @@ class Sector
 	end
 end
 
-class Vertexes < Lump
+class Vertexes < DecodedLump
 	BYTES_EACH=4
 	NAME="VERTEXES"
-	attr_reader :vertexes
   def initialize
     super(NAME)
-    @vertexes = []
   end
   def read(bytes)
-    super(bytes)
-    (@bytes.size / BYTES_EACH).times {|index|
+    (bytes.size / BYTES_EACH).times {|index|
       v = Vertex.new
-      v.read(@bytes.slice(index*BYTES_EACH, BYTES_EACH))
-      @vertexes << v
+      v.read(bytes.slice(index*BYTES_EACH, BYTES_EACH))
+      @items << v
     }
   end
-	def write
-		out = []
-		@vertexes.each {|v| out += v.write }
-		out
+	def size
+		@items.size * BYTES_EACH
 	end
 end
 
@@ -209,26 +203,21 @@ class Vertex
 	end
 end
 
-class Sidedefs < Lump
+class Sidedefs < DecodedLump
 	BYTES_EACH=30
   NAME="SIDEDEFS"
-	attr_reader :sidedefs
   def initialize
     super(NAME)
-    @sidedefs = []
   end
   def read(bytes)
-    super(bytes)
-    (@bytes.size / BYTES_EACH).times {|index|
+    (bytes.size / BYTES_EACH).times {|index|
       s = Sidedef.new
-      s.read(@bytes.slice(index*BYTES_EACH, BYTES_EACH))
-      @sidedefs << s
+      s.read(bytes.slice(index*BYTES_EACH, BYTES_EACH))
+      @items << s
     }
   end
-	def write
-		out = []
-		@sidedefs.each {|s| out += s.write }
-		out
+	def size
+		@items.size * BYTES_EACH
 	end
 end
 
@@ -245,29 +234,24 @@ class Sidedef
 	end
 end
 
-class Things < Lump
+class Things < DecodedLump
   BYTES_EACH=10
   NAME="THINGS"
-	attr_reader :things
   def initialize
     super(NAME)
-    @things = []
   end
   def read(bytes)
-    super(bytes)
-    (@bytes.size / BYTES_EACH).times {|index|
+    (bytes.size / BYTES_EACH).times {|index|
       thing = Thing.new
-      thing.read(@bytes.slice(index*BYTES_EACH, BYTES_EACH))
-      @things << thing
+      thing.read(bytes.slice(index*BYTES_EACH, BYTES_EACH))
+      @items << thing
     }
   end
-	def write
-		out = []
-		@things.each {|t| out += t.write }
-		out
+	def size
+		@items.size * BYTES_EACH
 	end
 	def player
-		@things.find {|t| t.type_id == 1 } 
+		@items.find {|t| t.type_id == 1 } 
 		raise "Couldn't find player Thing"
 	end
 end
@@ -288,26 +272,21 @@ class Thing
 end
 
 
-class Linedefs < Lump
+class Linedefs < DecodedLump
   BYTES_EACH=14
-	attr_reader :linedefs
 	NAME="LINEDEFS"
 	def initialize
 		super(NAME)
-		@linedefs = []
 	end
   def read(bytes)
-    super(bytes)
-    (@bytes.size / BYTES_EACH).times {|index|
+    (bytes.size / BYTES_EACH).times {|index|
       linedef = Linedef.new
-      linedef.read(@bytes.slice(index*BYTES_EACH, BYTES_EACH))
-      @linedefs << linedef
+      linedef.read(bytes.slice(index*BYTES_EACH, BYTES_EACH))
+      @items << linedef
     }
   end
-	def write
-		out = []
-		@linedefs.each {|t| out += t.write }
-		out
+	def size
+		@items.size * BYTES_EACH
 	end
 end
 
@@ -477,15 +456,15 @@ if __FILE__ == $0
     w.lumps.lumps.each {|lump|
       puts lump.name + " (" + lump.size.to_s + " bytes)"
 			if lump.name == "THINGS"
-				lump.things.each {|t| puts " - " + t.to_s }
+				lump.items.each {|t| puts " - " + t.to_s }
 			elsif lump.name == "LINEDEFS"
-				lump.linedefs.each {|x| puts " - " + x.to_s }
+				lump.items.each {|x| puts " - " + x.to_s }
 			elsif lump.name == "SIDEDEFS"
-				lump.sidedefs.each {|x| puts " - " + x.to_s }
+				lump.items.each {|x| puts " - " + x.to_s }
 			elsif lump.name == "VERTEXES"
-				lump.vertexes.each {|x| puts " - " + x.to_s }
+				lump.items.each {|x| puts " - " + x.to_s }
 			elsif lump.name == "SECTORS"
-				lump.sectors.each {|x| puts " - " + x.to_s }
+				lump.items.each {|x| puts " - " + x.to_s }
 			end
     }
   	w.write("out.wad")

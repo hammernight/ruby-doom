@@ -61,7 +61,7 @@ end
 
 class LumpTest < Test::Unit::TestCase
 	def test_init
-		lump = Lump.new("FOO")
+		lump = UndecodedLump.new("FOO")
 		lump.read([1,2,3])
 		assert(lump.write == [1,2,3], "lump byte array doesn't stay const")
 		assert(lump.name == "FOO", "lump name corrupted")
@@ -72,7 +72,7 @@ class ThingsTest <  Test::Unit::TestCase
   def test_one
     things = Things.new
     things.read(ThingTest::BYTES + ThingTest::BYTES)
-    assert(things.things.size == 2, "wrong size")
+    assert(things.items.size == 2, "wrong size")
   end
 end
 
