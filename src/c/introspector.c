@@ -2,6 +2,10 @@
    Requires PC byte order
  */
 
+/*
+ * I did not write this code; I got it off the WWW somewhere or another and use it occasionally to read WADs to check my work.  It's not part of the
+ * Ruby-DOOM releases.
+*/
 #include <stdio.h>
 #include <assert.h>
 #include <stdlib.h>
