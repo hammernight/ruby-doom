@@ -883,7 +883,7 @@ class Nethack
 		@prev = current
 	end
 	def thing(t)
-		puts (t.location.y/100).to_s + "," + ((@map.size-1) - (t.location.x/100)).to_s + " -> " + Dictionary.get.thing_for_type_id(t.type_id).symbol
+		puts "#{(t.location.y/100)},#{((@map.size-1) - (t.location.x/100))} -> #{Dictionary.get.thing_for_type_id(t.type_id).symbol}"
 		@map[t.location.y/100][(@map.size-1) - (t.location.x/100)] = Dictionary.get.thing_for_type_id(t.type_id).symbol
 	end
 	def render
