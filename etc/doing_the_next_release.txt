@@ -7,7 +7,7 @@ Make sure the tests run
 Check everything in
 
 cd ~/data/
-cvs -q rtag -D tomorrow "ruby_doom_release_0_4" ruby-doom
+cvs -q tag -D tomorrow "ruby_doom_release_0_4" ruby-doom
 mkdir ruby-doom-0.4
 cp ruby-doom/etc/README.txt ruby-doom-0.4/
 cp ruby-doom/etc/CHANGELOG.txt ruby-doom-0.4/
