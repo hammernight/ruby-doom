@@ -1,8 +1,8 @@
 README for Ruby-DOOM
 
-Ruby-DOOM reads and writes DOOM level maps.  
+Ruby-DOOM provides a scripting API to DOOM level maps.  
 
-The current release can assemble a map using a Ruby code and a "path
+You can make a map using a Ruby script and a "path
 specification", like this:
 
 =============================
@@ -14,7 +14,15 @@ m.set_player Point.new(50,900)
 m.create_wad("new.wad")
 =============================
 
-Incidentally, Ruby-DOOM can also parse any DOOM II map into an object model.  Run it like this:
+Or, you can convert a bitmap into a map like this:
+
+=============================
+b = BMPMap.new("wiggly.bmp")
+b.set_player Point.new(400, 200)
+b.create_wad("new.wad")
+=============================
+
+Ruby-DOOM can also parse any DOOM II map into an object model.  Run it like this:
 
 ./doom.rb [-v] -f simple.wad
 

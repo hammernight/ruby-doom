@@ -7,18 +7,18 @@ Make sure the tests run
 Check everything in
 
 cd ~/data/
-cvs -q tag -D tomorrow "ruby_doom_release_0_5" ruby-doom
-mkdir ruby-doom-0.5
-cp ruby-doom/etc/README.txt ruby-doom-0.5/
-cp ruby-doom/etc/CHANGELOG.txt ruby-doom-0.5/
-cp ruby-doom/etc/LICENSE.txt ruby-doom-0.5/
-cp ruby-doom/src/ruby/*.rb ruby-doom-0.5/
-cp ruby-doom/test_wads/simple.wad ruby-doom-0.5/
-zip -q -r ruby-doom-0.5.zip ruby-doom-0.5/
-rm -rf ruby-doom-0.5/
+cvs -q tag -D tomorrow "ruby_doom_release_0_6" ruby-doom
+mkdir ruby-doom-0.6
+cp ruby-doom/etc/README.txt ruby-doom-0.6/
+cp ruby-doom/etc/CHANGELOG.txt ruby-doom-0.6/
+cp ruby-doom/etc/LICENSE.txt ruby-doom-0.6/
+cp ruby-doom/src/ruby/*.rb ruby-doom-0.6/
+cp ruby-doom/test_wads/simple.wad ruby-doom-0.6/
+zip -q -r ruby-doom-0.6.zip ruby-doom-0.6/
+rm -rf ruby-doom-0.6/
 
 Go to Admin, Edit/Release Files, click on Add new release
 Paste stuff into the changelog/readme boxes
-Add the ruby-doom-0.5.zip file
+Add the ruby-doom-0.6.zip file
 
 Submit news on RubyForge and Freshmeat

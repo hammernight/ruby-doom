@@ -1,3 +1,6 @@
+???? 2004 - 0.6:
+Added support for creating a map from a bitmap line drawing.
+
 Dec 16 2003 - 0.5:
 Map creation requires much less code due to the new SimpleLineMap class.
 Added support for barrels.
