@@ -133,7 +133,7 @@ class DecodedLump < Lump
 	end
 	def write
 		out = []
-		@items.each {|s| out += s.write }
+		@items.each {|i| out += i.write }
 		out
 	end
 end
@@ -346,7 +346,7 @@ class Linedef
 		@start_vertex, @end_vertex, @attributes, @special_effects_type, @tag, @right_sidedef, @left_sidedef = Codec.decode(FORMAT, bytes)
 	end
 	def write
-		Codec.encode(FORMAT, [@start_vertex, @end_vertex, @attributes, @special_effects_type, @tag, @right_sidedef, @left_sidedef])
+		Codec.encode(FORMAT, [@start_vertex.id, @end_vertex.id, @attributes, @special_effects_type, @tag, @right_sidedef.id, @left_sidedef.id])
 	end
 	def to_s
 		"Linedef from " + @start_vertex.to_s + " to " + @end_vertex.to_s + "; attribute flag is " + @attributes.to_s + "; special fx is " + @special_effects_type.to_s + "; tag is " + @tag.to_s + "; right sidedef is " + @right_sidedef.to_s + "; left sidedef is " + @left_sidedef.to_s
@@ -408,6 +408,9 @@ class Header
 	BYTES_EACH=12
 	attr_reader :type, :lump_count
 	attr_accessor :directory_offset
+	def initialize(type=nil)	
+		@type = type
+	end
 	def read(array)
 		@type, @lump_count, @directory_offset = Codec.decode("4ll", array)
 	end
@@ -455,8 +458,9 @@ class Wad
 		}
 		entries.each {|e| out += e.write }
 		# now go back and fill in the directory offset in the header
-		header.directory_offset = ptr
-		out = header.write + out
+		h = Header.new("PWAD")
+		h.directory_offset = ptr
+		out = h.write + out
 		File.open(filename, "w") {|f| out.each {|b| f.putc(b) } } unless filename == nil
 		puts "Done" unless !@verbose
 		return out
@@ -480,8 +484,12 @@ if __FILE__ == $0
 		v3 = v.add Vertex.new(Point.new(128,-320))
 		v4 = v.add Vertex.new(Point.new(64, -320))
 
+		w.lumps.add(v)
+
 		sectors = Sectors.new
 		s1 = sectors.add Sector.new
+
+		w.lumps.add(sectors)
 	
 		sidedefs = Sidedefs.new
 		sd1 = sidedefs.add Sidedef.new
@@ -492,6 +500,8 @@ if __FILE__ == $0
 		sd3.sector_id = s1.id
 		sd4 = sidedefs.add Sidedef.new
 		sd4.sector_id = s1.id
+		
+		w.lumps.add(sidedefs)
 
 		linedefs = Linedefs.new
 		linedefs.add Linedef.new(v1,v2,sd1)
@@ -499,10 +509,14 @@ if __FILE__ == $0
 		linedefs.add Linedef.new(v3,v4,sd3)
 		linedefs.add Linedef.new(v4,v1,sd4)
 		
+		w.lumps.add(linedefs)
+		
 		t = Things.new
 		t.add Thing.new(Point.new(120,-400), 1)
+		
+		w.lumps.add(t)
 
-		#w.write("out.wad")
+		w.write("out.wad")
 		exit
 	else
   	file = ARGV.include?("-f") ? ARGV[ARGV.index("-f") + 1] : "../../test_wads/simple.wad"
