@@ -23,32 +23,50 @@ class PointSet
 		res = []
 		first = lower_left
 		res << first
-		current = find_next(first, first, res)
+		current = find_next(first, res)
 		previous = first
 		while current != first
 			res << current
 			tmp = current
-			current = find_next(current, previous, res)
+			current = find_next(current, res)
 			puts current
 			previous = tmp
 		end
 		res << first
 		return res
 	end
-	def find_next(point, previous, sofar)
+	def find_next(point, sofar)
 		0.upto(5) {|x|
 			0.upto(5) {|y|
 				candidate = Point.new(point.x + x, point.y + y)
-				if @points.index(candidate) != nil && candidate != previous && sofar.index(candidate) == nil
+				if @points.index(candidate) != nil && sofar.index(candidate) == nil
 					return candidate
 				end	
 				candidate = Point.new(point.x - x, point.y - y)
-				if @points.index(candidate) != nil && candidate != previous && sofar.index(candidate) == nil
+				if @points.index(candidate) != nil && sofar.index(candidate) == nil
 					return candidate
 				end	
 			}
 		}
 		raise "Couldn't find next point!"
+	end
+end
+class ArrayToPoints
+	def ArrayToPoints.convert(width, height, img)
+		pts = []
+		0.upto(height-1) {|y|
+			0.upto(width-1) {|x|
+				# convert x,y to an index into the bit array
+				bit_index = (width*y) + x
+				byte_to_check = bit_index / 8
+				byte_to_check -= 1 unless byte_to_check == 0
+				mask = (1 << (bit_index % 8))
+				if (img[byte_to_check] & mask) == 0
+					pts << Point.new(x,y)
+				end
+			}
+		}
+		return pts
 	end
 end
 class BMPDecoder
@@ -81,21 +99,7 @@ class BMPDecoder
 		rgb1 = RGBQuad.new(bytes.slice(54,4))
 		rgb2 = RGBQuad.new(bytes.slice(58,4))
 		
-		# image data
-		@image = bytes.slice(62, bytes.size-62)
-
-		# convert image data to points
-		pts = []
-		0.upto(@height-1) {|y|
-			0.upto(@width-1) {|x|
-				# convert x,y to an index into the bit array
-				bit_index = (@width*y) + x
-				byte_to_check = bit_index / 8
-				byte_to_check -= 1 unless byte_to_check == 0
-				pts << Point.new(x,y) if (@image[byte_to_check] & (1 << (bit_index % 8))) == 0
-			}
-		}
-		@points = PointSet.new(pts)
+		@points = PointSet.new(ArrayToPoints.convert(@width, @height, bytes.slice(62, bytes.size-62)))
 	end
 	def in_order
 		@points.in_order
