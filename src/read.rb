@@ -5,14 +5,12 @@ class Wad
 		@verbose = verbose
 		@type = ""
 		@bytes = []
-
 		puts "Parsing WAD file " + filename unless !@verbose
 
 		file = File.new(filename)
 		file.each_byte {|b|
 			@bytes << b
 		}
-		
 		puts "Done parsing" unless !@verbose
 	end
 	def pwad
