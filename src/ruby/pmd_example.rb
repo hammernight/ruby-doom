@@ -3,11 +3,19 @@
 require "doom.rb"
 
 class PMDMap
-MIN = 4
-MAX = 10
-	def PMDMap.nooks(problems)
+MIN_NOOKS = 2
+MAX_NOOKS = 12
+	def initialize(problems)
+		@problems = problems
 	end
-	def PMDMap.barrels_per_nook(problems)
+	def nooks()
+		if @problems < MIN_NOOKS
+			return MIN_NOOKS
+		elsif @problems > 100
+			return MAX_NOOKS
+		end
+		return (@problems/10).to_i + MIN_NOOKS
+		
 	end
 end
 
@@ -18,6 +26,8 @@ File.read("sample_pmd_report.html").each {|line|
 }
 count = (count/4).to_i
 
+pmd = PMDMap.new(count)
+
 puts "Creating the map"
 w = Wad.new(true)
 w.lumps << UndecodedLump.new("MAP01")
@@ -27,14 +37,19 @@ w.lumps << t
 
 puts "Putting together a suitable path"
 p = Path.new(0, 1000)
-p.add("e200/n200/e200/s200/e200/", PMDMap.nooks(count/2))
+p.add("e200/n200/e200/s200/e200/", pmd.nooks)
 p.add("s400/")
-p.add("w200/s200/w200/n200/w200/", PMDMap.nooks(count/2))
+p.add("w200/s200/w200/n200/w200/", pmd.nooks)
 p.add("n400/")
 
 puts "Placing the barrels"
+1.upto(pmd.nooks) {|x|
+	t.add_barrel Point.new(x*300, 1050)
+	t.add_barrel Point.new(x*300, 950)
+}
 
 
+puts "Assembling the rest of the map"
 w.lumps << p.vertexes
 w.lumps << p.sectors
 w.lumps << p.sidedefs
