@@ -27,6 +27,38 @@ class Finder
 		}
 		raise "Couldn't find next point!"
 	end
+	def Finder.surround(p, r)
+		res = []
+		1.upto(r) {|x|
+			p = p.translate(0,-r)
+			# move east
+			1.upto(r) {|y|
+				p = p.translate(1,0)
+				res << p
+			}
+			# move south
+			1.upto(r*2) {|y|
+				p = p.translate(0,1)
+				res << p
+			}
+			# move west
+			1.upto(r*2) {|y|
+				p = p.translate(-1,0)
+				res << p
+			}
+			# move north
+			1.upto(r*2) {|y|
+				p = p.translate(0,-1)
+				res << p
+			}
+			# move back east to origin
+			1.upto(r) {|y|
+				p = p.translate(1,0)
+				res << p
+			}
+		}	
+		return res
+	end
 	def Finder.good(points, candidate, sofar)	
 		puts "testing " + candidate.to_s
 		points.include?(candidate) && !sofar.include?(candidate)

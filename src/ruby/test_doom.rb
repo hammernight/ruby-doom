@@ -323,8 +323,12 @@ class PointSetTest < Test::Unit::TestCase
 		#puts p.in_order
 		#assert(p.in_order == [pts[0], pts[1], pts[2], pts[3], pts[0]], "wrong order: " + p.in_order.to_s)	
 	end
+end
+
+class FinderTest < Test::Unit::TestCase
 	def test_surrounding
-		pts = PointSet.surround(Point.new(0,0), 1)
-		assert(pts.size == 8, "Should have been 8 points at radius 1")
+		pts = Finder.surround(Point.new(0,0), 1)
+		assert(pts.size == 8, "Should have been 8 points at radius 1; was " + pts.size.to_s)
+		puts pts
 	end
 end
