@@ -51,11 +51,7 @@ class Things < Lump
 		out
 	end
 	def player
-		@things.each{|t| 
-			if t.type_id == 1
-				return t
-			end
-		}
+		@things.find {|t| t.type_id == 1 } 
 		raise "Couldn't find player Thing"
 	end
 end
