@@ -29,6 +29,8 @@ end
 
 class Things < Lump
   BYTES_EACH=10
+	TYPE_IDS_TO_NAMES=Hash[{1=>"Player 1"}]
+	DIRECTION_FOR_ANGLE=Hash[{0=>"east",90=>"north",180=>"west",270=>"south"}]
   NAME="THINGS"
 	attr_reader :things
   def initialize
@@ -45,14 +47,18 @@ class Things < Lump
   end
 	def write
 		out = []
-		@things.each {|t|
-			out += t.write
-		}
+		@things.each {|t| out += t.write }
 		out
 	end
 	def player
 		@things.find {|t| t.type_id == 1 } 
 		raise "Couldn't find player Thing"
+	end
+	def Things.name_for_type_id(id)
+		TYPE_IDS_TO_NAMES[id]
+	end
+	def Things.direction_for_angle(a)
+		DIRECTION_FOR_ANGLE[a]
 	end
 end
 
@@ -68,6 +74,9 @@ class Thing
 	def write
 		Wad.marshal_short(@location.x) + Wad.marshal_short(@location.y) + Wad.marshal_short(@facing_angle) + Wad.marshal_short(@type_id) + Wad.marshal_short(@flags)
 	end
+	def to_s
+		Things.name_for_type_id(@type_id)	+ " at " + @location.to_s + " facing " + Things.direction_for_angle(@facing_angle)
+	end
 end
 
 class Lumps
@@ -79,11 +88,7 @@ class Lumps
 		@lumps << lump
 	end
 	def things
-		@lumps.each{|lump| 
-			if lump.name == Things::NAME
-				return lump
-			end
-		}
+		@lumps.find{|lump| lump.name == Thing.NAME }
 		raise "Couldn't find Things lump"
 	end
 end
@@ -214,6 +219,9 @@ if __FILE__ == $0
     puts "Lump".ljust(10) + "Size ".ljust(6)
     w.lumps.lumps.each {|lump|
       puts lump.name.ljust(10) + lump.size.to_s.ljust(6)
+			if lump.name == "THINGS"
+				lump.things.each {|t| puts " - " + t.to_s }
+			end
     }
   end
   w.write("out.wad")
