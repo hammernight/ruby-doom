@@ -1,4 +1,7 @@
-????? 2003 - 0.4:
+Dec 14 2003 - 0.4:
+Small maps can now be displayed in a "Nethack" format.  For an example, run "path_creation_example.rb -nethack".
+Tested with DOOM Legacy (http://sourceforge.net/projects/doomlegacy/) on
+Windows, all appears well.
 
 Dec 12 2003 - 0.3:
 Added a higher level API - maps can now be generated using expressions like
