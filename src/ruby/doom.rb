@@ -447,6 +447,39 @@ class Wad
 	end
 end
 
+class Path
+	def initialize(path)
+		@path = path
+	end
+	def segments
+		@path.split(/\//)
+	end
+	def verts
+		res = []
+		cur_x = 0
+		cur_y = -500
+		res << Vertex.new(Point.new(cur_x, cur_y))
+		segments.each {|x|
+			dir = x[0].chr
+			len = x.slice(1, x.length-1).to_i
+			if dir == "e"
+				cur_x += len
+			elsif dir == "n"
+				cur_y -= len
+			elsif dir == "w"
+				cur_x -= len
+			elsif dir == "s"
+				cur_y += len
+			else
+				raise "Unrecognized direction " + dir.to_s + " in segment " + x.to_s
+			end
+			v = Vertex.new(Point.new(cur_x, cur_y))
+			res << v unless res.find {|r| r.location.x == v.location.x && r.location.y == v.location.y } != nil
+		}
+		return res
+	end
+end
+
 if __FILE__ == $0
   if ARGV.include?("-turn")
  		 file = ARGV.include?("-f") ? ARGV[ARGV.index("-f") + 1] : "../../test_wads/simple.wad"
@@ -454,7 +487,17 @@ if __FILE__ == $0
 	  w.read(file)
     w.lumps.things.player.facing_angle = 90
   	w.write("out.wad")
-  elsif ARGV.include?("-create")
+	elsif ARGV.include?("-create-path")
+		puts "Creating a simple rectangle using an encoded path"
+		w = Wad.new(true)
+		w.lumps << UndecodedLump.new("MAP01")
+		t = Things.new
+		t.add_player Point.new(100,400)
+		w.lumps << t
+		w.add_path(Path.new("e600/n400/w600/s400"))
+		w.write("new.wad")
+		exit
+  elsif ARGV.include?("-create-explicit")
 		puts "Creating a simple rectangle using clockwise linedefs"
 		w = Wad.new(true)
 	

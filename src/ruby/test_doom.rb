@@ -166,3 +166,17 @@ class CodecTest  < Test::Unit::TestCase
 		assert(Codec.marshal_string("THINGS",8) == [84, 72, 73, 78, 71, 83, 0, 0], "marshalling string failed")
 	end
 end
+
+class PathTest < Test::Unit::TestCase
+	TEST="e500/n200/w500/s200"
+	def test_parse
+		p = Path.new(TEST)
+		assert(p.segments.size == 4, "Wrong parts")
+		assert(p.segments[2] == "w500", "wrong order")
+	end
+	def test_verts
+		p = Path.new(TEST)
+		assert(p.verts.size == 4, "wrong vert count")
+		#assert(p.verts[0].x == 0, "wrong initial x for starting vertex")
+	end
+end
