@@ -5,7 +5,7 @@ require "doom.rb"
 if __FILE__ == $0
 	if ARGV.include?("-bitmap")
 		puts "Creating a map from a bitmap"
-    b = BMPMap.new("wiggly.bmp")
+    b = BMPMap.new("../../bitmaps/wiggly.bmp")
     b.set_player Point.new(400, 200)
     b.create_wad("new.wad")
 	elsif ARGV.include?("-path")
