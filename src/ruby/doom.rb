@@ -494,15 +494,10 @@ if __FILE__ == $0
 		v2 = v.add Vertex.new(Point.new(256, -320))
 		v3 = v.add Vertex.new(Point.new(256,-512))
 		v4 = v.add Vertex.new(Point.new(64, -512))
-		v5 = v.add Vertex.new(Point.new(300,-512))
-		v6 = v.add Vertex.new(Point.new(400,-512))
-		v7 = v.add Vertex.new(Point.new(400,-320))
-		v8 = v.add Vertex.new(Point.new(300, -320))
 		w.lumps.add(v)
 
 		sectors = Sectors.new
 		s1 = sectors.add Sector.new
-		s2 = sectors.add Sector.new
 		w.lumps.add(sectors)
 	
 		sidedefs = Sidedefs.new
@@ -514,14 +509,6 @@ if __FILE__ == $0
 		sd3.sector_id = s1.id
 		sd4 = sidedefs.add Sidedef.new
 		sd4.sector_id = s1.id
-		sd5 = sidedefs.add Sidedef.new
-		sd5.sector_id = s2.id
-		sd6 = sidedefs.add Sidedef.new
-		sd6.sector_id = s2.id
-		sd7 = sidedefs.add Sidedef.new
-		sd7.sector_id = s2.id
-		sd8 = sidedefs.add Sidedef.new
-		sd8.sector_id = s2.id
 		w.lumps.add(sidedefs)
 
 		linedefs = Linedefs.new
@@ -529,10 +516,6 @@ if __FILE__ == $0
 		linedefs.add Linedef.new(v2,v3,sd2)
 		linedefs.add Linedef.new(v3,v4,sd3)
 		linedefs.add Linedef.new(v4,v1,sd4)
-		linedefs.add Linedef.new(v5,v6,sd5)
-		linedefs.add Linedef.new(v6,v7,sd6)
-		linedefs.add Linedef.new(v7,v8,sd7)
-		linedefs.add Linedef.new(v8,v5,sd8)
 		w.lumps.add(linedefs)
 	
 		w.write("new.wad")
