@@ -315,7 +315,6 @@ class Things < DecodedLump
 	end
 	def player
 		@items.find {|t| t.type_id == 1 } 
-		raise "Couldn't find player Thing"
 	end
 end
 
@@ -459,6 +458,9 @@ class Wad
     puts "The file " + filename + " is a " + @bytes.size.to_s + " byte " + @header.type unless !@verbose
     puts "It's got " + @lumps.size.to_s + " lumps, the directory started at byte " + @header.directory_offset.to_s unless !@verbose
 	end
+	def player
+		@lumps.find {|x| x.name == "THINGS"}.player
+	end
 	def write(filename=nil)
 		puts "Writing WAD" unless !@verbose
 		out = []
@@ -583,14 +585,9 @@ if __FILE__ == $0
  	file = ARGV.include?("-f") ? ARGV[ARGV.index("-f") + 1] : "../../test_wads/simple.wad"
 	w = Wad.new(ARGV.include?("-v"))
 	w.read(file)
-  if ARGV.include?("-turn")
-    w.lumps.things.player.facing_angle = 90
-  	w.write("new.wad")
-	else
-    w.lumps.each {|lump|
-      puts lump.name + " (" + lump.size.to_s + " bytes)"
-			lump.items.each { |t| puts " - " + t.to_s }
-    }
-  end
+  w.lumps.each {|lump|
+  	puts lump.name + " (" + lump.size.to_s + " bytes)"
+		lump.items.each { |t| puts " - " + t.to_s }
+  }
 end
 
