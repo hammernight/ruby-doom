@@ -14,6 +14,7 @@ cp ruby-doom/etc/CHANGELOG.txt ruby-doom-0.1/
 cp ruby-doom/src/ruby/doom.rb ruby-doom-0.1/
 cp ruby-doom/test_wads/simple.wad ruby-doom-0.1/
 zip -q -r ruby-doom-0.1.zip ruby-doom-0.1/
+rm -rf ruby-doom-0.1/
 
 Go to Admin, Edit/Release Files, click on Add new release
 Paste stuff into the changelog/readme boxes
