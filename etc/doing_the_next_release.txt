@@ -1,8 +1,8 @@
 Here's how to do the next release:
 
 Update the version number in this file
-Update CHANGELOG.txt
-Update README.txt to reflect current capabilities
+Update CHANGELOG
+Update README to reflect current capabilities
 Make sure the tests run
 Check everything in
 
@@ -10,17 +10,20 @@ CVSROOT=:ext:tom@rubyforge.org:/var/cvs/ruby-doom && export CVSROOT
 cd ~/data/
 cvs -q tag -D tomorrow "ruby_doom_release_0_8" ruby-doom
 mkdir ruby-doom-0.8
-cp ruby-doom/etc/README.txt ruby-doom-0.8/
-cp ruby-doom/etc/CHANGELOG.txt ruby-doom-0.8/
-cp ruby-doom/etc/LICENSE.txt ruby-doom-0.8/
+cp ruby-doom/etc/README ruby-doom-0.8/
+cp ruby-doom/etc/CHANGELOG ruby-doom-0.8/
+cp ruby-doom/etc/LICENSE ruby-doom-0.8/
 cp ruby-doom/src/ruby/*.rb ruby-doom-0.8/
 cp ruby-doom/test_wads/simple.wad ruby-doom-0.8/
 cp ruby-doom/bitmaps/wiggly.bmp ruby-doom-0.8/
 zip -q -r ruby-doom-0.8.zip ruby-doom-0.8/
 rm -rf ruby-doom-0.8/
+cd ruby-doom
+./ruby-doom.gemspec
+mv ruby-doom-0.8.gem ../
 
 Go to Admin, Edit/Release Files, click on Add new release
 Paste stuff into the changelog/readme boxes
-Add the ruby-doom-0.8.zip file
+Add the ruby-doom-0.8.zip and .gem files
 
 Submit news on RubyForge and Freshmeat
