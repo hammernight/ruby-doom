@@ -105,7 +105,7 @@ class Point
 		@y=y
 	end
 	def to_s
-		@x.to_s + "," + @y.to_s
+		"(" + @x.to_s + "," + @y.to_s + ")"
 	end
 end
 
@@ -122,6 +122,42 @@ class Lump
 	end
 	def size
 		@bytes.size
+	end
+end
+
+class Vertexes < Lump
+	BYTES_EACH=4
+	NAME="VERTEXES"
+	attr_reader :vertexes
+  def initialize
+    super(NAME)
+    @vertexes = []
+  end
+  def read(bytes)
+    super(bytes)
+    (@bytes.size / BYTES_EACH).times {|index|
+      v = Vertexes.new
+      v.read(@bytes.slice(index*BYTES_EACH, BYTES_EACH))
+      @vertexes << v
+    }
+  end
+	def write
+		out = []
+		@vertexes.each {|v| out += v.write }
+		out
+	end
+end
+
+class Vertex
+	FORMAT="ss"
+  def read(bytes)
+		@location = Point.new(*Codec.decode(FORMAT, bytes))
+  end
+	def write
+		Codec.encode(FORMAT, [@location.x, @location.y])
+	end
+	def to_s
+		" Vertex at " + @location.to_s
 	end
 end
 
@@ -276,6 +312,10 @@ class DirectoryEntry
 			lump=Linedefs.new
 		elsif @name == Sidedefs::NAME
 			lump=Sidedefs.new
+		elsif @name == Vertexes::NAME
+			puts "creating new vertex"
+			lump=Vertexes.new
+			puts "done"
 		else
 			lump=Lump.new(@name)
 		end
@@ -363,6 +403,8 @@ if __FILE__ == $0
 				lump.linedefs.each {|x| puts " - " + x.to_s }
 			elsif lump.name == "SIDEDEFS"
 				lump.sidedefs.each {|x| puts " - " + x.to_s }
+			elsif lump.name == "VERTEXES"
+				lump.vertexes.each {|x| puts " - " + x.to_s }
 			end
     }
   end
