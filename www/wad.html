@@ -8,13 +8,13 @@
 <li>Bytes 4-7: Number of lumps (<a href="#long">long integer</a>). <font color="blue">11, 0, 0, 0</font>
 <li>Bytes 8-12: File offset to the beginning of the directory (long integer). <font color="blue">212, 2, 0, 0, 0</font>
 </ul>
-<p>Directory - a 16 byte sequence for each lump.  <font color="blue">13, 0, 0, 0, 10, 0, 0, 0, 84, 72, 73, 78, 71, 83, 0, 0</font>
+<p>Directory entries - a series of 16 byte sequences.  <font color="blue">13, 0, 0, 0, 10, 0, 0, 0, 84, 72, 73, 78, 71, 83, 0, 0</font>
 <ul>
 <li>Bytes 0-3: The file offset to the start of the lump (long integer).  <font color="blue">13, 0, 0, 0</font>
 <li>Bytes 4-7: Size of the lump (long integer).  <font color="blue">10, 0, 0, 0</font>
 <li>Bytes 8-15: The name of the lump padded with zeros (characters).  <font color="blue">84, 72, 73, 78, 71, 83, 0, 0</font>
 </ul>
-<p>Lumps - a bunch of different kinds of data
+<p>Lumps - a bunch of different kinds of data of variable length.
 <p>Here's a sample run from the current version of <code>doom.rb</code>:
 <pre>
 [tom@hal ruby]$ ./doom.rb -f ../../test_wads/stepstep.wad
