@@ -54,7 +54,7 @@ class DirectoryEntry
 			@name = Wad.unmarshal_string(array.slice(8,8))
 	end
 	def write
-		Wad.marshal_long(@offset) + Wad.marshal_long(@size) + Wad.marshal_string(@name)
+		Wad.marshal_long(@offset) + Wad.marshal_long(@size) + Wad.marshal_string(@name,8)
 	end
 	def create_lump(bytes)
 		lump=nil
@@ -81,7 +81,7 @@ class Header
 		@directory_offset = Wad.unmarshal_long(array.slice(8,4))	
 	end
 	def write
-		@type.unpack("C*") + Wad.marshal_long(@lump_count) + Wad.marshal_long(@directory_offset)
+		Wad.marshal_string(@type,4) + Wad.marshal_long(@lump_count) + Wad.marshal_long(@directory_offset)
 	end
 end
 
@@ -132,10 +132,10 @@ class Wad
 	def Wad.unmarshal_string(a)
 		a.pack("C*").strip
 	end
-	def Wad.marshal_string(n)
-		arr = n.unpack("C8").compact
-		if arr.size < 8
-			arr += Array.new(8-arr.size, 0)
+	def Wad.marshal_string(n,len)
+		arr = n.unpack("C#{len}").compact
+		if arr.size < len
+			arr += Array.new(len-arr.size, 0)
 		end
 		arr
 	end
