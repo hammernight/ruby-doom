@@ -9,8 +9,8 @@ class DirectoryEntry
 		@name = name
 	end
 	def read(array)
-			@offset = Wad.convert_long(array.slice(0,4))
-			@size = Wad.convert_long(array.slice(4,4))
+			@offset = Wad.unmarshal_long(array.slice(0,4))
+			@size = Wad.unmarshal_long(array.slice(4,4))
 			@name = array.slice(8,8).pack("C*").strip
 	end
 	def to_s
@@ -23,8 +23,8 @@ class Header
 	attr_reader :type, :directory_offset, :lump_count
 	def initialize(array)
 		@type = array.slice(0,4).pack("C*").strip
-		@lump_count = Wad.convert_long(array.slice(4,4))
-		@directory_offset = Wad.convert_long(array.slice(8,4))	
+		@lump_count = Wad.unmarshal_long(array.slice(4,4))
+		@directory_offset = Wad.unmarshal_long(array.slice(8,4))	
 	end
 	def save
 		@type.unpack("C*") + Wad.marshal_long(@lump_count) + Wad.marshal_long(@directory_offset)
@@ -64,7 +64,7 @@ class Wad
 	def Wad.marshal_long(n)
 		[n].pack("N").unpack("C4").reverse
 	end
-	def Wad.convert_long(array)
+	def Wad.unmarshal_long(array)
 		y=""
 		array.each {|x| y << x.chr } 
 		y.unpack("V")[0]
@@ -81,4 +81,3 @@ if __FILE__ == $0
 		puts lump.name.ljust(10) + lump.size.to_s.ljust(6) + lump.offset.to_s.ljust(10)
 	}
 end
-
