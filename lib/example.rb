@@ -5,7 +5,7 @@ require "doom.rb"
 if __FILE__ == $0
 	if ARGV.include?("-bitmap")
 		puts "Creating a map from a bitmap"
-    b = BMPMap.new("../../bitmaps/wiggly.bmp")
+    b = BMPMap.new("../bitmaps/wiggly.bmp")
 		b.scale_factor = 2
 		b.thinning_factor = 10
     b.set_player Point.new(400, 400)
@@ -41,7 +41,7 @@ if __FILE__ == $0
 	elsif ARGV.include?("-turn")
 		puts "Manipulating a current map - changing the player's facing direction"
 		w = Wad.new
-		w.read ARGV.include?("-f") ? ARGV[ARGV.index("-f") + 1] : "../../test_wads/simple.wad"
+		w.read ARGV.include?("-f") ? ARGV[ARGV.index("-f") + 1] : "../test_wads/simple.wad"
 		w.player.facing_angle = 90
 		w.write "new.wad"
 	elsif ARGV.include?("-explicit")
