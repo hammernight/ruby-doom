@@ -51,6 +51,11 @@ if __FILE__ == $0
 		  puts m.nethack
 		  puts "Map generated from " + m.path.to_s
 		end
+	elsif ARGV.include?("-turn")
+		w = Wad.new
+		w.read ARGV.include?("-f") ? ARGV[ARGV.index("-f") + 1] : "../../test_wads/simple.wad"
+		w.player.facing_angle = 90
+		w.write "new.wad"
 	elsif ARGV.include?("-repeatingpath")
 		puts "Creating a map using a repeated path"
 		p = Path.new(0, 1000)
