@@ -506,6 +506,40 @@ class Path
 		}
 		return v
 	end
+	def nethack
+		size=20
+		map = Array.new(size)
+		map.each_index {|x|
+			map[x] = Array.new(size, ".")
+		}
+		cur_x = @start_x
+		cur_y = @start_y
+		map[cur_x][cur_y] = "#"
+		segments.each {|x|
+			dir = x[0].chr
+			len = x.slice(1, x.length-1).to_i
+			if dir == "e"
+				cur_x += len
+			elsif dir == "n"
+				cur_y += len
+			elsif dir == "w"
+				cur_x -= len
+			elsif dir == "s"
+				cur_y -= len
+			else
+				raise "Unrecognized direction " + dir.to_s + " in segment " + x.to_s
+			end
+			map[cur_y][cur_x] = "#"
+		}
+		res = ""
+		map.each_index {|x|
+			map[x].each_index {|y|
+				res << map[size-1-x][y] + " " 
+			}
+			res << "\n"
+		}
+		return res
+	end
 end
 
 if __FILE__ == $0
@@ -515,6 +549,9 @@ if __FILE__ == $0
   if ARGV.include?("-turn")
     w.lumps.things.player.facing_angle = 90
   	w.write("new.wad")
+	elsif ARGV.include?("-nethack")
+    p = Path.new(0,0,"e5/n4/e4/s4/e4")
+    puts p.nethack
 	else
     w.lumps.each {|lump|
       puts lump.name + " (" + lump.size.to_s + " bytes)"

@@ -207,6 +207,5 @@ class PathTest < Test::Unit::TestCase
 		assert(p.linedefs.items[0].end_vertex.id == 1, "wrong end vertex on first linedef")
 		assert(p.linedefs.items[3].start_vertex.id == 3, "wrong start vertex on last linedef")	
 		assert(p.linedefs.items[3].end_vertex.id == 0, "wrong end vertex on last linedef")
-
 	end
 end
