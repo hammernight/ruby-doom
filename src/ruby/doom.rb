@@ -24,11 +24,15 @@ class Wad
 	def lumps
 		@bytes.slice(4,4).pack("V").unpack("V")
 	end
+	def directory
+		@bytes.slice(8,4).pack("V").unpack("V")
+	end
 end
 
 if __FILE__ == $0
-	w = Wad.new("../../etc/simple.wad", true)
+	w = Wad.new("../../test_wads/simple.wad", true)
 	puts "It's a patch WAD" unless !w.pwad
 	puts "It's got " + w.lumps.to_s + " lumps"
+	puts "The directory offset is " + w.directory.to_s
 end
 
