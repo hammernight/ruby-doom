@@ -8,6 +8,11 @@
 <li>Bytes 04-07: Number of lumps (long)
 </ul>
 
-<p>All long integers in WAD files are 32 bit unsigned longs in little-endian format.  So <code>11 00 00 00</code> is <code>00 00 00 11</code> is <code>11</code>.  I'm using the following Ruby snippet to do this transformation: <code>[11,0,0,0].pack("V").unpack("V")</code>.
+<p>All long integers in WAD files are 32 bit unsigned longs in little-endian format.  So the byte sequence <code>202 2 0 0</code> is really <code>0 0 2 202</code> which translates to <code>724</code> decimal.  I'm using the following Ruby snippet to do this transformation: 
+<pre>
+y=""
+[202,2,0,0].each {|x| y << x.chr }
+y.unpack("V")
+</pre>
 </body>
 </html>
