@@ -62,7 +62,6 @@ class PointsToLine
 	end
 	def lower_left
 		@points.min {|a,b| a.distance_to(Point.new(0,0)) <=> b.distance_to(Point.new(0,0)) }
-		#@points[0]
 	end
 	def line
 		found_so_far = [lower_left]
@@ -73,7 +72,7 @@ class PointsToLine
 			begin
 				current = Finder.next(@points, current, found_so_far)
 			rescue
-				puts "Couldn't find next point, so skipping back to the origin"
+				puts "Couldn't find next point, so skipping back to the origin" unless !@debug
 				break
 			end
 		end
@@ -695,7 +694,6 @@ end
 class BMPMap
 	def initialize(file)
 		@pp = PointsPath.new(BMPDecoder.new(file).line)
-		puts "size = " + @pp.segment_count.to_s
 		@things = Things.new
 	end
 	def set_player(p)
