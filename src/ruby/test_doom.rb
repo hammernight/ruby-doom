@@ -161,10 +161,6 @@ class CodecTest  < Test::Unit::TestCase
 		assert(Codec.encode("4", ["THIN"]) == [84, 72, 73, 78], "bad 4 byte string decode")
 		assert(Codec.encode("8", ["THINGS"]) == [84, 72, 73, 78, 71, 83, 0, 0], "bad 8 byte string decode")
 	end
-	def test_short_readwrite
-		assert(Codec.unmarshal_short([2,1]) == 258, "unmarshalling short failed")
-		assert(Codec.marshal_short(258) == [2,1], "marshalling short failed")
-	end
 	def test_string_readwrite
 		assert(Codec.unmarshal_string([84, 72, 73, 78, 71, 83, 0, 0]) == "THINGS", "unmarshalling string failed")
 		assert(Codec.marshal_string("THINGS",8) == [84, 72, 73, 78, 71, 83, 0, 0], "marshalling string failed")

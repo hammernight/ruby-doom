@@ -11,10 +11,10 @@ class Codec
 		ptr = 0
 		format.split(//).each {|x|
 			if x == "s"
-				res << Codec.unmarshal_short(bytes.slice(ptr,2))
+				res << bytes.slice(ptr,2).pack("c2").unpack("s")[0]
 				ptr += 2
 			elsif x == "l"	
-				res << Codec.unmarshal_long(bytes.slice(ptr,4))
+				res << bytes.slice(ptr,4).pack("C4").unpack("V")[0]
 				ptr += 4
 			elsif x == "4"
 				res << Codec.unmarshal_string(bytes.slice(ptr,4))
@@ -34,9 +34,9 @@ class Codec
 		ptr = 0
 		format.split(//).each {|x|
 			if x == "s"
-				bytes += Codec.marshal_short(values[ptr])
+				bytes += [values[ptr]].pack("S").unpack("C2")
 			elsif x == "l"	
-				bytes += Codec.marshal_long(values[ptr])
+				bytes += [values[ptr]].pack("N").unpack("C4").reverse
 			elsif x == "4"
 				bytes += Codec.marshal_string(values[ptr],4)
 			elsif x == "8"
@@ -47,20 +47,6 @@ class Codec
 			ptr += 1
 		}
 		return bytes
-	end
-	def Codec.unmarshal_long(a)
-		a.pack("C4").unpack("V")[0]
-	end
-	def Codec.marshal_long(n)
-		[n].pack("N").unpack("C4").reverse
-	end
-	def Codec.unmarshal_short(a)
-		#a.reverse.pack("C2").unpack("n")[0]
-		a.pack("c2").unpack("s")[0]
-	end
-	def Codec.marshal_short(s)
-		#[s].pack("n").unpack("C2").reverse
-		[s].pack("S").unpack("C2")
 	end
 	def Codec.unmarshal_string(a)
 		a.pack("C*").strip
