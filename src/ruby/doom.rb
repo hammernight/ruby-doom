@@ -55,26 +55,23 @@ class Finder
 	end
 end
 
-class PointSet
-	attr_reader :points
-	def initialize(points)
+class PointsToLine
+	def initialize(points, debug=false)
 		@points = points
+		@debug = debug
 	end
 	def lower_left
 		@points.min {|a,b| a.distance_to(Point.new(0,0)) <=> b.distance_to(Point.new(0,0)) }
 		#@points[0]
 	end
-	def size
-		@points.size
-	end
-	def in_order
+	def line
 		found_so_far = [lower_left]
-		current = Finder.next(points, found_so_far[0], found_so_far)
+		current = Finder.next(@points, found_so_far[0], found_so_far)
 		while found_so_far.size != @points.size - 1 
 			found_so_far << current
-			#puts "Current = " + current.to_s + "; points so far: " + found_so_far.size.to_s
+			puts "Current = " + current.to_s + "; points so far: " + found_so_far.size.to_s unless !@debug
 			begin
-				current = Finder.next(points, current, found_so_far)
+				current = Finder.next(@points, current, found_so_far)
 			rescue
 				puts "Couldn't find next point, so skipping back to the origin"
 				break
@@ -116,7 +113,7 @@ class ArrayToPoints
 end
 
 class BMPDecoder
-	attr_reader :type, :size, :offset_to_image_data, :info_header_size, :width, :height, :bit_planes, :bits_per_pixel, :compression, :size_of_image, :xpixels_per_meter, :ypixels_per_meter, :colors_used, :colors_important, :points
+	attr_reader :type, :size, :offset_to_image_data, :info_header_size, :width, :height, :bit_planes, :bits_per_pixel, :compression, :size_of_image, :xpixels_per_meter, :ypixels_per_meter, :colors_used, :colors_important, :line
 	def initialize(filename)
 		bytes = []
 		File.open(filename, "r").each_byte {|x| bytes << x }
@@ -153,11 +150,10 @@ class BMPDecoder
 	
 		# convert the bytes to points
 		raw_image = bytes.slice(62, bytes.size-62)
-		pts = ArrayToPoints.new(@width, @height, raw_image).points
-		@points = PointSet.new(pts)	
-	end
-	def in_order
-		@points.in_order
+		points = ArrayToPoints.new(@width, @height, raw_image).points
+
+		# trace the points to form a line
+		@line = PointsToLine.new(points).line
 	end
 	def decode_word(bytes)
 		bytes.pack("C2").unpack("S")[0] 
@@ -698,7 +694,7 @@ end
 
 class BMPMap
 	def initialize(file)
-		@pp = PointsPath.new(BMPDecoder.new(file).in_order)
+		@pp = PointsPath.new(BMPDecoder.new(file).line)
 		puts "size = " + @pp.segment_count.to_s
 		@things = Things.new
 	end

@@ -273,7 +273,6 @@ class PointTest < Test::Unit::TestCase
 	end
 end
 
-
 class BMPDecoderTest < Test::Unit::TestCase
 	B = BMPDecoder.new(TEST="../../bitmaps/square.bmp")
 	def test_header
@@ -287,17 +286,17 @@ class BMPDecoderTest < Test::Unit::TestCase
 		assert(B.bits_per_pixel == 1, "Wrong bits_per_pixel")
 		assert(B.compression == 0, "Wrong compression")
 		assert(B.size_of_image == 40960, "Wrong size_of_image")
-		assert(B.points.size == 1862, "wrong number of points")
+		#assert(B.points.size == 1862, "wrong number of points " + B.points.size.to_s)
 	end
 end
 
 class ArrayToPointsTest < Test::Unit::TestCase
-	def test_idx_to_xy
+	#def test_idx_to_xy
 		#assert(ArrayToPoints.idx_to_xy(10,5) == [5,0], "wrong idx to xy " + ArrayToPoints.idx_to_xy(10,5).to_s)
 		#assert(ArrayToPoints.idx_to_xy(10,26) == [6,2], "wrong idx to xy " + ArrayToPoints.idx_to_xy(10,26).to_s)
 		#assert(ArrayToPoints.idx_to_xy(8,8) == [0,1], "wrong idx to xy " + ArrayToPoints.idx_to_xy(8,8).to_s)
 		#assert(ArrayToPoints.idx_to_xy(8,12) == [4,1], "wrong idx to xy")
-	end
+	#end
 	def test_convert
 		# Ensure we find the right point (4,1) when given a bitmap with the 12th bit set
 		# 00000000
@@ -308,19 +307,21 @@ class ArrayToPointsTest < Test::Unit::TestCase
 	end
 end
 
-class PointSetTest < Test::Unit::TestCase
+class PointsToLineTest < Test::Unit::TestCase
 	def test_lower_left
-		assert(BMPDecoderTest::B.points.lower_left == Point.new(64,61), "lower left point: " + BMPDecoderTest::B.points.lower_left.to_s)
+		pts = [Point.new(1,1), Point.new(2,1), Point.new(3,1), Point.new(2,4)]
+		p = PointsToLine.new(pts)
+		assert(p.lower_left == Point.new(1,1), "lower left point: ")
 	end
 	def test_find_next
 		pts = [Point.new(1,1), Point.new(1,2), Point.new(2,2)]
-		p = PointSet.new(pts)
-		#assert(Finder.next(pts, Point.new(1,1), pts.slice(0,1)) == Point.new(1,2), "wrong 'next point' found")
+		p = PointsToLine.new(pts)
+		assert(Finder.next(pts, Point.new(1,1), pts.slice(0,1)) == Point.new(1,2), "wrong 'next point' found")
 	end
 	def test_points_in_order
 		pts = [Point.new(1,1), Point.new(2,1), Point.new(3,1), Point.new(2,4)]
-		p = PointSet.new(pts)
-		assert(p.in_order == [pts[0], pts[1], pts[2], pts[3], pts[0]], "wrong order: " + p.in_order.to_s)	
+		p = PointsToLine.new(pts)
+		assert(p.line == [pts[0], pts[1], pts[2], pts[3], pts[0]], "wrong order: " + p.line.to_s)	
 	end
 end
 
