@@ -57,11 +57,10 @@ class Header
 end
 
 class Wad
-	attr_reader :directory_entries, :directory_offset, :header, :bytes
+	attr_reader :directory_offset, :header, :bytes, :lumps
 	def initialize(verbose=false)
 		@verbose = verbose
 		@bytes = []
-		@directory_entries = []
 		@lumps = []
 	end
 	def read(filename)
@@ -73,7 +72,6 @@ class Wad
 		@header.lump_count.times {|directory_entry_index|
 			de = DirectoryEntry.new
 			de.read(@bytes.slice((directory_entry_index*DirectoryEntry::SIZE)+@header.directory_offset,DirectoryEntry::SIZE))
-			@directory_entries << de
 			@lumps << de.create_lump(@bytes)
 		}
 		puts "Object model built" unless !@verbose
@@ -128,9 +126,10 @@ if __FILE__ == $0
 	w = Wad.new(true)
 	w.read(file)
 	puts "The file " + file + " is a " + w.byte_count.to_s + " byte patch WAD" unless !w.pwad
-	puts "It's got " + w.directory_entries.size.to_s + " lumps, the directory starts at byte " + w.header.directory_offset.to_s
-	puts "Lump".ljust(10) + "Size ".ljust(6) + "Offset".ljust(10)
-	w.directory_entries.each {|lump|
-		puts lump.name.ljust(10) + lump.size.to_s.ljust(6) + lump.offset.to_s.ljust(10)
+	puts "It's got " + w.lumps.size.to_s + " lumps, the directory started at byte " + w.header.directory_offset.to_s
+	puts "Lump".ljust(10) + "Size ".ljust(6)
+	w.lumps.each {|lump|
+		puts lump.name.ljust(10) + lump.size.to_s.ljust(6)
 	}
+	w.write("test.wad")
 end
