@@ -35,6 +35,9 @@ class Thing < Lump
 	def type_id
 		return Wad.unmarshal_short(@bytes.slice(6,2))	
 	end
+	def facing_angle
+		return Wad.unmarshal_short(@bytes.slice(4,2))	
+	end
 	def location
 		Point.new(Wad.unmarshal_short(@bytes.slice(0,2)), Wad.unmarshal_short(@bytes.slice(2,2)))
 	end
