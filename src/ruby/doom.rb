@@ -82,7 +82,7 @@ class Things < Lump
 end
 
 class Linedefs < Lump
-  BYTES_EACH=12
+  BYTES_EACH=14
 	attr_reader :linedefs
 	NAME="LINEDEFS"
 	def initialize
@@ -106,14 +106,15 @@ class Linedef
 		@end_vertex = Wad.unmarshal_short(bytes.slice(2,2))
 		@attributes = Wad.unmarshal_short(bytes.slice(4,2))
 		@special_effects_type = Wad.unmarshal_short(bytes.slice(6,2))
-		@right_sidedef = Wad.unmarshal_short(bytes.slice(8,2))
-		@left_sidedef = Wad.unmarshal_short(bytes.slice(10,2))
+		@tag = Wad.unmarshal_short(bytes.slice(8,2))
+		@right_sidedef = Wad.unmarshal_short(bytes.slice(10,2))
+		@left_sidedef = Wad.unmarshal_short(bytes.slice(12,2))
 	end
 	def write
-		Wad.marshal_short(@start_vertex) + Wad.marshal_short(@end_vertex) + Wad.marshal_short(@attributes) + Wad.marshal_short(@special_effects_type) + Wad.marshal_short(@right_sidedef) + Wad.marshal_short(@left_sidedef)
+		Wad.marshal_short(@start_vertex) + Wad.marshal_short(@end_vertex) + Wad.marshal_short(@attributes) + Wad.marshal_short(@special_effects_type) + Wad.marshal_short(@tag) + Wad.marshal_short(@right_sidedef) + Wad.marshal_short(@left_sidedef)
 	end
 	def to_s
-		"Linedef from " + @start_vertex.to_s + " to " + @end_vertex.to_s
+		"Linedef from " + @start_vertex.to_s + " to " + @end_vertex.to_s + "; attribute flag is " + @attributes.to_s + "; special fx is " + @special_effects_type.to_s + "; tag is " + @tag.to_s + "; right sidedef is " + @right_sidedef.to_s + "; left sidedef is " + @left_sidedef.to_s
 	end
 end
 
