@@ -183,6 +183,7 @@ class Vertexes < DecodedLump
 	NAME="VERTEXES"
   def initialize
     super(NAME)
+		@index = 0
   end
   def read(bytes)
     (bytes.size / BYTES_EACH).times {|index|
@@ -191,6 +192,11 @@ class Vertexes < DecodedLump
       @items << v
     }
   end
+	def add(i)
+		i.id = @index
+		@index += 1
+		super(i)
+	end
 	def size
 		@items.size * BYTES_EACH
 	end
@@ -199,9 +205,10 @@ end
 class Vertex
 	FORMAT="ss"
 	attr_reader :location 
+	attr_accessor :id
 	def initialize(location=nil)
 		@location = location
-	end
+	end	
   def read(bytes)
 		@location = Point.new(*Codec.decode(FORMAT, bytes))
   end
@@ -422,24 +429,6 @@ class Wad
 		puts "Done" unless !@verbose
 		return out
 	end
-	def add_room(lower_left, upper_right)
-				
-	end
-end
-
-class Room
-	def initialize(lower_left, upper_right)
-		@lower_left = lower_left
-		@upper_right = upper_right
-	end
-	def vertexes
-		v = Vertexes.new
-		v.add Vertex.new(@lower_left)
-		v.add Vertex.new(Point.new(@upper_right.x, @lower_left.y))
-		v.add Vertex.new(@upper_right)
-		v.add Vertex.new(Point.new(@upper_right.y, @lower_left.x))
-		return v
-	end
 end
 
 if __FILE__ == $0
@@ -452,8 +441,13 @@ if __FILE__ == $0
   elsif ARGV.include?("-create")
 		puts "Creating a map"
 		w = Wad.new(true)
-		w.add_room(Point.new(64,64000), Point.new(128,63000))
-		w.spawn_point(Point.new(80, 64500))
+	
+		v = Vertexes.new
+		v1 = v.add Vertex.new(Point.new(64,64000))
+		v2 = v.add Vertex.new(Point.new(128,64000))
+		v3 = v.add Vertex.new(128,63000)
+		v4 = v.add Vertex.new(Point.new(64, 63000))
+
 		w.write("out.wad")
 		exit
 	else

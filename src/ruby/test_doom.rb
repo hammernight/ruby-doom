@@ -123,6 +123,18 @@ class VertexTest < Test::Unit::TestCase
 	end
 end
 
+class VertexesTest < Test::Unit::TestCase
+	def test_add
+		verts=Vertexes.new
+		v=Vertex.new(Point.new(1,1))
+		verts.add(v)
+		assert(verts.items.size == 1, "Adding a Vertex didn't increase size")
+		assert(v.id == 0, "Vertex id didn't get set")
+		verts.add(v)
+		assert(v.id == 1, "Second vertex id didn't get set")
+	end
+end
+
 class CodecTest  < Test::Unit::TestCase
 	def test_decode
 		assert(Codec.decode("s", ThingTest::BYTES.slice(0,2))[0] == 224, "bad short decode") 
@@ -145,13 +157,3 @@ class CodecTest  < Test::Unit::TestCase
 		assert(Codec.marshal_string("THINGS",8) == [84, 72, 73, 78, 71, 83, 0, 0], "marshalling string failed")
 	end
 end
-
-class RoomTest <  Test::Unit::TestCase
-	def test_vertexes
-		r = Room.new(Point.new(1,1), Point.new(5,5))
-		assert(r.vertexes.items.size == 4, "Should be 4 vertexes in a square room")
-		assert(r.vertexes.items[0].location.x == 1 && r.vertexes.items[0].location.y == 1, "first vertex should be at 1,1")
-	end
-end
-
-
