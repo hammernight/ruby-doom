@@ -276,6 +276,9 @@ class Things < DecodedLump
 	def size
 		@items.size * BYTES_EACH
 	end
+	def add_player(p)	
+		items << Thing.new(p, 1)
+	end
 	def player
 		@items.find {|t| t.type_id == 1 } 
 		raise "Couldn't find player Thing"
@@ -458,7 +461,7 @@ if __FILE__ == $0
 		w.lumps << UndecodedLump.new("MAP01")
 	
 		t = Things.new
-		t.add Thing.new(Point.new(120,-400), 1)
+		t.add_player Point.new(120,-400)
 		w.lumps << t
 
 		v = Vertexes.new
