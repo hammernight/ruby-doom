@@ -1,4 +1,4 @@
-???? 2004 - 0.6:
+Jan 11 2004 - 0.6:
 Added support for creating a map from a bitmap line drawing.
 
 Dec 16 2003 - 0.5:

@@ -14,6 +14,7 @@ cp ruby-doom/etc/CHANGELOG.txt ruby-doom-0.6/
 cp ruby-doom/etc/LICENSE.txt ruby-doom-0.6/
 cp ruby-doom/src/ruby/*.rb ruby-doom-0.6/
 cp ruby-doom/test_wads/simple.wad ruby-doom-0.6/
+cp ruby-doom/bitmaps/wiggly.wad ruby-doom-0.6/
 zip -q -r ruby-doom-0.6.zip ruby-doom-0.6/
 rm -rf ruby-doom-0.6/
 
