@@ -121,7 +121,7 @@ class VertexTest < Test::Unit::TestCase
 		v=Vertex.new
 		assert(v.location == nil, "location should be null if not set")
 		v=Vertex.new(Point.new(1,1))
-		assert(v.location.x == 1 && v.location.y == 1, "initial point setting wrong")
+		assert(v.location == Point.new(1,1), "initial point setting wrong")
 	end
 end
 
@@ -225,14 +225,10 @@ class PathCompilerTest < Test::Unit::TestCase
 		pc = PathCompiler.new(Path.new(Point.new(0,0),PathTest::TEST))
 		v = pc.lumps.find {|x| x.name == Vertexes::NAME }	
 		assert(v.items.size == 4, "wrong vert count")
-		assert(v.items[0].location.x == 0, "wrong initial x for vertex 1")
-		assert(v.items[0].location.y == 0, "wrong y for vertex 1")
-		assert(v.items[1].location.x == 500, "wrong x for vertex 2")
-		assert(v.items[1].location.y == 0, "wrong y for vertex 2")
-		assert(v.items[2].location.x == 500, "wrong x for vertex 3")
-		assert(v.items[2].location.y == 200, "wrong y for vertex 3")
-		assert(v.items[3].location.x == 0, "wrong x for vertex 4")
-		assert(v.items[3].location.y == 200, "wrong y for vertex 4")
+		assert(v.items[0].location == Point.new(0,0), "wrong values for vertex 1")
+		assert(v.items[1].location == Point.new(500,0), "wrong values for vertex 2")
+		assert(v.items[2].location == Point.new(500,200), "wrong values for vertex 3")
+		assert(v.items[3].location == Point.new(0,200), "wrong values for vertex 4")
 	end
 end
 
@@ -241,18 +237,18 @@ class PointTest < Test::Unit::TestCase
 		p = Point.new(0,0)
 		p1 = Point.new(3,0)
 		assert(p.lineto(p1).size == 5, "not enough points")
-		assert(p.lineto(p1)[0].x == 0 && p.lineto(p1)[0].y == 0, "wrong start")
-		assert(p.lineto(p1)[1].x == 1 && p.lineto(p1)[1].y == 0, "wrong pt1 " + p.lineto(p1)[1].to_s)
+		assert(p.lineto(p1)[0] == Point.new(0,0), "wrong start")
+		assert(p.lineto(p1)[1] == Point.new(1,0), "wrong pt1 " + p.lineto(p1)[1].to_s)
 	end
 	def test_lineto_negy
 		p = Point.new(0,3)
 		p1 = Point.new(0,0)
-		assert(p.lineto(p1)[1].x == 0 && p.lineto(p1)[1].y == 2, "wrong pt1 " + p.lineto(p1)[1].to_s)
+		assert(p.lineto(p1)[1] == Point.new(0,2), "wrong pt1 " + p.lineto(p1)[1].to_s)
 	end
 	def test_lineto_negx
 		p = Point.new(3,0)
 		p1 = Point.new(0,0)
-		assert(p.lineto(p1)[1].x == 2 && p.lineto(p1)[1].y == 0, "wrong pt1 " + p.lineto(p1)[1].to_s)
+		assert(p.lineto(p1)[1] == Point.new(2,0), "wrong pt1 " + p.lineto(p1)[1].to_s)
 	end
 	def test_slope
 		p = Point.new(0,0)
@@ -265,5 +261,8 @@ class PointTest < Test::Unit::TestCase
 		assert((p.distance_to(Point.new(3,3))*10).to_i == 42, "diagonal line distance failed ")
 		assert(p.distance_to(Point.new(-3,0)) == 3, "just checking")
 	end
-	
+	def test_equals
+		assert(Point.new(0,0) == Point.new(0,0), "should have been equal")
+		assert(Point.new(0,0) != Point.new(1,0), "should have been not equal")
+	end
 end

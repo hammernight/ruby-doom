@@ -95,6 +95,9 @@ class Point
 		@x=x
 		@y=y
 	end
+	def ==(other)
+		return other.x == @x && other.y == @y
+	end
 	def slope_to(p1)
 		if (p1.x - @x) == 0
 			return nil
@@ -515,24 +518,16 @@ end
 class PathCompiler
 	def initialize(path)
 		@path = path
-
-		# need a sector first
 		@sectors = Sectors.new
 		@sectors.add Sector.new
-
-		# collect vertexes using the visitor
 		@vertexes = Vertexes.new
 		@vertexes.add Vertex.new(@path.start)
 		@path.visit(self)
-
-		# now the sidedefs
 		@sidedefs = Sidedefs.new
 		@path.segments.size.times {|v|
 			s = @sidedefs.add Sidedef.new
 			s.sector_id = @sectors.items[0].id	
 		}
-	
-		# and finally the linedefs
 		@linedefs = Linedefs.new
 		last = nil
 		@vertexes.items.each {|v|
@@ -545,9 +540,9 @@ class PathCompiler
 		}
 		@linedefs.add Linedef.new(@vertexes.items.last, @vertexes.items.first, @sidedefs.items.last)
 	end
-	def line_to(point)
-		vert = Vertex.new point
-		@vertexes.add vert unless @vertexes.items.find {|r| r.location.x == vert.location.x && r.location.y == vert.location.y } != nil
+	def line_to(p)
+		vert = Vertex.new p
+		@vertexes.add vert unless @vertexes.items.find {|x| x.location == vert.location } != nil
 	end
 	def lumps
 		[@vertexes, @sectors, @linedefs, @sidedefs]
@@ -569,8 +564,6 @@ class Path
 	def visit(visitor)
 		cur_x = @start.x
 		cur_y = @start.y
-		prevx = cur_x
-		prevy = cur_y
 		segments.each {|x|
 			dir = x[0].chr
 			len = x.slice(1, x.length-1).to_i
@@ -586,8 +579,6 @@ class Path
 				raise "Unrecognized direction " + dir.to_s + " in segment " + x.to_s
 			end
 			visitor.line_to(Point.new(cur_x, cur_y))
-			prevx = cur_x
-			prevy = cur_y
 		}
 	end
 	def nethack(size=Nethack::DEFAULT_SIZE)
