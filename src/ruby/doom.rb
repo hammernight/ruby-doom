@@ -42,7 +42,7 @@ class PointSet
 		current = Finder.next(points, first, found_so_far)
 		while found_so_far.size != @points.size - 1 
 			found_so_far << current
-			# puts "Current = " + current.to_s + "; points so far: " + found_so_far.size.to_s
+			puts "Current = " + current.to_s + "; points so far: " + found_so_far.size.to_s
 			begin
 				current = Finder.next(points, current, found_so_far)
 			rescue
@@ -798,7 +798,7 @@ end
 if __FILE__ == $0
 	if ARGV.include?("-bmp")
 		b = BMPDecoder.new("../../test_wads/small.bmp")
-		
+		#puts b.points.points
 		puts b.in_order
 		exit
 			
