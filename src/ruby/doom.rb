@@ -17,6 +17,8 @@ class BMPDecoder
 		@info_header_size = decode_dword(bytes.slice(14,4))
 		@width = decode_dword(bytes.slice(18,4)) # specified as a LONG... but DWORD works... (?)
 		@height = decode_dword(bytes.slice(22,4)) #  specified as a LONG... but DWORD works... (?)
+		@bit_planes = decode_word(bytes.slice(26,2))
+		@bits_per_pixel = decode_word(bytes.slice(28,2))
 		
 	end
 	
