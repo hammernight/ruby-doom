@@ -73,7 +73,7 @@ class PointSet
 		current = Finder.next(points, found_so_far[0], found_so_far)
 		while found_so_far.size != @points.size - 1 
 			found_so_far << current
-			puts "Current = " + current.to_s + "; points so far: " + found_so_far.size.to_s
+			#puts "Current = " + current.to_s + "; points so far: " + found_so_far.size.to_s
 			begin
 				current = Finder.next(points, current, found_so_far)
 			rescue
@@ -100,7 +100,8 @@ class ArrayToPoints
 			0.upto(7) {|bit|
 				if (byte & (1 << bit)) == 0
 					x,y = *ArrayToPoints.idx_to_xy(width, idx)
-					p = Point.new(x,height-1-y)
+					p = Point.new(x,y)
+					#p = Point.new(x,height-1-y)
 					pts << p
 				end
 				idx += 1
