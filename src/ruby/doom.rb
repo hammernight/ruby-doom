@@ -89,7 +89,7 @@ end
 class IndexToCoordinates
 	# converts an index into an array of width blah to a point on an x/y coordinate
 	def convert(idx, width)
-		[idx % width, idx/width]
+		Point.new(idx % width, idx/width)
 	end
 end
 
@@ -98,7 +98,7 @@ class ArrayToPoints
 		@width = width
 		@height = height
 		@raw_data = raw_data
-		@converter = IndexToCoordinates.new
+		@bit_index_to_point_converter = IndexToCoordinates.new
 	end
 	def points
 		pts = []
@@ -108,9 +108,9 @@ class ArrayToPoints
 			# for each bit in the image
 			0.upto(7) {|bit|
 				if (byte & (1 << bit)) == 0
-					x,y = @converter.convert(idx, @width)
-					#p = Point.new(x,y)
-					p = Point.new(x,@height-1-y)
+					tmp_pt = @bit_index_to_point_converter.convert(idx, @width)
+					#p = tmp_pt
+					p = Point.new(tmp_pt.x, @height-1-tmp_pt.y)
 					pts << p
 				end
 				idx += 1
