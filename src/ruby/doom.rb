@@ -8,6 +8,13 @@ class DirectoryEntry
 			@size = Wad.unmarshal_long(array.slice(4,4))
 			@name = array.slice(8,8).pack("C*").strip
 	end
+	def save
+		arr =  @name.unpack("C8").compact
+		if arr.size < 8
+			arr += Array.new(8-arr.size, 0)
+		end
+		Wad.marshal_long(@offset) + Wad.marshal_long(@size) + arr
+	end
 	def to_s
 		@offset.to_s + "," + @size.to_s + "," + @name
 	end

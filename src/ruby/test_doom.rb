@@ -23,6 +23,6 @@ class DirectoryEntryTest < Test::Unit::TestCase
 		assert(d.name == "THINGS", "wrong name")
 		assert(d.offset == 13, "wrong offset")
 		assert(d.size == 10, "wrong size")
-		#assert(h.save == data, "didn't marshal right")
+		assert(d.save == data, "didn't marshal right")
 	end
 end
