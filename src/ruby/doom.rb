@@ -43,6 +43,21 @@ class Things < Lump
       @things << thing
     }
   end
+	def write
+		out = []
+		@things.each {|t|
+			out += t.write
+		}
+		out
+	end
+	def player
+		@things.each{|t| 
+			if t.type_id == 1
+				return t
+			end
+		}
+		raise "Couldn't find player Thing"
+	end
 end
 
 class Thing
@@ -66,6 +81,14 @@ class Lumps
 	end
 	def add(lump)
 		@lumps << lump
+	end
+	def things
+		@lumps.each{|lump| 
+			if lump.name == Things::NAME
+				return lump
+			end
+		}
+		raise "Couldn't find Things lump"
 	end
 end
 
