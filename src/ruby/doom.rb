@@ -27,19 +27,36 @@ class Lump
 	end
 end
 
-class Thing < Lump
-	NAME="THING"
-	attr_reader :type_id, :facing_angle, :location
-	def initialize
-		super(NAME)
-	end
-	def read(bytes)
-		super(bytes)
-		@type_id =  Wad.unmarshal_short(@bytes.slice(6,2))
-		@facing_angle = Wad.unmarshal_short(@bytes.slice(4,2))
-		@location = Point.new(Wad.unmarshal_short(@bytes.slice(0,2)), Wad.unmarshal_short(@bytes.slice(2,2)))
+class Things < Lump
+  BYTES_EACH=10
+  NAME="THINGS"
+  def initialize
+    super(NAME)
+    @things = []
+  end
+  def read(bytes)
+    super(bytes)
+    (@bytes.size / BYTES_EACH).times {|thing_index|
+      thing = Thing.new
+      thing.read(@bytes.slice(thing_index*BYTES_EACH, BYTES_EACH))
+      @things << thing
+    }
+  end
+	def count
+		@things.size
 	end
 end
+
+class Thing
+  attr_reader :type_id, :location
+  attr_accessor :facing_angle
+  def read(bytes)
+    @type_id = Wad.unmarshal_short(bytes.slice(6,2))
+    @facing_angle = Wad.unmarshal_short(bytes.slice(4,2))
+    @location = Point.new(Wad.unmarshal_short(bytes.slice(0,2)), Wad.unmarshal_short(bytes.slice(2,2)))
+  end
+end
+
 
 class DirectoryEntry
 	SIZE=16
@@ -59,8 +76,8 @@ class DirectoryEntry
 	end
 	def create_lump(bytes)
 		lump=nil
-		if @name == Thing::NAME
-			lump=Thing.new
+		if @name == Things::NAME
+			lump=Things.new
 		else
 			lump=Lump.new(@name)
 		end
@@ -155,14 +172,19 @@ class Wad
 end
 
 if __FILE__ == $0
-	file = ARGV.include?("-f") ? ARGV[ARGV.index("-f") + 1] : "../../test_wads/simple.wad"
-	w = Wad.new(true)
-	w.read(file)
-	puts "The file " + file + " is a " + w.byte_count.to_s + " byte patch WAD" unless !w.pwad
-	puts "It's got " + w.lumps.size.to_s + " lumps, the directory started at byte " + w.header.directory_offset.to_s
-	puts "Lump".ljust(10) + "Size ".ljust(6)
-	w.lumps.each {|lump|
-		puts lump.name.ljust(10) + lump.size.to_s.ljust(6)
-	}	
-	w.write("out.wad")
+  file = ARGV.include?("-f") ? ARGV[ARGV.index("-f") + 1] : "../../test_wads/simple.wad"
+  w = Wad.new(true)
+  w.read(file)
+  if ARGV.include?("-turn")
+    w.things.player.facing_angle = 90
+  else
+    puts "The file " + file + " is a " + w.byte_count.to_s + " byte patch WAD" unless !w.pwad
+    puts "It's got " + w.lumps.size.to_s + " lumps, the directory started at byte " + w.header.directory_offset.to_s
+    puts "Lump".ljust(10) + "Size ".ljust(6)
+    w.lumps.each {|lump|
+      puts lump.name.ljust(10) + lump.size.to_s.ljust(6)
+    }
+  end
+  w.write("out.wad")
 end
+

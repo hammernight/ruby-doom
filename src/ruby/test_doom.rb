@@ -84,13 +84,24 @@ class LumpTest < Test::Unit::TestCase
 	end
 end
 
+class ThingsTest <  Test::Unit::TestCase
+  def test_one
+    things = Things.new
+    things.read(ThingTest::BYTES)
+    assert(things.count == 1, "wrong size")
+  end
+end
+
 class ThingTest < Test::Unit::TestCase
+	BYTES=[224,0,96,254,0,0,1,0,7,0]
 	def test_type
 		t = Thing.new
-		t.read([224,0,96,254,0,0,1,0,7,0])	
+		t.read(BYTES)	
 		assert(t.type_id == 1, "type id decode failed")
 		assert(t.location.x == 224, "location.x decode failed")
 		assert(t.location.y == 65120, "location.y decode failed")
 		assert(t.facing_angle == 0, "facing angle decode failed")
 	end
 end
+
+
