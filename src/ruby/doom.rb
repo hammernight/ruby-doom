@@ -313,9 +313,7 @@ class DirectoryEntry
 		elsif @name == Sidedefs::NAME
 			lump=Sidedefs.new
 		elsif @name == Vertexes::NAME
-			puts "creating new vertex"
 			lump=Vertexes.new
-			puts "done"
 		else
 			lump=Lump.new(@name)
 		end
