@@ -30,6 +30,7 @@ end
 class Things < Lump
   BYTES_EACH=10
   NAME="THINGS"
+	attr_reader :things
   def initialize
     super(NAME)
     @things = []
@@ -42,9 +43,6 @@ class Things < Lump
       @things << thing
     }
   end
-	def count
-		@things.size
-	end
 end
 
 class Thing
@@ -54,7 +52,11 @@ class Thing
     @type_id = Wad.unmarshal_short(bytes.slice(6,2))
     @facing_angle = Wad.unmarshal_short(bytes.slice(4,2))
     @location = Point.new(Wad.unmarshal_short(bytes.slice(0,2)), Wad.unmarshal_short(bytes.slice(2,2)))
+    @flags = Wad.unmarshal_short(bytes.slice(8,2))
   end
+	def write
+		Wad.marshal_short(@location.x) + Wad.marshal_short(@location.y) + Wad.marshal_short(@facing_angle) + Wad.marshal_short(@type_id) + Wad.marshal_short(@flags)
+	end
 end
 
 
