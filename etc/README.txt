@@ -10,6 +10,8 @@ m = SimpleLineMap.new(Path.new(0, 1000, "e300/n200/e300/s200/e800/s500/w800/s200
 m.set_player Point.new(50,900)
 m.add_shotgun Point.new(150, 900)
 m.add_sergeant Point.new(400,700)
+m.add_imp Point.new(400,700)
+m.add_commando Point.new(400,700)
 550.step(900, 40) {|x| m.add_barrel Point.new(x,900) }
 m.create_wad("new.wad")
 =============================
