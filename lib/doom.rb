@@ -180,7 +180,7 @@ class BMPDecoder
 		@thinning_factor = factor
 	end
 	def raw_points
-		decode if @raw_image == nil
+		decode if @raw_image.nil?
 		ArrayToPoints.new(@width, @height, @raw_image).points
 	end
 	def line
@@ -267,7 +267,7 @@ end
 
 class Dictionary
 	def Dictionary.get
-		if @self == nil
+		if @self.nil?
 			@self = Dictionary.new
 		end
 		return @self
@@ -283,10 +283,8 @@ class Dictionary
 	end
 	def thing_for_type_id(id) 
 		t = @things.find {|x| x.id == id}
-		if t == nil
-			return ThingInfo.new(-999, "Unknown thing", "?")
-		end
-		return t
+		return ThingInfo.new(-999, "Unknown thing", "?") if t.nil?
+		t
 	end
 	def thing_for_name(name) 
 		@things.find {|x| x.name == name}
@@ -810,7 +808,7 @@ class PathCompiler
 		@linedefs = Linedefs.new
 		last = nil
 		@vertexes.items.each {|v|
-			if last == nil
+			if last.nil?
 				last = v
 				next
 			end
