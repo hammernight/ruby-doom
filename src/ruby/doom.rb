@@ -27,7 +27,8 @@ class Header
 		@directory_offset = Wad.convert_long(array.slice(8,4))	
 	end
 	def save
-		@type.unpack("C*")
+		out = @type.unpack("C*")
+		#out += 
 	end
 end
 
