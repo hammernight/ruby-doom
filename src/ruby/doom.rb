@@ -1,5 +1,14 @@
 #!/usr/local/bin/ruby
 
+class Lump
+	def read(bytes)
+		@bytes = bytes
+	end
+	def write
+		@bytes
+	end
+end
+
 class DirectoryEntry
 	SIZE=16
 	attr_accessor :offset, :size, :name
@@ -10,6 +19,11 @@ class DirectoryEntry
 	end
 	def write
 		Wad.marshal_long(@offset) + Wad.marshal_long(@size) + Wad.marshal_string(@name)
+	end
+	def create_lump(bytes)
+		lump=Lump.new
+		lump.read(bytes.slice(@offset, @size))
+		lump
 	end
 	def to_s
 		@offset.to_s + "," + @size.to_s + "," + @name
@@ -35,6 +49,7 @@ class Wad
 		@verbose = verbose
 		@bytes = []
 		@directory_entries = []
+		@lumps = []
 	end
 	def read(filename)
 		puts "Reading WAD into memory" unless !@verbose
@@ -46,6 +61,7 @@ class Wad
 			de = DirectoryEntry.new
 			de.read(@bytes.slice((directory_entry_index*DirectoryEntry::SIZE)+@header.directory_offset,DirectoryEntry::SIZE))
 			@directory_entries << de
+			@lumps << de.create_lump(@bytes)
 		}
 		puts "Object model built" unless !@verbose
 	end

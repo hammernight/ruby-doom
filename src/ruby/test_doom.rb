@@ -39,10 +39,18 @@ end
 
 class WadTest < Test::Unit::TestCase
 	def test_init
-		w = Wad.new()
+		w = Wad.new
 		w.read("../../test_wads/simple.wad")
 		assert(w.byte_count == 900, "wrong byte count")
 		assert(w.pwad, "pwad not verified")
 		#assert(w.write == w.bytes, "write failed")
+	end
+end
+
+class LumpTest < Test::Unit::TestCase
+	def test_init
+		lump = Lump.new
+		lump.read([1,2,3])
+		assert(lump.write == [1,2,3], "lump byte array doesn't stay const")
 	end
 end
