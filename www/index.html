@@ -7,7 +7,9 @@
 <a name="#top"/>
 <p>If you want to generate a DOOM map, you need to use a level editor and manually create the map, either from scratch, or from a template.  Although this works well for most map creation scenarios, it would be nifty if maps could be generated programmatically.  This would allow maps to be generated for <a href="http://cougaar.org/">Cougaar</a> agent community visualization, or <a href="http://pmd.sf.net/">PMD</a> problem visualization, or from a floor plan. 
 
-<p>Here's the <a href="http://rubyforge.org/projects/ruby-doom/">project page</a> and <a href="http://rubyforge.org/cgi-bin/viewcvs/cgi/viewcvs.cgi/ruby-doom/src/ruby/?cvsroot=ruby-doom#dirlist">the code and unit tests</a>.
+<br><br><a href="#userdocs">User documentation (and screenshot!)</a>
+<br><a href="#wad">WAD file structure</a>
+<br><a href="http://rubyforge.org/projects/ruby-doom/">Project page</a> and <a href="http://rubyforge.org/cgi-bin/viewcvs/cgi/viewcvs.cgi/ruby-doom/src/ruby/?cvsroot=ruby-doom#dirlist">the code and unit tests</a>.
 
 <p>Here's an example of what I'd like to be able to do:
 <table>
@@ -30,9 +32,6 @@ m.write_to_file("simple.wad")
 </tr>
 </table>
 
-<hr>
-<br><a href="#userdocs">User documentation</a>
-<br><a href="#wad">WAD file structure</a>
 <hr>
 <a name="userdocs"></a><a href="#top">Top</a>
 <p>Ruby-DOOM requires a Ruby (<a href="http://rubyforge.org/project/showfiles.php?group_id=30">Linux/Unix</a>, <a href="http://rubyinstaller.sourceforge.net/">Windows</a>) interpreter to run.
@@ -78,8 +77,10 @@ m.write_to_file("simple.wad")
 
                 w.write("new.wad")
 </pre>
-<p>Ridiculous, eh?  Well, it's only at version 0.2 - future versions will include a higher level API :-)
-<p>After running that code, you'll need to run the generated wad file through a binary partition space calculator - I've been using <a href="http://doombsp.sf.net/">DOOM BSP</a>.
+<p>Ridiculous, eh?   Yup.  I'm continuing to abstract the API to higher levels; it'll get easier with future releases.
+<p>After running that code, you'll need to run the generated wad file through a binary partition space calculator - I've been using <a href="http://doombsp.sf.net/">DOOM BSP</a>.  
+<p>Anyhow, if you do all that, you'll have a map that looks like this (thanks to DoomBuilder which I'm using as a viewer):
+<img src="simple_map.png"/>
 <p>You can also read in wads and see information about them; here's a sample run:
 <pre>
 [tom@hal ruby]$ ./doom.rb -v
@@ -210,7 +211,7 @@ BLOCKMAP (132 bytes)
 <li>REJECT (created by BSP engine)
 <li>BLOCKMAP (created by BSP engine)
 </ul>
-<hr>
+<p>
 <ul>
 <li><a name="long"/>All long integers are 32 bit unsigned longs in little-endian format (shorts are signed, 16 bits, little-endian as well).  So the byte sequence <font color="blue">212 2 0 0</font> is really <font color="blue">0 0 2 212</font> which translates to <font color="blue">724</font> decimal.  I'm using the following Ruby snippet to do this transformation:
 <pre>

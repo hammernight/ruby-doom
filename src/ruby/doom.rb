@@ -491,8 +491,8 @@ if __FILE__ == $0
 
 		v = Vertexes.new
 		v1 = v.add Vertex.new(Point.new(64, -320))
-		v2 = v.add Vertex.new(Point.new(1024, -320))
-		v3 = v.add Vertex.new(Point.new(1024, -512))
+		v2 = v.add Vertex.new(Point.new(300, -320))
+		v3 = v.add Vertex.new(Point.new(300, -512))
 		v4 = v.add Vertex.new(Point.new(64, -512))
 		w.lumps.add(v)
 
