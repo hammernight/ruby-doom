@@ -283,5 +283,9 @@ class BMPDecoderTest < Test::Unit::TestCase
 		assert(b.info_header_size == 40, "Wrong info header size")
 		assert(b.width == 640, "Wrong width")
 		assert(b.height == 512, "Wrong height")
+		assert(b.bit_planes == 1, "Wrong bit_planes")
+		assert(b.bits_per_pixel == 1, "Wrong bits_per_pixel")
+		assert(b.compression == 0, "Wrong compression")
+		assert(b.size_of_image == 40960, "Wrong size_of_image")		
 	end
 end

@@ -1,7 +1,7 @@
 #!/usr/local/bin/ruby
 
 class BMPDecoder
-	attr_reader :type, :size, :offset_to_image_data, :info_header_size, :width, :height
+	attr_reader :type, :size, :offset_to_image_data, :info_header_size, :width, :height, :bit_planes, :bits_per_pixel, :compression, :size_of_image, :xpixels_per_meter, :ypixels_per_meter, :colors_used, :colors_important
 	def initialize(filename)
 		bytes = []
 		File.open(filename, "r").each_byte {|x| bytes << x }
@@ -19,7 +19,12 @@ class BMPDecoder
 		@height = decode_dword(bytes.slice(22,4)) #  specified as a LONG... but DWORD works... (?)
 		@bit_planes = decode_word(bytes.slice(26,2))
 		@bits_per_pixel = decode_word(bytes.slice(28,2))
-		
+		@compression = decode_dword(bytes.slice(30,4))
+		@size_of_image = decode_dword(bytes.slice(34,4))
+		@xpixels_per_meter = decode_dword(bytes.slice(38,4)) # specified as a LONG... but DWORD works... (?)
+		@ypixels_per_meter = decode_dword(bytes.slice(42,4)) # specified as a LONG... but DWORD works... (?)
+		@colors_used = decode_dword(bytes.slice(46,4))
+		@colors_important = decode_dword(bytes.slice(50,4))
 	end
 	
 	def decode_word(bytes)
