@@ -87,20 +87,25 @@ class PointSet
 end
 
 class ArrayToPoints
-	def ArrayToPoints.idx_to_xy(width, idx)
-		[idx % width, idx/width]
+	def initialize(width, height, raw_data)
+		@width = width
+		@height = height
+		@raw_data = raw_data
 	end
-	def ArrayToPoints.convert(width, height, img)
+	def idx_to_xy(idx)
+		[idx % @width, idx/@width]
+	end
+	def points
 		pts = []
 		# for each byte in the image
 		idx = 0
-		img.each {|byte|
+		@raw_data.each {|byte|
 			# for each bit in the image
 			0.upto(7) {|bit|
 				if (byte & (1 << bit)) == 0
-					x,y = *ArrayToPoints.idx_to_xy(width, idx)
+					x,y = idx_to_xy(idx)
 					#p = Point.new(x,y)
-					p = Point.new(x,height-1-y)
+					p = Point.new(x,@height-1-y)
 					pts << p
 				end
 				idx += 1
@@ -145,8 +150,11 @@ class BMPDecoder
 		# color table - assume monochrome bitmap for now
 		rgb1 = RGBQuad.new(bytes.slice(54,4))
 		rgb2 = RGBQuad.new(bytes.slice(58,4))
-		
-		@points = PointSet.new(ArrayToPoints.convert(@width, @height, bytes.slice(62, bytes.size-62)))
+	
+		# convert the bytes to points
+		raw_image = bytes.slice(62, bytes.size-62)
+		pts = ArrayToPoints.new(@width, @height, raw_image).points
+		@points = PointSet.new(pts)	
 	end
 	def in_order
 		@points.in_order
