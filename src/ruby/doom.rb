@@ -26,9 +26,7 @@ class PointSet
 		current = find_next(first, res)
 		while current != first
 			res << current
-			tmp = current
 			current = find_next(current, res)
-			puts current
 		end
 		res << first
 		return res
@@ -37,11 +35,11 @@ class PointSet
 		0.upto(5) {|x|
 			0.upto(5) {|y|
 				candidate = Point.new(point.x + x, point.y + y)
-				if @points.index(candidate) != nil && sofar.index(candidate) == nil
+				if @points.include?(candidate) && !sofar.include?(candidate)
 					return candidate
 				end	
 				candidate = Point.new(point.x - x, point.y - y)
-				if @points.index(candidate) != nil && sofar.index(candidate) == nil
+				if @points.include?(candidate) && !sofar.include?(candidate)
 					return candidate
 				end	
 			}
