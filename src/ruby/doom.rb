@@ -136,7 +136,7 @@ class Vertexes < Lump
   def read(bytes)
     super(bytes)
     (@bytes.size / BYTES_EACH).times {|index|
-      v = Vertexes.new
+      v = Vertex.new
       v.read(@bytes.slice(index*BYTES_EACH, BYTES_EACH))
       @vertexes << v
     }
@@ -394,9 +394,8 @@ if __FILE__ == $0
   else
     puts "The file " + file + " is a " + w.byte_count.to_s + " byte patch WAD" unless !w.pwad
     puts "It's got " + w.lumps.lumps.size.to_s + " lumps, the directory started at byte " + w.header.directory_offset.to_s
-    puts "Lump".ljust(10) + "Size ".ljust(6)
     w.lumps.lumps.each {|lump|
-      puts lump.name.ljust(10) + lump.size.to_s.ljust(6)
+      puts lump.name + " (" + lump.size.to_s + " bytes)"
 			if lump.name == "THINGS"
 				lump.things.each {|t| puts " - " + t.to_s }
 			elsif lump.name == "LINEDEFS"
