@@ -202,7 +202,11 @@ class PathTest < Test::Unit::TestCase
 		p = Path.new(TEST)
 		assert(p.linedefs.items.size == 4, "wrong count")
 		assert(p.linedefs.items[0].right_sidedef.id == 0, "wrong first sidedef")
-		assert(p.linedefs.items[1].right_sidedef.id == 1, "wrong second sidedef")
 		assert(p.linedefs.items[3].right_sidedef.id == 3, "wrong fourth sidedef")
+		assert(p.linedefs.items[0].start_vertex.id == 0, "wrong start vertex on first linedef")
+		assert(p.linedefs.items[0].end_vertex.id == 1, "wrong end vertex on first linedef")
+		assert(p.linedefs.items[3].start_vertex.id == 3, "wrong start vertex on last linedef")	
+		assert(p.linedefs.items[3].end_vertex.id == 0, "wrong end vertex on last linedef")
+
 	end
 end

@@ -477,7 +477,7 @@ class Path
 			linedefs.add ld
 			last = v
 		}
-		linedefs.add Linedef.new(vertexes.items[0], vertexes.items[1], sidedefs.items.last)
+		linedefs.add Linedef.new(vertexes.items.last, vertexes.items.first, sidedefs.items.last)
 		return linedefs
 	end
 	def vertexes
