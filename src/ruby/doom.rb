@@ -278,6 +278,7 @@ class Dictionary
 		@things << ThingInfo.new(9, "Sergeant", "s")
 		@things << ThingInfo.new(65, "Commando", "c")
 		@things << ThingInfo.new(2001, "Shotgun", "g")
+		@things << ThingInfo.new(3001, "Imp", "i")
 		@things << ThingInfo.new(2035, "Barrel", "b")
 	end
 	def thing_for_type_id(id) 
@@ -541,6 +542,9 @@ class Things < DecodedLump
 	def add_shotgun(p)
 		items << Thing.new(p, Dictionary.get.thing_for_name("Shotgun").id)
 	end
+	def add_imp(p)
+		items << Thing.new(p, Dictionary.get.thing_for_name("Imp").id)
+	end
 	def add_player(p)	
 		items << Thing.new(p, Dictionary.get.thing_for_name("Player 1").id)
 	end
@@ -732,6 +736,9 @@ class SimpleLineMap
 	def add_commando(p)
 		@things.add_commando p	
 	end	
+	def add_imp(p)
+		@things.add_imp p	
+	end	
 	def add_shotgun(p)
 		@things.add_shotgun p	
 	end	
@@ -767,6 +774,9 @@ class BMPMap
 	end
 	def add_commando(p)
 		@things.add_commando p	
+	end	
+	def add_imp(p)
+		@things.add_imp p	
 	end	
 	def add_shotgun(p)
 		@things.add_shotgun p
