@@ -1,6 +1,6 @@
 #!/usr/local/bin/ruby
 
-def Point
+class Point
 	attr_accessor :x, :y
 	def initialize(x,y)
 		@x=x

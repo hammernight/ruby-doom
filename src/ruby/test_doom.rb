@@ -89,5 +89,7 @@ class ThingTest < Test::Unit::TestCase
 		t = Thing.new
 		t.read([224,0,96,254,0,0,1,0,7,0])	
 		assert(t.type_id == 1, "type id decode failed")
+		assert(t.location.x == 224, "location.x decode failed")
+		assert(t.location.y == 65120, "location.y decode failed")
 	end
 end
