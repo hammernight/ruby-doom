@@ -37,6 +37,9 @@ class BMPDecoder
 		# color table - assume monochrome bitmap for now
 		rgb1 = RGBQuad.new(bytes.slice(54,4))
 		rgb2 = RGBQuad.new(bytes.slice(58,4))
+		
+		# image data
+		@image = bytes.slice(62, bytes.size-62)
 	end
 	
 	def decode_word(bytes)
