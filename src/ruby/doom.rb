@@ -548,7 +548,6 @@ class Path
 		}
 		cur_x = @start_x
 		cur_y = @start_y
-		map[cur_x][cur_y] = "#"
 		prevx = cur_x
 		prevy = cur_y
 		segments.each {|x|
@@ -565,12 +564,11 @@ class Path
 			else
 				raise "Unrecognized direction " + dir.to_s + " in segment " + x.to_s
 			end
-			map[cur_y][cur_x] = "#"
 		
 			p1 = Point.new(prevx, prevy)
 			p2 = Point.new(cur_x, cur_y)
 			p1.lineto(p2).each {|ptmp|
-				map[ptmp.y][ptmp.x] = "X"
+				map[ptmp.y/100][ptmp.x/100] = "X"
 			}
 			prevx = cur_x
 			prevy = cur_y
@@ -583,6 +581,9 @@ class Path
 			res << "\n"
 		}
 		return res
+	end
+	def to_s
+		@path
 	end
 end
 
