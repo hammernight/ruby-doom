@@ -62,13 +62,8 @@ class Wad
 		puts "Saving file" unless !@verbose
 		out = []
 		out += @header.save
-		
+		# TODO	
 		puts "Done" unless !@verbose
-	end
-	def Wad.convert_string(array)
-		y=""
-    array.each {|x| y << x.chr }
-		y.strip
 	end
 	def Wad.convert_long(array)
 		y=""
