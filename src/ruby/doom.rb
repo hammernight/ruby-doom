@@ -161,6 +161,7 @@ class Sectors < DecodedLump
 		i.id = @index
 		@index += 1
 		super(i)
+		return i
 	end
   def read(bytes)
     (bytes.size / BYTES_EACH).times {|index|
@@ -215,6 +216,7 @@ class Vertexes < DecodedLump
 		i.id = @index
 		@index += 1
 		super(i)
+		return i
 	end
 	def size
 		@items.size * BYTES_EACH
@@ -244,7 +246,14 @@ class Sidedefs < DecodedLump
   NAME="SIDEDEFS"
   def initialize
     super(NAME)
+		@index = 0
   end
+	def add(i)
+		i.id = @index
+		@index += 1
+		super(i)
+		return i
+	end
   def read(bytes)
     (bytes.size / BYTES_EACH).times {|index|
       s = Sidedef.new
@@ -259,6 +268,15 @@ end
 
 class Sidedef
 	FORMAT="ss888s"
+	attr_accessor :x_offset, :y_offset, :upper_texture, :lower_texture, :middle_texture, :sector_id, :id
+	def initialize()
+		@x_offset=0
+		@y_offset=0
+		@upper_texture="-"
+		@lower_texture="BROWN96"
+		@middle_texture="-"
+		@sector_id=0
+	end
   def read(bytes)
 		@x_offset, @y_offset, @upper_texture, @lower_texture, @middle_texture, @sector_id = Codec.decode(FORMAT, bytes)
   end
@@ -266,7 +284,7 @@ class Sidedef
 		Codec.encode(FORMAT, [@x_offset, @y_offset, @upper_texture, @lower_texture, @middle_texture, @sector_id])
 	end
 	def to_s
-		" Sidedef for sector " + @sector_id.to_s
+		" Sidedef for sector " + @sector_id.to_s + "; upper/middle/lower textures are " + @upper_texture + "/" + @middle_texture + "/" + @lower_texture
 	end
 end
 
@@ -469,9 +487,16 @@ if __FILE__ == $0
 
 		sectors = Sectors.new
 		s1 = sectors.add Sector.new
-
-		#sidedefs = Sidedefs.new
-		#sidedefs.add Sidedef.new
+	
+		sidedefs = Sidedefs.new
+		sd1 = sidedefs.add Sidedef.new
+		sd1.sector_id = s1.id
+		sd2 = sidedefs.add Sidedef.new
+		sd2.sector_id = s1.id
+		sd3 = sidedefs.add Sidedef.new
+		sd3.sector_id = s1.id
+		sd4 = sidedefs.add Sidedef.new
+		sd4.sector_id = s1.id
 
 		#linedefs = Linedefs.new
 		#linedefs.add Linedef.new(v1,v2)
