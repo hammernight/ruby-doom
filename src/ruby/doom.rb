@@ -125,6 +125,18 @@ class Lump
 	end
 end
 
+class UndecodedLump < Lump
+	def read(bytes)
+		@bytes = bytes
+	end
+	def write
+		@bytes
+	end
+	def size
+		@bytes.size
+	end
+end
+
 class Sectors < Lump
 	BYTES_EACH=26
 	NAME="SECTORS"
@@ -354,7 +366,7 @@ class DirectoryEntry
 		elsif @name == Sectors::NAME
 			lump=Sectors.new
 		else
-			lump=Lump.new(@name)
+			lump=UndecodedLump.new(@name)
 		end
 		lump.read(bytes.slice(@offset, @size))
 		lump
