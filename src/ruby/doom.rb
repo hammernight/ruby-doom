@@ -76,11 +76,10 @@ class Dictionary
 	end
 	def direction_for_angle(angle)
 		case angle
-		when 0..45 then return "east"
+		when (0..45 or 316..360) then return "east"
 		when 46..135 then return "north"
 		when 136..225 then return "west"
 		when 225..315 then return "south"
-		when 316..360 then return "east"
 		end
 		raise "Angle must be between 0 and 360"
 	end
@@ -103,24 +102,26 @@ class Point
 	end
 	def lineto(p1)
 		res = []
-		startx = @x
-		starty = @y
-		res << Point.new(startx, starty)
+		current_x = @x
+		current_y = @y	
+		slope = slope_to(p1)
+		res << Point.new(current_x, current_y)
 		distance_to(p1).to_i.times {|s|
-			if slope_to(p1) == 0
-					startx += (p1.x < @x ? -1 : 1)
-			else
-				if slope_to(p1) != nil
-					startx += (p1.x < @x ? -1 : 1)
-				end
-				startx += slope_to(p1) unless slope_to(p1) == nil
+			if slope == 0
+				current_x += (p1.x < @x ? -1 : 1)
+				res << Point.new(current_x, current_y)
+				next	
 			end
-			if slope_to(p1) == nil
-				starty += (p1.y < @y ? -1 : 1)
-			else
-				starty += (1/slope_to(p1)) unless slope_to(p1) == 0 
+	
+			if slope == nil
+				current_y += (p1.y < @y ? -1 : 1)
+				res << Point.new(current_x, current_y)
+				next	
 			end
-			res << Point.new(startx, starty)
+
+			current_x += slope
+			cur += (1-slope)
+			res << Point.new(current_x, current_y)
 		}
 		res << p1
 		return res
