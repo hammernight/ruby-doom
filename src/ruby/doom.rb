@@ -509,16 +509,13 @@ class Path
 end
 
 if __FILE__ == $0
+ 	file = ARGV.include?("-f") ? ARGV[ARGV.index("-f") + 1] : "../../test_wads/simple.wad"
+	w = Wad.new(ARGV.include?("-v"))
+	w.read(file)
   if ARGV.include?("-turn")
- 		 file = ARGV.include?("-f") ? ARGV[ARGV.index("-f") + 1] : "../../test_wads/simple.wad"
-	  w = Wad.new(ARGV.include?("-v"))
-	  w.read(file)
     w.lumps.things.player.facing_angle = 90
   	w.write("new.wad")
 	else
-  	file = ARGV.include?("-f") ? ARGV[ARGV.index("-f") + 1] : "../../test_wads/simple.wad"
-	  w = Wad.new(ARGV.include?("-v"))
-	  w.read(file)
     w.lumps.each {|lump|
       puts lump.name + " (" + lump.size.to_s + " bytes)"
 			lump.items.each {
