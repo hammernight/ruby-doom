@@ -169,6 +169,11 @@ class Linedefs < Lump
       @linedefs << linedef
     }
   end
+	def write
+		out = []
+		@linedefs.each {|t| out += t.write }
+		out
+	end
 end
 
 class Linedef
@@ -212,7 +217,6 @@ class Lumps
 		raise "Couldn't find Things lump"
 	end
 end
-
 
 class DirectoryEntry
 	BYTES_EACH=16
