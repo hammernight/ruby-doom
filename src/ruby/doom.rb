@@ -124,7 +124,7 @@ class Wad
 end
 
 if __FILE__ == $0
-	file = ARGV.include?("-f") ? ARGV[ARGV.index("-f") + 1] : "simple.wad"
+	file = ARGV.include?("-f") ? ARGV[ARGV.index("-f") + 1] : "../../test_wads/simple.wad"
 	w = Wad.new(true)
 	w.read(file)
 	puts "The file " + file + " is a " + w.byte_count.to_s + " byte patch WAD" unless !w.pwad
@@ -133,5 +133,4 @@ if __FILE__ == $0
 	w.directory_entries.each {|lump|
 		puts lump.name.ljust(10) + lump.size.to_s.ljust(6) + lump.offset.to_s.ljust(10)
 	}
-	w.write("test.wad")
 end
