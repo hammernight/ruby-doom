@@ -11,7 +11,7 @@ class DirectoryEntry
 	def read(array)
 			@offset = Wad.convert_long(array.slice(0,4))
 			@size = Wad.convert_long(array.slice(4,4))
-			@name = array.slice(8,8).pack("C8")
+			@name = array.slice(8,8).pack("C8").strip
 	end
 	def to_s
 		@offset.to_s + "," + @size.to_s + "," + @name
@@ -22,7 +22,7 @@ class Header
 	SIZE=12
 	attr_reader :type, :directory_offset, :lump_count
 	def initialize(array)
-		@type = array.slice(0,4).pack("C4")
+		@type = array.slice(0,4).pack("C4").strip
 		@lump_count = Wad.convert_long(array.slice(4,4))
 		@directory_offset = Wad.convert_long(array.slice(8,4))	
 	end
@@ -77,9 +77,9 @@ if __FILE__ == $0
 	w = Wad.new(file, true)
 	puts "The file " + file + " is a " + w.byte_count.to_s + " byte patch WAD" unless !w.pwad
 	puts "It's got " + w.directory_entries.size.to_s + " lumps, the directory starts at byte " + w.header.directory_offset.to_s
-	puts "Lump".ljust(10) + "Size ".ljust(10) + "Offset".ljust(20)
+	puts "Lump".ljust(10) + "Size ".ljust(6) + "Offset".ljust(10)
 	w.directory_entries.each {|lump|
-		puts lump.name.ljust(10) + lump.size.to_s.ljust(10) + lump.offset.to_s.ljust(20)
+		puts lump.name.ljust(10) + lump.size.to_s.ljust(6) + lump.offset.to_s.ljust(10)
 	}
 end
 
