@@ -180,9 +180,7 @@ class BMPDecoder
 		@thinning_factor = factor
 	end
 	def raw_points
-		if @raw_image == nil
-			decode
-		end
+		decode if @raw_image == nil
 		ArrayToPoints.new(@width, @height, @raw_image).points
 	end
 	def line
@@ -200,12 +198,12 @@ class BMPDecoder
 	end
 end
 
-# s - short
-# l - long
-# 4 - 4 byte string
-# 8 - 8 bytes string
 class Codec
 	# Accepts a format string like "sl48" and a byte array
+	# s - short
+	# l - long
+	# 4 - 4 byte string
+	# 8 - 8 bytes string
 	def Codec.decode(format, bytes)
 		res = []
 		ptr = 0
@@ -278,6 +276,7 @@ class Dictionary
 		@things = []
 		@things << ThingInfo.new(1, "Player 1", "@")
 		@things << ThingInfo.new(9, "Sergeant", "s")
+		@things << ThingInfo.new(65, "Commando", "c")
 		@things << ThingInfo.new(2001, "Shotgun", "g")
 		@things << ThingInfo.new(2035, "Barrel", "b")
 	end
@@ -533,6 +532,9 @@ class Things < DecodedLump
 	def add_sergeant(p)
 		items << Thing.new(p, Dictionary.get.thing_for_name("Sergeant").id)
 	end
+	def add_commando(p)
+		items << Thing.new(p, Dictionary.get.thing_for_name("Commando").id)
+	end
 	def add_barrel(p)
 		items << Thing.new(p, Dictionary.get.thing_for_name("Barrel").id)
 	end
@@ -727,6 +729,9 @@ class SimpleLineMap
 	def add_sergeant(p)
 		@things.add_sergeant p	
 	end	
+	def add_commando(p)
+		@things.add_commando p	
+	end	
 	def add_shotgun(p)
 		@things.add_shotgun p	
 	end	
@@ -760,6 +765,9 @@ class BMPMap
 	def add_sergeant(p)
 		@things.add_sergeant p
 	end
+	def add_commando(p)
+		@things.add_commando p	
+	end	
 	def add_shotgun(p)
 		@things.add_shotgun p
 	end

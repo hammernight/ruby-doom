@@ -16,6 +16,7 @@ if __FILE__ == $0
 		m.set_player Point.new(50,600)
     m.add_shotgun Point.new(150, 600)
     m.add_sergeant Point.new(250, 750)
+    m.add_commando Point.new(250, 850)
 		400.step(900, 40) {|x| m.add_barrel Point.new(500, x) }
 		m.create_wad("new.wad")
 		if ARGV.include?("-nethack")
