@@ -11,7 +11,7 @@ class DirectoryEntry
 	def read(array)
 			@offset = Wad.convert_long(array.slice(0,4))
 			@size = Wad.convert_long(array.slice(4,4))
-			@name = Wad.convert_string(array.slice(8,8))	
+			@name = array.slice(8,8).pack("C8")
 	end
 	def to_s
 		@offset.to_s + "," + @size.to_s + "," + @name
@@ -22,7 +22,7 @@ class Header
 	SIZE=12
 	attr_reader :type, :directory_offset, :lump_count
 	def initialize(array)
-		@type = Wad.convert_string(array.slice(0,4))
+		@type = array.slice(0,4).pack("C4")
 		@lump_count = Wad.convert_long(array.slice(4,4))
 		@directory_offset = Wad.convert_long(array.slice(8,4))	
 	end
@@ -35,7 +35,6 @@ class Wad
 	attr_reader :directory_entries, :directory_offset, :lumps, :header
 	def initialize(filename, verbose=false)
 		@verbose = verbose
-		@type = ""
 		@bytes = []
 		@directory_entries = []
 
@@ -54,7 +53,7 @@ class Wad
 		puts "Object model built" unless !@verbose
 	end
 	def pwad
-		@type=="PWAD"
+		@header.type=="PWAD"
 	end
 	def byte_count
 		@bytes.size
