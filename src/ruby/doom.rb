@@ -139,6 +139,10 @@ class DecodedLump < Lump
 end
 
 class UndecodedLump < Lump
+	def initialize(name)
+		super(name)
+		@bytes = []
+	end
 	def read(bytes)
 		@bytes = bytes
 	end
@@ -479,6 +483,8 @@ if __FILE__ == $0
 		puts "Creating a nice, simple, square using counterclockwise linedefs; diagonal from 64,-512 to 128,-320"
 		w = Wad.new(true)
 	
+		w.lumps.add UndecodedLump.new("MAP01")
+	
 		v = Vertexes.new
 		v1 = v.add Vertex.new(Point.new(64,-512))
 		v2 = v.add Vertex.new(Point.new(128,-512))
@@ -516,8 +522,14 @@ if __FILE__ == $0
 		t.add Thing.new(Point.new(120,-400), 1)
 		
 		w.lumps.add(t)
+	
+		w.lumps.add UndecodedLump.new("SSEGS")
+		w.lumps.add UndecodedLump.new("SSECTORS")
+		w.lumps.add UndecodedLump.new("NODES")
+		w.lumps.add UndecodedLump.new("REJECT")
+		w.lumps.add UndecodedLump.new("BLOCKMAP")
 
-		w.write("out.wad")
+		w.write("new.wad")
 		exit
 	else
   	file = ARGV.include?("-f") ? ARGV[ARGV.index("-f") + 1] : "../../test_wads/simple.wad"
