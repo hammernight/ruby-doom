@@ -193,9 +193,16 @@ class PathTest < Test::Unit::TestCase
 	end
 	def test_sidedefs
 		p = Path.new(TEST)
-		assert(p.sidedefs.items.size == 4, "wrong sidedef count")
+		assert(p.sidedefs.items.size == 4, "wrong count")
 		assert(p.sidedefs.items[0].sector_id == 0, "wrong sector id")
 		assert(p.sidedefs.items[0].id == 0, "wrong sidedef id")
 		assert(p.sidedefs.items[1].id == 1, "wrong sidedef id")
+	end
+	def test_linedefs
+		p = Path.new(TEST)
+		assert(p.linedefs.items.size == 4, "wrong count")
+		assert(p.linedefs.items[0].right_sidedef.id == 0, "wrong first sidedef")
+		assert(p.linedefs.items[1].right_sidedef.id == 1, "wrong second sidedef")
+		assert(p.linedefs.items[3].right_sidedef.id == 3, "wrong fourth sidedef")
 	end
 end

@@ -466,6 +466,19 @@ class Path
 		return sidedefs
 	end
 	def linedefs
+		linedefs = Linedefs.new
+		last = nil
+		verts.items.each {|v|
+			if last == nil
+				last = v
+				next
+			end
+			ld = Linedef.new(last, v, sidedefs.items[last.id])
+			linedefs.add ld
+			last = v
+		}
+		linedefs.add Linedef.new(verts.items[0], verts.items[1], sidedefs.items.last)
+		return linedefs
 	end
 	def verts
 		v = Vertexes.new
