@@ -490,6 +490,30 @@ class Wad
 	end
 end
 
+class SimpleLineMap
+	attr_reader :path
+	def initialize(path)
+		@path = path
+		@things = Things.new
+	end
+	def set_player(p)
+		@things.add_player p
+	end
+	def add_barrel(p)
+		@things.add_barrel p	
+	end
+	def create_wad(filename)
+		w = Wad.new
+		w.lumps << UndecodedLump.new("MAP01")
+		w.lumps << @things
+		w.lumps << @path.vertexes
+		w.lumps << @path.sectors
+		w.lumps << @path.sidedefs
+		w.lumps << @path.linedefs
+		w.write(filename)
+	end
+end
+
 class Path
 	NETHACK_DEFAULT_SIZE=20
 	attr_reader :sectors, :path

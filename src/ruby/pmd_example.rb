@@ -24,33 +24,19 @@ puts "Counting up the number of problems in the report"
 pmd = PMDMap.new("sample_pmd_report.html")
 
 puts "Creating the map"
-w = Wad.new
-w.lumps << UndecodedLump.new("MAP01")
-t = Things.new
-t.add_player Point.new(50,900)
-w.lumps << t
-
-puts "Putting together a suitable path"
 p = Path.new(0, 1000)
 p.add("e200/n200/e200/s200/e200/", pmd.nooks)
 p.add("s400/")
 p.add("w200/s200/w200/n200/w200/", pmd.nooks)
 p.add("n400/")
 
-puts "Placing the barrels"
+m = SimpleLineMap(p)
+m.set_player(Point.new(50,900))
 0.upto(pmd.nooks-1) {|x|
-	t.add_barrel Point.new((x*600)+300, 1100)
-	t.add_barrel Point.new((x*600)+300, 500)
+	m.add_barrel Point.new((x*600)+300, 1100)
+	m.add_barrel Point.new((x*600)+300, 500)
 }
-
-puts "Assembling the rest of the map"
-w.lumps << p.vertexes
-w.lumps << p.sectors
-w.lumps << p.sidedefs
-w.lumps << p.linedefs
-
-puts "Writing the map to disk"
-w.write("new.wad")
+m.create_wad("new.wad")
 
 if ARGV.include?("-nethack")
   puts p.nethack(50)
