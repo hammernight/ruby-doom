@@ -389,12 +389,8 @@ class Wad
 			@lumps.add(de.create_lump(@bytes))
 		}
 		puts "Object model built" unless !@verbose
-	end
-	def pwad
-		@header.type=="PWAD"
-	end
-	def byte_count
-		@bytes.size
+    puts "The file " + filename + " is a " + @bytes.size.to_s + " byte " + @header.type unless !@verbose
+    puts "It's got " + @lumps.lumps.size.to_s + " lumps, the directory started at byte " + @header.directory_offset.to_s unless !@verbose
 	end
 	def write(filename=nil)
 		puts "Writing WAD" unless !@verbose
@@ -437,7 +433,7 @@ end
 if __FILE__ == $0
   if ARGV.include?("-turn")
  		 file = ARGV.include?("-f") ? ARGV[ARGV.index("-f") + 1] : "../../test_wads/simple.wad"
-	  w = Wad.new(true)
+	  w = Wad.new(ARGV.include?("-v"))
 	  w.read(file)
     w.lumps.things.player.facing_angle = 90
   	w.write("out.wad")
@@ -452,13 +448,13 @@ if __FILE__ == $0
 		exit
 	else
   	file = ARGV.include?("-f") ? ARGV[ARGV.index("-f") + 1] : "../../test_wads/simple.wad"
-	  w = Wad.new(true)
+	  w = Wad.new(ARGV.include?("-v"))
 	  w.read(file)
-    puts "The file " + file + " is a " + w.byte_count.to_s + " byte patch WAD" unless !w.pwad
-    puts "It's got " + w.lumps.lumps.size.to_s + " lumps, the directory started at byte " + w.header.directory_offset.to_s
     w.lumps.lumps.each {|lump|
       puts lump.name + " (" + lump.size.to_s + " bytes)"
-			lump.items.each {|t| puts " - " + t.to_s }
+			lump.items.each {
+				|t| puts " - " + t.to_s 
+			}
     }
   	w.write("out.wad")
   end
