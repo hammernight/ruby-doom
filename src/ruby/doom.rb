@@ -293,7 +293,14 @@ class Things < DecodedLump
   NAME="THINGS"
   def initialize
     super(NAME)
+		@index = 0
   end
+	def add(i)
+		i.id = @index
+		@index += 1
+		super(i)
+		return i
+	end
   def read(bytes)
     (bytes.size / BYTES_EACH).times {|index|
       thing = Thing.new
@@ -312,7 +319,13 @@ end
 
 class Thing
   attr_reader :type_id, :location
-  attr_accessor :facing_angle
+  attr_accessor :facing_angle, :id
+	def initialize(p=nil,type_id=0)
+		@location = p
+		@facing_angle = 0
+		@type_id = type_id
+		@flags = 7
+	end
   def read(bytes)
 		x, y, @facing_angle, @type_id, @flags = Codec.decode("sssss", bytes)
 		@location = Point.new(x,y)
@@ -321,10 +334,9 @@ class Thing
 		Codec.encode("sssss", [@location.x, @location.y, @facing_angle, @type_id, @flags])
 	end
 	def to_s
-		Dictionary.get.name_for_type_id(@type_id)	+ " at " + @location.to_s + " facing " + Dictionary.get.direction_for_angle(@facing_angle)
+		Dictionary.get.name_for_type_id(@type_id)	+ " at " + @location.to_s + " facing " + Dictionary.get.direction_for_angle(@facing_angle) + "; flags = " + @flags.to_s
 	end
 end
-
 
 class Linedefs < DecodedLump
   BYTES_EACH=14
@@ -518,6 +530,9 @@ if __FILE__ == $0
 		linedefs.add Linedef.new(v2,v3,sd2)
 		linedefs.add Linedef.new(v3,v4,sd3)
 		linedefs.add Linedef.new(v4,v1,sd4)
+		
+		t = Things.new
+		t.add Thing.new(Point.new(120,-400), 1)
 
 		#w.write("out.wad")
 		exit
