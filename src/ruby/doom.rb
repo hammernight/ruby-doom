@@ -482,6 +482,7 @@ class Wad
 end
 
 class Path
+	NETHACK_DEFAULT_SIZE=20
 	attr_reader :sectors
 	def initialize(start_x, start_y, path)
 		@path = path
@@ -540,12 +541,9 @@ class Path
 		}
 		return v
 	end
-	def nethack
-		size=20
+	def nethack(size=NETHACK_DEFAULT_SIZE)
 		map = Array.new(size)
-		map.each_index {|x|
-			map[x] = Array.new(size, ".")
-		}
+		map.each_index {|x| map[x] = Array.new(size, ".") }
 		cur_x = @start_x
 		cur_y = @start_y
 		prevx = cur_x
@@ -565,19 +563,13 @@ class Path
 				raise "Unrecognized direction " + dir.to_s + " in segment " + x.to_s
 			end
 		
-			p1 = Point.new(prevx, prevy)
-			p2 = Point.new(cur_x, cur_y)
-			p1.lineto(p2).each {|ptmp|
-				map[ptmp.y/100][ptmp.x/100] = "X"
-			}
+			Point.new(prevx, prevy).lineto(Point.new(cur_x, cur_y)).each {|p| map[p.y/100][p.x/100] = "X" }
 			prevx = cur_x
 			prevy = cur_y
 		}
 		res = ""
 		map.each_index {|x|
-			map[x].each_index {|y|
-				res << map[size-1-x][y] + " " 
-			}
+			map[x].each_index {|y| res << map[size-1-x][y] + " " }
 			res << "\n"
 		}
 		return res
@@ -597,9 +589,7 @@ if __FILE__ == $0
 	else
     w.lumps.each {|lump|
       puts lump.name + " (" + lump.size.to_s + " bytes)"
-			lump.items.each {
-				|t| puts " - " + t.to_s 
-			}
+			lump.items.each { |t| puts " - " + t.to_s }
     }
   end
 end
