@@ -44,7 +44,7 @@ class PointSet
 		current = Finder.next(points, first, found_so_far)
 		while current != first
 			found_so_far << current
-			puts "Found " + current.to_s
+			#puts "Found " + current.to_s
 			if found_so_far.size == @points.size
 				break
 			end
@@ -85,6 +85,9 @@ class BMPDecoder
 		
 		# decode BITMAPFILEHEADER 
 		@type = decode_word(bytes.slice(0,2))
+		if @type != 19778
+			raise "Can only decode bitmaps"
+		end
 		@size = decode_dword(bytes.slice(2,4))
 		res1 = decode_word(bytes.slice(6,2))
 		res1 = decode_word(bytes.slice(8,2))
@@ -96,7 +99,13 @@ class BMPDecoder
 		@height = decode_dword(bytes.slice(22,4)) #  specified as a LONG... but DWORD works... (?)
 		@bit_planes = decode_word(bytes.slice(26,2))
 		@bits_per_pixel = decode_word(bytes.slice(28,2))
+		if @bits_per_pixel != 1
+			raise "Can't process bitmaps with more than one bit per pixel.  Save it as a monochrome bitmap to fix this."
+		end
 		@compression = decode_dword(bytes.slice(30,4))
+		if @compression != 0
+			raise "Can't process compressed bitmaps"
+		end
 		@size_of_image = decode_dword(bytes.slice(34,4))
 		@xpixels_per_meter = decode_dword(bytes.slice(38,4)) # specified as a LONG... but DWORD works... (?)
 		@ypixels_per_meter = decode_dword(bytes.slice(42,4)) # specified as a LONG... but DWORD works... (?)
