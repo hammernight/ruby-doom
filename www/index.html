@@ -3,7 +3,7 @@
 <body>
 
 <hr>
-<p><b>Status (12/9/03)</b>: Ruby-DOOM can read and write a wad file and make simple modifications (i.e., change the direction the player is facing).  Most of the object model can be decoded from a current wad file - only SECTORS are yet to be done.
+<p><b>Status (12/9/03)</b>: Ruby-DOOM can read and write a wad file and make simple modifications (i.e., change the direction the player is facing).  All non-BSP related wad file parts can be read and parsed into the object model.  Next task - create a higher level API to create a very simple map that can be run through a BSP calculator to produce a finished map.
 <p>Here's the <a href="http://rubyforge.org/projects/ruby-doom/">project page</a> and <a href="http://rubyforge.org/cgi-bin/viewcvs/cgi/viewcvs.cgi/ruby-doom/src/ruby/?cvsroot=ruby-doom#dirlist">the code</a>.
 
 <hr>
@@ -83,6 +83,17 @@ m.write_to_file("simple.wad")
 <li>Bytes 2-4: y coordinate (short)
 </ul>
 
+<li>SECTORS - 26 bytes
+<ul>
+<li>Bytes 0-2: Floor height (short)
+<li>Bytes 2-4: Ceiling height (short)
+<li>Bytes 4-12: Floor texture (8 byte string)
+<li>Bytes 12-20: Ceiling texture (8 byte string)
+<li>Bytes 20-22: Light level (short)
+<li>Bytes 22-24: Special sector (short)
+<li>Bytes 24-26: Tag (short)
+</ul>
+
 </ul>
 <p>Here's a sample run from the current version of <code>doom.rb</code>:
 <pre>
@@ -126,12 +137,13 @@ SEGS (96 bytes)
 SSECTORS (8 bytes)
 NODES (28 bytes)
 SECTORS (52 bytes)
+ -  Sector with floor texture FLAT14
+ -  Sector with floor texture FLAT14
 REJECT (1 bytes)
 BLOCKMAP (132 bytes)
 Writing WAD
 Done
 </pre>
-
 
 <hr>
 <ul>
