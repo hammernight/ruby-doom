@@ -122,6 +122,9 @@ class DecodedLump < Lump
 		super(name)
 		@items = []
 	end
+	def add(i)
+		@items << i
+	end
 	def write
 		out = []
 		@items.each {|s| out += s.write }
@@ -195,6 +198,10 @@ end
 
 class Vertex
 	FORMAT="ss"
+	attr_reader :location 
+	def initialize(location=nil)
+		@location = location
+	end
   def read(bytes)
 		@location = Point.new(*Codec.decode(FORMAT, bytes))
   end
@@ -415,35 +422,23 @@ class Wad
 		puts "Done" unless !@verbose
 		return out
 	end
-end
-
-class Map
-	def initialize	
-		@levels = []
-	end
-	def add_level(level)
-		@levels << level
-	end
-	def save()
-		w = Wad.new(filename)
-	end
-end
-
-class Level
-	attr_accessor :spawn_point, :rooms
-	def initialize
-		@rooms = []
-	end
-	def add_room(p,p1)
-		@rooms << Room.new(p,p1)
+	def add_room(lower_left, upper_right)
+				
 	end
 end
 
 class Room
-	attr_reader :p, :p1
-	def initialize(p,p1)
-		@p = p 
-		@p1 = p1
+	def initialize(lower_left, upper_right)
+		@lower_left = lower_left
+		@upper_right = upper_right
+	end
+	def vertexes
+		v = Vertexes.new
+		v.add Vertex.new(@lower_left)
+		v.add Vertex.new(Point.new(@upper_right.x, @lower_left.y))
+		v.add Vertex.new(@upper_right)
+		v.add Vertex.new(Point.new(@upper_right.y, @lower_left.x))
+		return v
 	end
 end
 
@@ -456,12 +451,10 @@ if __FILE__ == $0
   	w.write("out.wad")
   elsif ARGV.include?("-create")
 		puts "Creating a map"
-		m = Map.new
-		level = Level.new
-		level.add_room(Point.new(0,0), Point.new(10,10))
-		level.spawn_point = Point.new(2,2)
-		m.add_level(level)
-		m.save("out.wad")
+		w = Wad.new(true)
+		w.add_room(Point.new(64,64000), Point.new(128,63000))
+		w.spawn_point(Point.new(80, 64500))
+		w.write("out.wad")
 		exit
 	else
   	file = ARGV.include?("-f") ? ARGV[ARGV.index("-f") + 1] : "../../test_wads/simple.wad"

@@ -114,6 +114,15 @@ class LinedefsTest < Test::Unit::TestCase
 	end
 end
 
+class VertexTest < Test::Unit::TestCase
+	def test_init
+		v=Vertex.new
+		assert(v.location == nil, "location should be null if not set")
+		v=Vertex.new(Point.new(1,1))
+		assert(v.location.x == 1 && v.location.y == 1, "initial point setting wrong")
+	end
+end
+
 class CodecTest  < Test::Unit::TestCase
 	def test_decode
 		assert(Codec.decode("s", ThingTest::BYTES.slice(0,2))[0] == 224, "bad short decode") 
@@ -134,6 +143,14 @@ class CodecTest  < Test::Unit::TestCase
 	def test_string_readwrite
 		assert(Codec.unmarshal_string([84, 72, 73, 78, 71, 83, 0, 0]) == "THINGS", "unmarshalling string failed")
 		assert(Codec.marshal_string("THINGS",8) == [84, 72, 73, 78, 71, 83, 0, 0], "marshalling string failed")
+	end
+end
+
+class RoomTest <  Test::Unit::TestCase
+	def test_vertexes
+		r = Room.new(Point.new(1,1), Point.new(5,5))
+		assert(r.vertexes.items.size == 4, "Should be 4 vertexes in a square room")
+		assert(r.vertexes.items[0].location.x == 1 && r.vertexes.items[0].location.y == 1, "first vertex should be at 1,1")
 	end
 end
 
