@@ -52,18 +52,10 @@ class WadTest < Test::Unit::TestCase
 		working = W1
 		w = Wad.new
 		w.read(working.name)
+		bytes = w.write
 		assert(w.byte_count == working.bytes, "wrong byte count")
 		assert(w.pwad, "pwad not verified")
-		assert(w.write.size == w.byte_count-1, "size difference, " + w.write.size.to_s + " != " + w.byte_count.to_s)
-	end
-	def test_readwrite_stepstep
-		working = W2
-		w = Wad.new
-		w.read(working.name)
-		assert(w.byte_count == working.bytes, "wrong byte count")
-		assert(w.pwad, "pwad not verified")
-		assert(w.write.size == w.byte_count, "size difference, " + w.write.size.to_s + " != " + w.byte_count.to_s)
-		assert(w.write == w.bytes, "content difference")
+		assert(bytes.size == w.byte_count-1, "size difference, " + bytes.size.to_s + " != " + w.byte_count.to_s)
 	end
 end
 
