@@ -1,3 +1,7 @@
+Dec 16 2003 - 0.5:
+Map creation requires much less code due to the new SimpleLineMap class.
+Added support for barrels.
+
 Dec 14 2003 - 0.4:
 Small maps can now be displayed in a "Nethack" format.  For an example, run "path_creation_example.rb -nethack".
 Tested with DOOM Legacy (http://sourceforge.net/projects/doomlegacy/) on
