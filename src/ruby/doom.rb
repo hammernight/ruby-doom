@@ -458,11 +458,12 @@ class Path
 		@path.split(/\//)
 	end
 	def sidedefs
-		s = Sidedefs.new
-		verts.items.each {|v|
-			
+		sidedefs = Sidedefs.new
+		segments.size.times {|v|
+			s = sidedefs.add Sidedef.new
+			s.sector_id = sectors.items[0].id	
 		}
-		return s	
+		return sidedefs
 	end
 	def linedefs
 	end
