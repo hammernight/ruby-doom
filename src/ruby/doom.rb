@@ -130,6 +130,6 @@ if __FILE__ == $0
 	puts "Lump".ljust(10) + "Size ".ljust(6)
 	w.lumps.each {|lump|
 		puts lump.name.ljust(10) + lump.size.to_s.ljust(6)
-	}
-	w.write("test.wad")
+	}	
+	w.write("out.wad")
 end
