@@ -343,20 +343,6 @@ class Linedef
 	end
 end
 
-class Lumps
-	attr_reader :lumps
-	def initialize
-		@lumps = []
-	end
-	def add(lump)
-		@lumps << lump
-	end
-	def things
-		@lumps.find{|lump| lump.name == Thing.NAME }
-		raise "Couldn't find Things lump"
-	end
-end
-
 class DirectoryEntry
 	BYTES_EACH=16
 	attr_accessor :offset, :size, :name
@@ -387,7 +373,7 @@ class DirectoryEntry
 			lump=UndecodedLump.new(@name)
 		end
 		lump.read(bytes.slice(@offset, @size))
-		lump
+		return lump
 	end
 	def to_s
 		@offset.to_s + "," + @size.to_s + "," + @name
@@ -414,7 +400,7 @@ class Wad
 	def initialize(verbose=false)
 		@verbose = verbose
 		@bytes = []
-		@lumps = Lumps.new
+		@lumps = []
 	end
 	def read(filename)
 		puts "Reading WAD into memory" unless !@verbose
@@ -430,7 +416,7 @@ class Wad
 			de.read(@bytes.slice((directory_entry_index*DirectoryEntry::BYTES_EACH)+@header.directory_offset,DirectoryEntry::BYTES_EACH))
 			lump = de.create_lump(@bytes)
 			puts "Created " + lump.name unless !@verbose
-			@lumps.add(lump)
+			@lumps << lump
 		}
 		puts "Object model built" unless !@verbose
     puts "The file " + filename + " is a " + @bytes.size.to_s + " byte " + @header.type unless !@verbose
@@ -441,7 +427,7 @@ class Wad
 		out = []
 		ptr = Header::BYTES_EACH
 		entries = []
-		@lumps.lumps.each {|lump|
+		@lumps.each {|lump|
 			entries << DirectoryEntry.new(ptr, lump.size, lump.name)
 			out += lump.write
 			ptr += lump.size
@@ -450,7 +436,7 @@ class Wad
 		# now go back and fill in the directory offset in the header
 		h = Header.new("PWAD")
 		h.directory_offset = ptr
-		h.lump_count = @lumps.lumps.size
+		h.lump_count = @lumps.size
 		out = h.write + out
 		File.open(filename, "w") {|f| out.each {|b| f.putc(b) } } unless filename == nil
 		puts "Done" unless !@verbose
@@ -469,22 +455,22 @@ if __FILE__ == $0
 		puts "Creating a simple rectangle using clockwise linedefs"
 		w = Wad.new(true)
 	
-		w.lumps.add UndecodedLump.new("MAP01")
+		w.lumps << UndecodedLump.new("MAP01")
 	
 		t = Things.new
 		t.add Thing.new(Point.new(120,-400), 1)
-		w.lumps.add(t)
+		w.lumps << t
 
 		v = Vertexes.new
 		v1 = v.add Vertex.new(Point.new(64, -320))
 		v2 = v.add Vertex.new(Point.new(300, -320))
 		v3 = v.add Vertex.new(Point.new(300, -512))
 		v4 = v.add Vertex.new(Point.new(64, -512))
-		w.lumps.add(v)
+		w.lumps << v
 
 		sectors = Sectors.new
 		s1 = sectors.add Sector.new
-		w.lumps.add(sectors)
+		w.lumps << sectors
 	
 		sidedefs = Sidedefs.new
 		sd1 = sidedefs.add Sidedef.new
@@ -495,14 +481,14 @@ if __FILE__ == $0
 		sd3.sector_id = s1.id
 		sd4 = sidedefs.add Sidedef.new
 		sd4.sector_id = s1.id
-		w.lumps.add(sidedefs)
+		w.lumps << sidedefs
 
 		linedefs = Linedefs.new
 		linedefs.add Linedef.new(v1,v2,sd1)
 		linedefs.add Linedef.new(v2,v3,sd2)
 		linedefs.add Linedef.new(v3,v4,sd3)
 		linedefs.add Linedef.new(v4,v1,sd4)
-		w.lumps.add(linedefs)
+		w.lumps << linedefs
 	
 		w.write("new.wad")
 		exit
@@ -510,7 +496,7 @@ if __FILE__ == $0
   	file = ARGV.include?("-f") ? ARGV[ARGV.index("-f") + 1] : "../../test_wads/simple.wad"
 	  w = Wad.new(ARGV.include?("-v"))
 	  w.read(file)
-    w.lumps.lumps.each {|lump|
+    w.lumps.each {|lump|
       puts lump.name + " (" + lump.size.to_s + " bytes)"
 			lump.items.each {
 				|t| puts " - " + t.to_s 
