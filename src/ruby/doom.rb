@@ -26,6 +26,9 @@ class Header
 		@lump_count = Wad.convert_long(array.slice(4,4))
 		@directory_offset = Wad.convert_long(array.slice(8,4))	
 	end
+	def save
+		@type.unpack("C*")
+	end
 end
 
 class Wad
@@ -58,6 +61,10 @@ class Wad
 	end
 	def save(filename)
 		puts "Saving file" unless !@verbose
+		out = []
+		out += @header.save
+		
+		puts "Done" unless !@verbose
 	end
 	def Wad.convert_string(array)
 		y=""
