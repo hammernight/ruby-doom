@@ -130,4 +130,19 @@ class LinedefsTest < Test::Unit::TestCase
 	end
 end
 
+class CodecTest  < Test::Unit::TestCase
+	def test_decode
+		assert(Codec.decode("s", ThingTest::BYTES.slice(0,2))[0] == 224, "bad short decode") 
+		assert(Codec.decode("l", [13, 0, 0, 0])[0] == 13, "bad long decode") 
+		assert(Codec.decode("4", [84, 72, 73, 78])[0] == "THIN", "bad 4 byte string decode") 
+		assert(Codec.decode("8", [84, 72, 73, 78, 71, 83, 0, 0])[0] == "THINGS", "bad 8 byte string decode") 
+	end
+	def test_encode
+		assert(Codec.encode("s", [224]) == ThingTest::BYTES.slice(0,2), "bad short decode")
+		assert(Codec.encode("l", [13]) == [13,0,0,0], "bad long decode")
+		assert(Codec.encode("4", ["THIN"]) == [84, 72, 73, 78], "bad 4 byte string decode")
+		assert(Codec.encode("8", ["THINGS"]) == [84, 72, 73, 78, 71, 83, 0, 0], "bad 8 byte string decode")
+	end
+end
+
 

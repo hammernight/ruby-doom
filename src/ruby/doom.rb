@@ -1,5 +1,55 @@
 #!/usr/local/bin/ruby
 
+# s - short
+# l - long
+# 4 - 4 byte string
+# 8 - 8 bytes string
+class Codec
+	# Accepts a format string like "sl48" and a byte array
+	def Codec.decode(format, bytes)
+		res = []
+		ptr = 0
+		format.split(//).each {|x|
+			if x == "s"
+				res << Wad.unmarshal_short(bytes.slice(ptr,2))
+				ptr += 2
+			elsif x == "l"	
+				res << Wad.unmarshal_long(bytes.slice(ptr,4))
+				ptr += 4
+			elsif x == "4"
+				res << Wad.unmarshal_string(bytes.slice(ptr,4))
+				ptr += 4
+			elsif x == "8"
+				res << Wad.unmarshal_string(bytes.slice(ptr,8))
+				ptr += 8
+			else
+				raise "Unknown character in decode format string " + format
+			end
+		}
+		return res
+	end
+	# Accepts a format string like "sl48" and an array of values 
+	def Codec.encode(format, values)
+		bytes = []	
+		ptr = 0
+		format.split(//).each {|x|
+			if x == "s"
+				bytes += Wad.marshal_short(values[ptr])
+			elsif x == "l"	
+				bytes += Wad.marshal_long(values[ptr])
+			elsif x == "4"
+				bytes += Wad.marshal_string(values[ptr],4)
+			elsif x == "8"
+				bytes += Wad.marshal_string(values[ptr],8)
+			else
+				raise "Unknown character in decode format string " + format
+			end
+			ptr += 1
+		}
+		return bytes
+	end
+end
+
 class Dictionary
 	def Dictionary.get
 		if @self == nil
@@ -102,16 +152,10 @@ end
 class Linedef
 	attr_reader :start_vertex, :end_vertex, :attributes, :special_effects_type, :right_sidedef, :left_sidedef
 	def read(bytes)
-		@start_vertex = Wad.unmarshal_short(bytes.slice(0,2))
-		@end_vertex = Wad.unmarshal_short(bytes.slice(2,2))
-		@attributes = Wad.unmarshal_short(bytes.slice(4,2))
-		@special_effects_type = Wad.unmarshal_short(bytes.slice(6,2))
-		@tag = Wad.unmarshal_short(bytes.slice(8,2))
-		@right_sidedef = Wad.unmarshal_short(bytes.slice(10,2))
-		@left_sidedef = Wad.unmarshal_short(bytes.slice(12,2))
+		@start_vertex, @end_vertex, @attributes, @special_effects_type, @tag, @right_sidedef, @left_sidedef = Codec.decode("sssssss", bytes)
 	end
 	def write
-		Wad.marshal_short(@start_vertex) + Wad.marshal_short(@end_vertex) + Wad.marshal_short(@attributes) + Wad.marshal_short(@special_effects_type) + Wad.marshal_short(@tag) + Wad.marshal_short(@right_sidedef) + Wad.marshal_short(@left_sidedef)
+		Codec.encode("sssssss", [@start_vertex, @end_vertex, @attributes, @special_effects_type, @tag, @right_sidedef, @left_sidedef])
 	end
 	def to_s
 		"Linedef from " + @start_vertex.to_s + " to " + @end_vertex.to_s + "; attribute flag is " + @attributes.to_s + "; special fx is " + @special_effects_type.to_s + "; tag is " + @tag.to_s + "; right sidedef is " + @right_sidedef.to_s + "; left sidedef is " + @left_sidedef.to_s
@@ -122,13 +166,11 @@ class Thing
   attr_reader :type_id, :location
   attr_accessor :facing_angle
   def read(bytes)
-    @location = Point.new(Wad.unmarshal_short(bytes.slice(0,2)), Wad.unmarshal_short(bytes.slice(2,2)))
-    @facing_angle = Wad.unmarshal_short(bytes.slice(4,2))
-    @type_id = Wad.unmarshal_short(bytes.slice(6,2))
-    @flags = Wad.unmarshal_short(bytes.slice(8,2))
+		x, y, @facing_angle, @type_id, @flags = Codec.decode("sssss", bytes)
+		@location = Point.new(x,y)
   end
 	def write
-		Wad.marshal_short(@location.x) + Wad.marshal_short(@location.y) + Wad.marshal_short(@facing_angle) + Wad.marshal_short(@type_id) + Wad.marshal_short(@flags)
+		Codec.encode("sssss", [@location.x, @location.y, @facing_angle, @type_id, @flags])
 	end
 	def to_s
 		Dictionary.get.name_for_type_id(@type_id)	+ " at " + @location.to_s + " facing " + Dictionary.get.direction_for_angle(@facing_angle)
@@ -159,12 +201,10 @@ class DirectoryEntry
 		@name = name
 	end
 	def read(array)
-			@offset = Wad.unmarshal_long(array.slice(0,4))
-			@size = Wad.unmarshal_long(array.slice(4,4))
-			@name = Wad.unmarshal_string(array.slice(8,8))
+			@offset, @size, @name = Codec.decode("ll8", array)
 	end
 	def write
-		Wad.marshal_long(@offset) + Wad.marshal_long(@size) + Wad.marshal_string(@name,8)
+		Codec.encode("ll8", [@offset, @size, @name])
 	end
 	def create_lump(bytes)
 		lump=nil
@@ -188,12 +228,10 @@ class Header
 	attr_reader :type, :lump_count
 	attr_accessor :directory_offset
 	def read(array)
-		@type = Wad.unmarshal_string(array.slice(0,4))
-		@lump_count = Wad.unmarshal_long(array.slice(4,4))
-		@directory_offset = Wad.unmarshal_long(array.slice(8,4))	
+		@type, @lump_count, @directory_offset = Codec.decode("4ll", array)
 	end
 	def write
-		Wad.marshal_string(@type,4) + Wad.marshal_long(@lump_count) + Wad.marshal_long(@directory_offset)
+		Codec.encode("4ll", [@type, @lump_count, @directory_offset])
 	end
 end
 
