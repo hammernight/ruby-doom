@@ -263,7 +263,7 @@ class Sidedef
 		@x_offset, @y_offset, @upper_texture, @lower_texture, @middle_texture, @sector_id = Codec.decode(FORMAT, bytes)
   end
 	def write
-		Codec.encode(FORMAT, [@x_offset, @y_offset, @upper_texture, @lower_texture, @middle_texture, @sector_id])
+		Codec.encode(FORMAT, [@x_offset, @y_offset, @upper_texture, @middle_texture, @lower_texture, @sector_id])
 	end
 	def to_s
 		" Sidedef for sector " + @sector_id.to_s + "; upper/middle/lower textures are " + @upper_texture + "/" + @middle_texture + "/" + @lower_texture
