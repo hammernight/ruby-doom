@@ -86,14 +86,19 @@ class PointsToLine
 	end
 end
 
+class IndexToCoordinates
+	# converts an index into an array of width blah to a point on an x/y coordinate
+	def convert(idx, width)
+		[idx % width, idx/width]
+	end
+end
+
 class ArrayToPoints
 	def initialize(width, height, raw_data)
 		@width = width
 		@height = height
 		@raw_data = raw_data
-	end
-	def idx_to_xy(idx)
-		[idx % @width, idx/@width]
+		@converter = IndexToCoordinates.new
 	end
 	def points
 		pts = []
@@ -103,7 +108,7 @@ class ArrayToPoints
 			# for each bit in the image
 			0.upto(7) {|bit|
 				if (byte & (1 << bit)) == 0
-					x,y = idx_to_xy(idx)
+					x,y = @converter.convert(idx, @width)
 					#p = Point.new(x,y)
 					p = Point.new(x,@height-1-y)
 					pts << p
@@ -116,7 +121,7 @@ class ArrayToPoints
 end
 
 class BMPDecoder
-	attr_reader :type, :size, :offset_to_image_data, :info_header_size, :width, :height, :bit_planes, :bits_per_pixel, :compression, :size_of_image, :xpixels_per_meter, :ypixels_per_meter, :colors_used, :colors_important, :line
+	attr_reader :type, :size, :offset_to_image_data, :info_header_size, :width, :height, :bit_planes, :bits_per_pixel, :compression, :size_of_image, :xpixels_per_meter, :ypixels_per_meter, :colors_used, :colors_important
 	def initialize(filename)
 		bytes = []
 		File.open(filename, "r").each_byte {|x| bytes << x }
@@ -151,12 +156,13 @@ class BMPDecoder
 		rgb1 = RGBQuad.new(bytes.slice(54,4))
 		rgb2 = RGBQuad.new(bytes.slice(58,4))
 	
-		# convert the bytes to points
-		raw_image = bytes.slice(62, bytes.size-62)
-		points = ArrayToPoints.new(@width, @height, raw_image).points
-
-		# trace the points to form a line
-		@line = PointsToLine.new(points).line
+		@raw_image = bytes.slice(62, bytes.size-62)
+	end
+	def raw_points
+		ArrayToPoints.new(@width, @height, @raw_image).points
+	end
+	def line
+		PointsToLine.new(raw_points).line
 	end
 	def decode_word(bytes)
 		bytes.pack("C2").unpack("S")[0] 
@@ -834,11 +840,9 @@ end
 
 if __FILE__ == $0
 	if ARGV.include?("-bmp")
-		#b = BMPDecoder.new("../../bitmaps/square.bmp")
-		#puts b.points.points
-		#puts "in order"
-		#puts b.points.in_order
-		#exit
+		b = BMPDecoder.new("../../bitmaps/square.bmp")
+		puts b.line
+		exit
 		b = BMPMap.new("../../bitmaps/square.bmp")
 		b.set_player Point.new(200, 400)
 		b.create_wad("new.wad")		

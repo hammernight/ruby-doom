@@ -290,13 +290,20 @@ class BMPDecoderTest < Test::Unit::TestCase
 	end
 end
 
+class IndexToCoordinatesTest < Test::Unit::TestCase
+	def test_idx_to_xy
+		itc = IndexToCoordinates.new
+		#puts itc.convert(10,5).size
+		#puts itc.convert(10,5)[0]
+		#puts itc.convert(10,5)[1]
+		#assert(itc.convert(10,5) == [5,0], "wrong idx to xy " + itc.convert(10,5).to_s)
+		#assert(itc.convert(10,26) == [6,2], "wrong idx to xy " + itc.convert(10,26).to_s)
+		#assert(itc.convert(8,8) == [0,1], "wrong idx to xy " + itc.convert(8,8).to_s)
+		#assert(itc.convert(8,12) == [4,1], "wrong idx to xy")
+	end
+end
+
 class ArrayToPointsTest < Test::Unit::TestCase
-	#def test_idx_to_xy
-		#assert(ArrayToPoints.idx_to_xy(10,5) == [5,0], "wrong idx to xy " + ArrayToPoints.idx_to_xy(10,5).to_s)
-		#assert(ArrayToPoints.idx_to_xy(10,26) == [6,2], "wrong idx to xy " + ArrayToPoints.idx_to_xy(10,26).to_s)
-		#assert(ArrayToPoints.idx_to_xy(8,8) == [0,1], "wrong idx to xy " + ArrayToPoints.idx_to_xy(8,8).to_s)
-		#assert(ArrayToPoints.idx_to_xy(8,12) == [4,1], "wrong idx to xy")
-	#end
 	def test_convert
 		# Ensure we find the right point (4,1) when given a bitmap with the 12th bit set
 		# 00000000
@@ -327,6 +334,10 @@ class PointsToLineTest < Test::Unit::TestCase
 		pts = [Point.new(1,1), Point.new(1,2), Point.new(1,3), Point.new(2,3), Point.new(3,3)]
 		p = PointsToLine.new(pts)
 		assert(p.line == (pts << pts[0]), "Didn't decode corner correctly")
+	end
+	def test_foo
+    #b = BMPDecoder.new("../../bitmaps/square.bmp")
+    #puts b.line
 	end
 end
 
