@@ -48,7 +48,6 @@ puts "Placing the barrels"
 	t.add_barrel Point.new(x*300, 950)
 }
 
-
 puts "Assembling the rest of the map"
 w.lumps << p.vertexes
 w.lumps << p.sectors
@@ -59,7 +58,7 @@ puts "Writing the map to disk"
 w.write("new.wad")
 
 if ARGV.include?("-nethack")
-  puts p.nethack
+  puts p.nethack(50)
   puts "Map generated from " + p.to_s
 end
 
