@@ -724,12 +724,6 @@ end
 class BMPMap
 	def initialize(file)
 		line = BMPDecoder.new(file).thin
-		#line = [Point.new(0,0), Point.new(0,500),Point.new(500,500), Point.new(500,0)]
-		#499.downto(1) {|x| 
-			#if x % 2 == 0
-				#line << Point.new(x,0) 
-			#end
-		#}
 		@pp = PointsPath.new(line)
 		@things = Things.new
 	end
@@ -868,13 +862,8 @@ end
 
 if __FILE__ == $0
 	if ARGV.include?("-bmp")
-		#b = BMPDecoder.new("../../bitmaps/square.bmp")
-		#puts b.raw_points
-		#puts "=============================="
-		#puts b.line
-		#exit
-		b = BMPMap.new("../../bitmaps/square.bmp")
-		b.set_player Point.new(200, 200)
+		b = BMPMap.new("../../bitmaps/wiggly.bmp")
+		b.set_player Point.new(400, 200)
 		b.create_wad("new.wad")		
 		exit
 	end
