@@ -11,7 +11,7 @@ class DirectoryEntry
 	def read(array)
 			@offset = Wad.convert_long(array.slice(0,4))
 			@size = Wad.convert_long(array.slice(4,4))
-			@name = array.slice(8,8).pack("C8").strip
+			@name = array.slice(8,8).pack("C*").strip
 	end
 	def to_s
 		@offset.to_s + "," + @size.to_s + "," + @name
@@ -22,7 +22,7 @@ class Header
 	SIZE=12
 	attr_reader :type, :directory_offset, :lump_count
 	def initialize(array)
-		@type = array.slice(0,4).pack("C4").strip
+		@type = array.slice(0,4).pack("C*").strip
 		@lump_count = Wad.convert_long(array.slice(4,4))
 		@directory_offset = Wad.convert_long(array.slice(8,4))	
 	end
