@@ -20,23 +20,28 @@ class PointSet
 		@points.size
 	end
 	def in_order
-		res = []
+		points_so_far = []
 		first = lower_left
-		res << first
-		current = find_next(first, res)
+		points_so_far << first
+		current = find_next(first, points_so_far)
 		while current != first
-			res << current
-			if res.size == @points.size
+			points_so_far << current
+			if points_so_far.size == @points.size
 				break
 			end
-			current = find_next(current, res)
+			begin
+				current = find_next(current, points_so_far)
+			rescue
+				puts "Couldn't find next point, so skipping back to the origin"
+				break
+			end
 		end
-		res << first
-		return res
+		points_so_far << first
+		return points_so_far
 	end
 	def find_next(point, sofar)
-		0.upto(5) {|x|
-			0.upto(5) {|y|
+		0.upto(10) {|x|
+			0.upto(10) {|y|
 				candidate = Point.new(point.x + x, point.y + y)
 				if @points.include?(candidate) && !sofar.include?(candidate)
 					return candidate
