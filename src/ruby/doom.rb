@@ -448,8 +448,11 @@ class Wad
 end
 
 class Path
+	attr_reader :sectors
 	def initialize(path)
 		@path = path
+		@sectors = Sectors.new
+		@sectors.add Sector.new
 	end
 	def segments
 		@path.split(/\//)
@@ -486,11 +489,6 @@ class Path
 			v.add vert unless v.items.find {|r| r.location.x == vert.location.x && r.location.y == vert.location.y } != nil
 		}
 		return v
-	end
-	def sectors
-		s = Sectors.new
-		s.add(Sector.new)
-		return s
 	end
 end
 
