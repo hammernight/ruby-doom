@@ -1,4 +1,4 @@
-???? - 0.2:
+Dec 12 2003 - 0.2:
 Fixed bug - shorts are no longer decoded as unsigned values.
 DOOM primitive wrappers (i.e., Linedefs, Sidedefs) are in place and can be
 used to make valid wad files.
