@@ -832,12 +832,12 @@ end
 
 if __FILE__ == $0
 	if ARGV.include?("-bmp")
-		#b = BMPDecoder.new("../../test_wads/small_circle.bmp")
+		#b = BMPDecoder.new("../../bitmaps/small_circle.bmp")
 		#puts b.points.points
 		#puts "in order"
 		#puts b.points.in_order
 		#exit
-		b = BMPMap.new("../../test_wads/small_circle.bmp")
+		b = BMPMap.new("../../bitmaps/small_circle.bmp")
 		b.set_player Point.new(60, 60)
 		b.create_wad("new.wad")		
 		exit
