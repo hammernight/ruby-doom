@@ -98,6 +98,9 @@ class DictionaryTest  < Test::Unit::TestCase
 		assert(Dictionary.get.name_for_type_id(1) == "Player 1", "couldn't find name for id == 1")
 		assert(Dictionary.get.name_for_type_id(-999) == "Unknown thing", "unknown key should return 'Unknown'")
 	end
+	def test_name_to_id
+		assert(Dictionary.get.type_id_for_name("Player 1") == 1, "couldn't find id for name = 'player 1' == 1")
+	end
 	def test_angle
 		assert(Dictionary.get.direction_for_angle(22) == "east", "east failed")
 		assert(Dictionary.get.direction_for_angle(100) == "north", "north failed")

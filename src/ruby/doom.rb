@@ -70,9 +70,13 @@ class Dictionary
 	def initialize
 		@type_id_to_name=Hash.new("Unknown thing")
 		@type_id_to_name[1]="Player 1"
+		@type_id_to_name[2035]="Barrel"
 	end
 	def name_for_type_id(id) 
 		@type_id_to_name[id]
+	end
+	def type_id_for_name(name) 
+		@type_id_to_name.index(name)
 	end
 	def direction_for_angle(angle)
 		case angle
@@ -307,14 +311,17 @@ class Things < DecodedLump
       @items << thing
     }
   end
+	def add_barrel(p)
+		items << Thing.new(p, Dictionary.get.type_id_for_name("Barrel"))
+	end
 	def size
 		@items.size * BYTES_EACH
 	end
 	def add_player(p)	
-		items << Thing.new(p, 1)
+		items << Thing.new(p, Dictionary.get.type_id_for_name("Player 1"))
 	end
 	def player
-		@items.find {|t| t.type_id == 1 } 
+		@items.find {|t| t.type_id == Dictionary.get.type_id_for_name("Player 1")} 
 	end
 end
 
@@ -486,7 +493,7 @@ end
 class Path
 	NETHACK_DEFAULT_SIZE=20
 	attr_reader :sectors, :path
-	def initialize(start_x, start_y, path)
+	def initialize(start_x, start_y, path="")
 		@path = path
 		@start_x = start_x
 		@start_y = start_y
