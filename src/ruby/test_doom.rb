@@ -43,5 +43,6 @@ class WadTest < Test::Unit::TestCase
 		w.read("../../test_wads/simple.wad")
 		assert(w.byte_count == 900, "wrong byte count")
 		assert(w.pwad, "pwad not verified")
+		#assert(w.write == w.bytes, "write failed")
 	end
 end

@@ -30,7 +30,7 @@ class Header
 end
 
 class Wad
-	attr_reader :directory_entries, :directory_offset, :lumps, :header
+	attr_reader :directory_entries, :directory_offset, :header, :bytes
 	def initialize(verbose=false)
 		@verbose = verbose
 		@bytes = []
@@ -48,6 +48,9 @@ class Wad
 			@directory_entries << de
 		}
 		puts "Object model built" unless !@verbose
+	end
+	def write
+		[]
 	end
 	def pwad
 		@header.type=="PWAD"
