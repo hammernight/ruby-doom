@@ -9,7 +9,7 @@ class RGBQuad
 	end
 end
 class BMPDecoder
-	attr_reader :type, :size, :offset_to_image_data, :info_header_size, :width, :height, :bit_planes, :bits_per_pixel, :compression, :size_of_image, :xpixels_per_meter, :ypixels_per_meter, :colors_used, :colors_important
+	attr_reader :type, :size, :offset_to_image_data, :info_header_size, :width, :height, :bit_planes, :bits_per_pixel, :compression, :size_of_image, :xpixels_per_meter, :ypixels_per_meter, :colors_used, :colors_important, :points
 	def initialize(filename)
 		bytes = []
 		File.open(filename, "r").each_byte {|x| bytes << x }
@@ -40,8 +40,19 @@ class BMPDecoder
 		
 		# image data
 		@image = bytes.slice(62, bytes.size-62)
+
+		# convert image data to points
+		@points = []
+		0.upto(@height-1) {|y|
+			0.upto(@width-1) {|x|
+				# convert x,y to an index into the bit array
+				bit_index = (@width*y) + x
+				byte_to_check = bit_index / 8
+				byte_to_check -= 1 unless byte_to_check == 0
+				@points << Point.new(x,y) if (@image[byte_to_check] & (1 << (bit_index % 8))) == 0
+			}
+		}
 	end
-	
 	def decode_word(bytes)
 		bytes.pack("C2").unpack("S")[0] 
 	end

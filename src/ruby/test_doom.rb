@@ -274,18 +274,18 @@ class PointTest < Test::Unit::TestCase
 end
 
 class BMPDecoderTest < Test::Unit::TestCase
+		B = BMPDecoder.new(TEST="../../test_wads/square.bmp")
 	def test_header
-		file = "../../test_wads/square.bmp"
-		b = BMPDecoder.new(file)
-		assert(b.type == 19778, "That's not a bitmap")
-		assert(b.size == File.size(file), "Wrong size")
-		assert(b.offset_to_image_data == 62, "Wrong offset to image data")
-		assert(b.info_header_size == 40, "Wrong info header size")
-		assert(b.width == 640, "Wrong width")
-		assert(b.height == 512, "Wrong height")
-		assert(b.bit_planes == 1, "Wrong bit_planes")
-		assert(b.bits_per_pixel == 1, "Wrong bits_per_pixel")
-		assert(b.compression == 0, "Wrong compression")
-		assert(b.size_of_image == 40960, "Wrong size_of_image")
+		assert(B.type == 19778, "That's not a bitmap")
+		assert(B.size == File.size(TEST), "Wrong size")
+		assert(B.offset_to_image_data == 62, "Wrong offset to image data")
+		assert(B.info_header_size == 40, "Wrong info header size")
+		assert(B.width == 640, "Wrong width")
+		assert(B.height == 512, "Wrong height")
+		assert(B.bit_planes == 1, "Wrong bit_planes")
+		assert(B.bits_per_pixel == 1, "Wrong bits_per_pixel")
+		assert(B.compression == 0, "Wrong compression")
+		assert(B.size_of_image == 40960, "Wrong size_of_image")
+		assert(B.points.size == 1862, "wrong number of points")
 	end
 end
