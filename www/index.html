@@ -83,6 +83,10 @@ m.write_to_file("simple.wad")
 <li>Bytes 2-4: y coordinate (short)
 </ul>
 
+<li>SEGS (not parsed into object model)
+<li>SSECTORS (not parsed into object model)
+<li>NODES (not parsed into object model)
+
 <li>SECTORS - 26 bytes
 <ul>
 <li>Bytes 0-2: Floor height (short)
@@ -94,6 +98,8 @@ m.write_to_file("simple.wad")
 <li>Bytes 24-26: Tag (short)
 </ul>
 
+<li>REJECT (not parsed into object model)
+<li>BLOCKMAP (not parsed into object model)
 </ul>
 <p>Here's a sample run from the current version of <code>doom.rb</code>:
 <pre>
