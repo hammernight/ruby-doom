@@ -22,7 +22,7 @@ class Finder
 	end
 	def Finder.points_at_radius(p, r)
 		res = []
-		puts "checking for points around " + p.to_s + " at radius " + r.to_s
+		#puts "checking for points around " + p.to_s + " at radius " + r.to_s
 		# move up and then west to the upper left hand corner of the search box
 		p = p.translate(-r, r)
 		res << p
@@ -46,7 +46,7 @@ class Finder
 			p = p.translate(0,1)
 			res << p
 		}
-		puts "points array = " + res.to_s
+		#puts "points array = " + res.to_s
 		return res
 	end
 	def Finder.good(points, candidate, sofar)	
@@ -118,9 +118,8 @@ class BMPDecoder
 		
 		# decode BITMAPFILEHEADER 
 		@type = decode_word(bytes.slice(0,2))
-		if @type != 19778
-			raise "Can only decode bitmaps"
-		end
+		raise "Can only decode bitmaps" unless @type == 19778
+
 		@size = decode_dword(bytes.slice(2,4))
 		res1 = decode_word(bytes.slice(6,2))
 		res1 = decode_word(bytes.slice(8,2))
@@ -132,13 +131,11 @@ class BMPDecoder
 		@height = decode_dword(bytes.slice(22,4)) #  specified as a LONG... but DWORD works... (?)
 		@bit_planes = decode_word(bytes.slice(26,2))
 		@bits_per_pixel = decode_word(bytes.slice(28,2))
-		if @bits_per_pixel != 1
-			raise "Can't process bitmaps with more than one bit per pixel.  Save it as a monochrome bitmap to fix this."
-		end
+		raise "Can't process bitmaps with more than one bit per pixel.  Save it as a monochrome bitmap to fix this." unless @bits_per_pixel == 1
+
 		@compression = decode_dword(bytes.slice(30,4))
-		if @compression != 0
-			raise "Can't process compressed bitmaps"
-		end
+		raise "Can't process compressed bitmaps" unless @compression == 0
+
 		@size_of_image = decode_dword(bytes.slice(34,4))
 		@xpixels_per_meter = decode_dword(bytes.slice(38,4)) # specified as a LONG... but DWORD works... (?)
 		@ypixels_per_meter = decode_dword(bytes.slice(42,4)) # specified as a LONG... but DWORD works... (?)
