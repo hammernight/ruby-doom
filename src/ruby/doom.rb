@@ -506,23 +506,59 @@ class SimpleLineMap
 		w = Wad.new
 		w.lumps << UndecodedLump.new("MAP01")
 		w.lumps << @things
-		w.lumps << @path.vertexes
-		w.lumps << @path.sectors
-		w.lumps << @path.sidedefs
-		w.lumps << @path.linedefs
+		pc = PathCompiler.new(@path)
+		w.lumps.concat pc.lumps
 		w.write(filename)
 	end
 end
 
-class Path
-	NETHACK_DEFAULT_SIZE=20
-	attr_reader :sectors, :path
-	def initialize(start_x, start_y, path="")
+class PathCompiler
+	def initialize(path)
 		@path = path
-		@start_x = start_x
-		@start_y = start_y
+
+		# need a sector first
 		@sectors = Sectors.new
 		@sectors.add Sector.new
+
+		# collect vertexes using the visitor
+		@vertexes = Vertexes.new
+		@vertexes.add Vertex.new(@path.start)
+		@path.visit(self)
+
+		# now the sidedefs
+		@sidedefs = Sidedefs.new
+		@path.segments.size.times {|v|
+			s = @sidedefs.add Sidedef.new
+			s.sector_id = @sectors.items[0].id	
+		}
+	
+		# and finally the linedefs
+		@linedefs = Linedefs.new
+		last = nil
+		@vertexes.items.each {|v|
+			if last == nil
+				last = v
+				next
+			end
+			@linedefs.add Linedef.new(last, v, @sidedefs.items[last.id])
+			last = v
+		}
+		@linedefs.add Linedef.new(@vertexes.items.last, @vertexes.items.first, @sidedefs.items.last)
+	end
+	def line_to(point)
+		vert = Vertex.new point
+		@vertexes.add vert unless @vertexes.items.find {|r| r.location.x == vert.location.x && r.location.y == vert.location.y } != nil
+	end
+	def lumps
+		[@vertexes, @sectors, @linedefs, @sidedefs]
+	end
+end
+
+class Path
+	attr_reader :sectors, :path, :start
+	def initialize(start, path="")
+		@path = path
+		@start = start
 	end
 	def add(p,count=1)
 		count.times {@path += p }
@@ -530,58 +566,9 @@ class Path
 	def segments
 		@path.split(/\//)
 	end
-	def sidedefs
-		sidedefs = Sidedefs.new
-		segments.size.times {|v|
-			s = sidedefs.add Sidedef.new
-			s.sector_id = sectors.items[0].id	
-		}
-		return sidedefs
-	end
-	def linedefs
-		linedefs = Linedefs.new
-		last = nil
-		vertexes.items.each {|v|
-			if last == nil
-				last = v
-				next
-			end
-			ld = Linedef.new(last, v, sidedefs.items[last.id])
-			linedefs.add ld
-			last = v
-		}
-		linedefs.add Linedef.new(vertexes.items.last, vertexes.items.first, sidedefs.items.last)
-		return linedefs
-	end
-	def vertexes
-		v = Vertexes.new
-		cur_x = @start_x
-		cur_y = @start_y
-		v.add Vertex.new(Point.new(cur_x, cur_y))
-		segments.each {|x|
-			dir = x[0].chr
-			len = x.slice(1, x.length-1).to_i
-			if dir == "e"
-				cur_x += len
-			elsif dir == "n"
-				cur_y += len
-			elsif dir == "w"
-				cur_x -= len
-			elsif dir == "s"
-				cur_y -= len
-			else
-				raise "Unrecognized direction " + dir.to_s + " in segment " + x.to_s
-			end
-			vert = Vertex.new(Point.new(cur_x, cur_y))
-			v.add vert unless v.items.find {|r| r.location.x == vert.location.x && r.location.y == vert.location.y } != nil
-		}
-		return v
-	end
-	def nethack(size=NETHACK_DEFAULT_SIZE)
-		map = Array.new(size)
-		map.each_index {|x| map[x] = Array.new(size, ".") }
-		cur_x = @start_x
-		cur_y = @start_y
+	def visit(visitor)
+		cur_x = @start.x
+		cur_y = @start.y
 		prevx = cur_x
 		prevy = cur_y
 		segments.each {|x|
@@ -598,20 +585,40 @@ class Path
 			else
 				raise "Unrecognized direction " + dir.to_s + " in segment " + x.to_s
 			end
-		
-			Point.new(prevx, prevy).lineto(Point.new(cur_x, cur_y)).each {|p| map[p.y/100][p.x/100] = "X" }
+			visitor.line_to(Point.new(cur_x, cur_y))
 			prevx = cur_x
 			prevy = cur_y
 		}
-		res = ""
-		map.each_index {|x|
-			map[x].each_index {|y| res << map[size-1-x][y] + " " }
-			res << "\n"
-		}
-		return res
+	end
+	def nethack(size=Nethack::DEFAULT_SIZE)
+		n = Nethack.new(@start, size)
+		visit(n)
+		return n.render
 	end
 	def to_s
 		@path
+	end
+end
+
+class Nethack
+	DEFAULT_SIZE=20
+	def initialize(start,size)
+		@start = start
+		@map = Array.new(size)
+		@map.each_index {|x| @map[x] = Array.new(size, ".") }
+		@prev = @start
+	end
+	def line_to(current)
+		@prev.lineto(current).each {|pt| @map[pt.y/100][pt.x/100] = "X" }
+		@prev = current
+	end
+	def render
+		res = ""
+		@map.each_index {|x|
+			@map[x].each_index {|y| res << @map[@map.size-1-x][y-1] + " " }
+			res << "\n"
+		}
+		return res
 	end
 end
 
