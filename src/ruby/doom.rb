@@ -1,5 +1,13 @@
 #!/usr/local/bin/ruby
 
+class RGBQuad
+	def initialize(bytes)
+		@r,@g,@b,@res = *bytes
+	end
+	def to_s
+		return @r.to_s + "," + @g.to_s + "," + @b.to_s
+	end
+end
 class BMPDecoder
 	attr_reader :type, :size, :offset_to_image_data, :info_header_size, :width, :height, :bit_planes, :bits_per_pixel, :compression, :size_of_image, :xpixels_per_meter, :ypixels_per_meter, :colors_used, :colors_important
 	def initialize(filename)
@@ -25,6 +33,10 @@ class BMPDecoder
 		@ypixels_per_meter = decode_dword(bytes.slice(42,4)) # specified as a LONG... but DWORD works... (?)
 		@colors_used = decode_dword(bytes.slice(46,4))
 		@colors_important = decode_dword(bytes.slice(50,4))
+		
+		# color table - assume monochrome bitmap for now
+		rgb1 = RGBQuad.new(bytes.slice(54,4))
+		rgb2 = RGBQuad.new(bytes.slice(58,4))
 	end
 	
 	def decode_word(bytes)

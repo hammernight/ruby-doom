@@ -286,6 +286,6 @@ class BMPDecoderTest < Test::Unit::TestCase
 		assert(b.bit_planes == 1, "Wrong bit_planes")
 		assert(b.bits_per_pixel == 1, "Wrong bits_per_pixel")
 		assert(b.compression == 0, "Wrong compression")
-		assert(b.size_of_image == 40960, "Wrong size_of_image")		
+		assert(b.size_of_image == 40960, "Wrong size_of_image")
 	end
 end
