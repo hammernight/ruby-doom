@@ -169,7 +169,7 @@ class Sector
 		@ceiling_height=128
 		@floor_texture="FLAT14"
 		@ceiling_texture="FLAT14"
-		@light_level=128
+		@light_level=160
 		@special=0
 		@tag=0
 	end
@@ -244,8 +244,8 @@ class Sidedef
 	def initialize()
 		@x_offset=0
 		@y_offset=0
-		@upper_texture="BROWN96"
-		@lower_texture="BROWN96"
+		@upper_texture="-"
+		@lower_texture="-"
 		@middle_texture="BROWN96"
 		@sector_id=0
 	end
@@ -454,35 +454,43 @@ class Path
 	def segments
 		@path.split(/\//)
 	end
-	def sectors
-	end
 	def sidedefs
+		s = Sidedefs.new
+		verts.items.each {|v|
+			
+		}
+		return s	
 	end
 	def linedefs
 	end
 	def verts
-		res = []
+		v = Vertexes.new
 		cur_x = 0
-		cur_y = -500
-		res << Vertex.new(Point.new(cur_x, cur_y))
+		cur_y = 500
+		v.add Vertex.new(Point.new(cur_x, cur_y))
 		segments.each {|x|
 			dir = x[0].chr
 			len = x.slice(1, x.length-1).to_i
 			if dir == "e"
 				cur_x += len
 			elsif dir == "n"
-				cur_y -= len
+				cur_y += len
 			elsif dir == "w"
 				cur_x -= len
 			elsif dir == "s"
-				cur_y += len
+				cur_y -= len
 			else
 				raise "Unrecognized direction " + dir.to_s + " in segment " + x.to_s
 			end
-			v = Vertex.new(Point.new(cur_x, cur_y))
-			res << v unless res.find {|r| r.location.x == v.location.x && r.location.y == v.location.y } != nil
+			vert = Vertex.new(Point.new(cur_x, cur_y))
+			v.add vert unless v.items.find {|r| r.location.x == vert.location.x && r.location.y == vert.location.y } != nil
 		}
-		return res
+		return v
+	end
+	def sectors
+		s = Sectors.new
+		s.add(Sector.new)
+		return s
 	end
 end
 
@@ -496,11 +504,16 @@ if __FILE__ == $0
 	elsif ARGV.include?("-create-path")
 		puts "Creating a simple rectangle using an encoded path"
 		w = Wad.new(true)
+		p = Path.new("e600/n400/w600/s400")
 		w.lumps << UndecodedLump.new("MAP01")
+		
 		t = Things.new
 		t.add_player Point.new(100,400)
 		w.lumps << t
-		w.add_path(Path.new("e600/n400/w600/s400"))
+
+		w.lumps << p.verts
+		w.lumps << p.sectors
+		w.lumps << p.sidedefs
 		w.write("new.wad")
 		exit
   elsif ARGV.include?("-create-explicit")
