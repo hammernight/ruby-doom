@@ -29,7 +29,7 @@ count = (count/4).to_i
 pmd = PMDMap.new(count)
 
 puts "Creating the map"
-w = Wad.new(true)
+w = Wad.new
 w.lumps << UndecodedLump.new("MAP01")
 t = Things.new
 t.add_player Point.new(50,900)
