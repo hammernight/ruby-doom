@@ -124,7 +124,8 @@ end
 
 class BMPDecoder
 	attr_reader :type, :size, :offset_to_image_data, :info_header_size, :width, :height, :bit_planes, :bits_per_pixel, :compression, :size_of_image, :xpixels_per_meter, :ypixels_per_meter, :colors_used, :colors_important
-	def initialize(filename)
+	def initialize(filename, debug=false)
+		@debug = debug
 		bytes = []
 		File.open(filename, "r").each_byte {|x| bytes << x }
 		
@@ -164,7 +165,7 @@ class BMPDecoder
 		ArrayToPoints.new(@width, @height, @raw_image).points
 	end
 	def line
-		PointsToLine.new(raw_points).line
+		PointsToLine.new(raw_points, @debug).line
 	end
 	def decode_word(bytes)
 		bytes.pack("C2").unpack("S")[0] 
@@ -842,9 +843,9 @@ end
 
 if __FILE__ == $0
 	if ARGV.include?("-bmp")
-		b = BMPDecoder.new("../../bitmaps/square.bmp")
-		puts b.line
-		exit
+		#b = BMPDecoder.new("../../bitmaps/square.bmp", true)
+		#puts b.line
+		#exit
 		b = BMPMap.new("../../bitmaps/square.bmp")
 		b.set_player Point.new(200, 400)
 		b.create_wad("new.wad")		
