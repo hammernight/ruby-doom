@@ -7,6 +7,7 @@ if __FILE__ == $0
 		puts "Creating a map from a bitmap"
     b = BMPMap.new("../../bitmaps/wiggly.bmp")
 		b.scale_factor = 2
+		b.thinning_factor = 10
     b.set_player Point.new(400, 400)
     b.create_wad("new.wad")
 	elsif ARGV.include?("-path")

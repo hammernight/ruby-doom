@@ -60,13 +60,14 @@ class Finder
 end
 
 class PointThinner
-	def initialize(p)
+	def initialize(p, factor)
 		@points = p
+		@factor = factor
 	end
 	def thin
 		newline = [@points[0]]
 		1.upto(@points.size-1) {|x|
-			if x % 5 == 0
+			if x % @factor == 0
 				newline << @points[x]
 			end
 		}
@@ -141,6 +142,7 @@ class BMPDecoder
 		@debug = debug
 		@filename = filename
 		@scale_factor = 1
+		@thinning_factor = 5
 	end
 	def decode
 		bytes = []
@@ -182,6 +184,9 @@ class BMPDecoder
 	def scale_factor(factor)
 		@scale_factor = factor
 	end
+	def thinning_factor(factor)
+		@thinning_factor = factor
+	end
 	def raw_points
 		if @raw_image == nil
 			decode
@@ -192,7 +197,7 @@ class BMPDecoder
 		PointsToLine.new(raw_points, @debug).line
 	end
 	def thin
-		pts = PointThinner.new(line).thin
+		pts = PointThinner.new(line, @thinning_factor).thin
 		pts.collect {|p| p.scale(@scale_factor) }	
 	end
 	def decode_word(bytes)
@@ -736,10 +741,11 @@ class SimpleLineMap
 end
 
 class BMPMap
-	attr_accessor :scale_factor
+	attr_accessor :scale_factor, :thinning_factor
 	def initialize(file)
 		@things = Things.new
 		@scale_factor = 1
+		@thinning_factor = 5
 		@bitmap_file = file
 	end
 	def set_player(p)
@@ -748,6 +754,7 @@ class BMPMap
 	def create_wad(filename)
 		b = BMPDecoder.new(@bitmap_file)
 		b.scale_factor(@scale_factor)
+		b.thinning_factor(@thinning_factor)
 		w = Wad.new
 		w.lumps << UndecodedLump.new("MAP01")
 		w.lumps << @things
