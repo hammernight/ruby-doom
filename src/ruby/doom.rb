@@ -53,7 +53,7 @@ class Finder
 		return res
 	end
 	def Finder.good(points, candidate, sofar)	
-		puts "testing " + candidate.to_s
+		#puts "Testing " + candidate.to_s
 		points.include?(candidate) && !sofar.include?(candidate)
 	end
 end
@@ -833,11 +833,6 @@ end
 
 if __FILE__ == $0
 	if ARGV.include?("-bmp")
-		b = BMPDecoder.new("../../test_wads/small.bmp")
-		#puts b.points.points.sort {|a,b| a.x <=> b.x }
-		puts b.in_order
-		exit
-			
 		b = BMPMap.new("../../test_wads/circle.bmp")
 		b.set_player Point.new(300, 200)
 		b.create_wad("new.wad")		
