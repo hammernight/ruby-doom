@@ -150,9 +150,16 @@ end
 class Sectors < DecodedLump
 	BYTES_EACH=26
 	NAME="SECTORS"
+	attr_accessor :id
   def initialize
     super(NAME)
+		@index = 0
   end
+	def add(i)
+		i.id = @index
+		@index += 1
+		super(i)
+	end
   def read(bytes)
     (bytes.size / BYTES_EACH).times {|index|
       s = Sector.new
@@ -167,6 +174,16 @@ end
 
 class Sector
 	FORMAT="ss88sss"
+	attr_accessor :floor_height, :ceiling_height, :floor_texture, :ceiling_texture, :light_level, :special, :tag, :id
+	def initialize
+		@floor_height=0
+		@ceiling_height=128
+		@floor_texture="FLAT14"
+		@ceiling_texture="FLAT14"
+		@light_level=255
+		@special=0
+		@tag=0
+	end
   def read(bytes)
 		@floor_height, @ceiling_height, @floor_texture, @ceiling_texture, @light_level, @special, @tag = Codec.decode(FORMAT, bytes)
   end
@@ -174,7 +191,7 @@ class Sector
 		Codec.encode(FORMAT, [@floor_height, @ceiling_height, @floor_texture, @ceiling_texture, @light_level, @special, @tag])
 	end
 	def to_s
-		" Sector with floor texture " + @floor_texture.to_s
+		" Sector floor/ceiling heights " + @floor_height.to_s + "/" + @ceiling_height.to_s + "; floor/ceiling textures " + @floor_texture.to_s + "/" + @ceiling_textures.to_s
 	end
 end
 
@@ -439,16 +456,25 @@ if __FILE__ == $0
     w.lumps.things.player.facing_angle = 90
   	w.write("out.wad")
   elsif ARGV.include?("-create")
-		puts "Creating a map"
+		puts "Creating a nice, simple, square from 64,64000 to 128,63000"
 		w = Wad.new(true)
 	
 		v = Vertexes.new
 		v1 = v.add Vertex.new(Point.new(64,64000))
 		v2 = v.add Vertex.new(Point.new(128,64000))
-		v3 = v.add Vertex.new(128,63000)
+		v3 = v.add Vertex.new(Point.new(128,63000))
 		v4 = v.add Vertex.new(Point.new(64, 63000))
 
-		w.write("out.wad")
+		sectors = Sectors.new
+		s1 = sectors.add Sector.new
+
+		#sidedefs = Sidedefs.new
+		#sidedefs.add Sidedef.new(
+
+		#linedefs = Linedefs.new
+		#linedefs.add Linedef.new(v1,v2)
+
+		#w.write("out.wad")
 		exit
 	else
   	file = ARGV.include?("-f") ? ARGV[ARGV.index("-f") + 1] : "../../test_wads/simple.wad"

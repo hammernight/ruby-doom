@@ -123,6 +123,18 @@ class VertexTest < Test::Unit::TestCase
 	end
 end
 
+class SectorsTest < Test::Unit::TestCase
+	def test_add
+		sectors=Sectors.new
+		s=Sector.new
+		sectors.add(s)
+		assert(sectors.items.size == 1, "Adding a Sector didn't increase size")
+		assert(s.id == 0, "Sector id didn't get set")
+		sectors.add(s)
+		assert(s.id == 1, "Second sector id didn't get set")
+	end
+end
+
 class VertexesTest < Test::Unit::TestCase
 	def test_add
 		verts=Vertexes.new
