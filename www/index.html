@@ -9,8 +9,8 @@
 
 <br><br><a href="#userdocs">User documentation</a>
 <br><a href="#developer">Developer documentation</a>
-<br><a href="http://rubyforge.org/projects/ruby-doom/">Downloads, forums, feature/bug/patch tracker</a> and <a href="http://rubyforge.org/cgi-bin/viewcvs/cgi/viewcvs.cgi/ruby-doom/src/ruby/?cvsroot=ruby-doom#dirlist">the code and unit tests</a>.
 <br><a href="#credits">Credits</a>
+<br><a href="http://rubyforge.org/projects/ruby-doom/">Downloads, forums, feature/bug/patch tracker</a> and <a href="http://rubyforge.org/cgi-bin/viewcvs/cgi/viewcvs.cgi/ruby-doom/src/ruby/?cvsroot=ruby-doom#dirlist">the code and unit tests</a>.
 
 <p>Here's an example of what Ruby-DOOM can do:
 <table>
@@ -64,12 +64,20 @@ X X X X . . X X X X X X X X X . . . . .
 </table>
 
 <hr>
-<a name="userdocs"></a><a href="#top">Top</a>
-<p>Ruby-DOOM requires a Ruby (<a href="http://rubyforge.org/project/showfiles.php?group_id=30">Linux/Unix</a>, <a href="http://rubyinstaller.sourceforge.net/">Windows</a>) interpreter to generate maps, and a DOOM engine (like <a href="http://sf.net/projects/doomlegacy/">DOOM Legacy)</a> to play the maps.
-<p>To generate a map, you need to write Ruby code like this:
+<a name="userdocs"></a>
+<center>
+<h3>User documentation</h3>
+</center>
+<a href="#top">Top</a>
+<p>You'll need a couple of things to generate and play DOOM maps using Ruby-DOOM:
+<ul>
+<li>A Ruby (<a href="http://rubyforge.org/project/showfiles.php?group_id=30">Linux/Unix</a>, <a href="http://rubyinstaller.sourceforge.net/">Windows</a>) interpreter
+<li>A binary space partition (BSP) calculator (like <a href="http://doombsp.sf.net/">DOOM BSP</a>)
+<li>A DOOM engine (like <a href="http://legacy.newdoom.com/">Legacy DOOM</a>)
+</ul>
+<p>To generate a map, you need to write a small script in Ruby.  This script will call various functions in the Ruby-DOOM API that will set up your map - walls, player position, etc.  Here's a script that creates a simple map:
 <pre>
 require "doom.rb"
-puts "Creating a simple rectangle using an encoded path"
 w = Wad.new(true)
 w.lumps << UndecodedLump.new("MAP01")
 t = Things.new
@@ -82,9 +90,14 @@ w.lumps << p.sidedefs
 w.lumps << p.linedefs
 w.write("new.wad")
 </pre>
-<p>The important part is the <code>Path.new</code> line - that's where the map outline is specified.  Note that the path needs to run clockwise, it must be a closed path (i.e., the last leg should stop at the starting point), and it can't cross back on itself.  
-<p>After running that code, you'll need to run the generated wad file through a binary partition space calculator - I've been using <a href="http://doombsp.sf.net/">DOOM BSP</a>.  
-<p>To make it easier to prototype stuff, you can also render small maps using a Nethack-style renderer, i.e.:
+<p>The important part is the <code>Path.new</code> line - that's where the map outline is specified using a series of directions and lengths separated by slashes - i.e., east 600, north 200, and so on.  Note that the path needs to run clockwise, it must be a closed path (i.e., the last leg should stop at the starting point), and it can't cross back on itself.  
+<p>After you've generated a map (i.e., a ".wad" file), you need to run it thru the aforementioned BSP calculator.  With DOOMBSP, this is as simple as:
+<pre>
+./bsp new.wad -o out.wad
+</pre>
+<p>That's it!  Your new map is ready to play.  Of course, it's not much fun since it's an empty map - just you and the walls.  That'll change in the future, though, and at the least you've now got a DOOM map to add things to using DOOM Builder or any of the other graphical editors.
+<ul>
+<li>To make it easier to prototype stuff, you can also render small maps using a Nethack-style renderer, i.e.:
 <pre>
 [tom@rubyforge ruby]$ ./path_creation_example.rb -nethack
 . . . . . . . . . . . . . . . . . . . .
@@ -110,8 +123,8 @@ X X X X X X X . . . X X X . . . . . . .
 Map generated from e6/n2/e4/s2/e2/s5/w2/s2/w4/n2/w6/n5
 [tom@rubyforge ruby]$
 </pre>
-<p>You can also generate a map using a repeating pattern, see <code>repeating_pattern_example.rb</code> for an example of how to do this.
-<p>You can also read in wads and see information about them; here's a sample run:
+<li>You can also generate a map using a repeating pattern, see <code>repeating_pattern_example.rb</code> for an example of how to do this.
+<li>You can also read in wads and see information about them; here's a sample run:
 <pre>
 [tom@hal ruby]$ ./doom.rb -v
 Reading WAD into memory
@@ -169,9 +182,14 @@ SECTORS (52 bytes)
 REJECT (1 bytes)
 BLOCKMAP (132 bytes)
 </pre>
+</ul>
 
 <hr>
-<a name="developer"></a><a href="#top">Top</a>
+<a name="developer"></a>
+<center>
+<h3>Developer documentation</h3>
+</center>
+<a href="#top">Top</a>
 <p>I'll try to document the wad file structure as I go.  Props go out to the many folks out there who have figured out this stuff before I did.  Hopefully I can summarize some of the important points here.
 <p><b>Header</b> - a 12 byte sequence.  <font color="blue">80, 87, 65, 68, 11, 0, 0, 0, 212, 2, 0, 0, 0</font>
 <ul>
@@ -252,7 +270,11 @@ bytes.pack("C4").unpack("V")[0]
 </ul>
 
 <hr>
-<a name="credits"></a><a href="#top">Top</a>
+<a name="credits"></a>
+<center>
+<h3>Credits</h3>
+</center>
+<a href="#top">Top</a>
 <p>Thanks to the many people who made this little project possible:
 <ul>
 <li>John Carmack and many other folks at Id Software for writing and then open sourcing DOOM
