@@ -10,9 +10,9 @@ class RGBQuad
 end
 
 class Finder
-	SEARCH_RADIUS=30
+	SEARCH_RADIUS=5
 	def Finder.next(points, current, sofar)
-		0.upto(SEARCH_RADIUS) {|x|
+		1.upto(SEARCH_RADIUS) {|x|
 			pts = Finder.points_at_radius(current, x)
 			pts.each {|p|
 				return p if Finder.good(points, p, sofar)
@@ -22,8 +22,10 @@ class Finder
 	end
 	def Finder.points_at_radius(p, r)
 		res = []
+		puts "checking for points around " + p.to_s + " at radius " + r.to_s
 		# move up and then west to the upper left hand corner of the search box
-		p = p.translate(-r, -r)
+		p = p.translate(-r, r)
+		res << p
 		# move east
 		1.upto(r*2) {
 			p = p.translate(1,0)
@@ -31,7 +33,7 @@ class Finder
 		}
 		# move south
 		1.upto(r*2) {
-			p = p.translate(0,1)
+			p = p.translate(0,-1)
 			res << p
 		}
 		# move west
@@ -40,8 +42,8 @@ class Finder
 			res << p
 		}
 		# move north
-		1.upto(r*2) {
-			p = p.translate(0,-1)
+		1.upto((r*2)-1) {
+			p = p.translate(0,1)
 			res << p
 		}
 		# move back east to just north of the origin
@@ -49,6 +51,7 @@ class Finder
 		#	p = p.translate(1,0)
 		#	res << p
 		#}
+		puts "points array = " + res.to_s
 		return res
 	end
 	def Finder.good(points, candidate, sofar)	
@@ -833,13 +836,13 @@ end
 
 if __FILE__ == $0
 	if ARGV.include?("-bmp")
-		#b = BMPDecoder.new("../../bitmaps/small_circle.bmp")
+		#b = BMPDecoder.new("../../bitmaps/square.bmp")
 		#puts b.points.points
 		#puts "in order"
 		#puts b.points.in_order
 		#exit
-		b = BMPMap.new("../../bitmaps/small_circle.bmp")
-		b.set_player Point.new(60, 60)
+		b = BMPMap.new("../../bitmaps/square.bmp")
+		b.set_player Point.new(200, 400)
 		b.create_wad("new.wad")		
 		exit
 	end
