@@ -1,5 +1,31 @@
 #!/usr/local/bin/ruby
 
+class Dictionary
+	def Dictionary.get
+		if @self == nil
+			@self = Dictionary.new
+		end
+		return @self
+	end
+	def initialize
+		@type_id_to_name=Hash.new("Unknown thing")
+		@type_id_to_name[1]="Player 1"
+	end
+	def name_for_type_id(id) 
+		@type_id_to_name[id]
+	end
+	def direction_for_angle(angle)
+		case angle
+		when 0..45 then return "east"
+		when 46..135 then return "north"
+		when 136..225 then return "west"
+		when 225..315 then return "south"
+		when 316..360 then return "east"
+		end
+		raise "Angle must be between 0 and 360"
+	end
+end
+
 class Point
 	attr_accessor :x, :y
 	def initialize(x,y)
@@ -29,7 +55,6 @@ end
 
 class Things < Lump
   BYTES_EACH=10
-	TYPE_IDS_TO_NAMES=Hash[{1=>"Player 1"}]
 	DIRECTION_FOR_ANGLE=Hash[{0=>"east",90=>"north",180=>"west",270=>"south"}]
   NAME="THINGS"
 	attr_reader :things
@@ -54,12 +79,6 @@ class Things < Lump
 		@things.find {|t| t.type_id == 1 } 
 		raise "Couldn't find player Thing"
 	end
-	def Things.name_for_type_id(id)
-		TYPE_IDS_TO_NAMES[id]
-	end
-	def Things.direction_for_angle(a)
-		DIRECTION_FOR_ANGLE[a]
-	end
 end
 
 class Thing
@@ -75,7 +94,7 @@ class Thing
 		Wad.marshal_short(@location.x) + Wad.marshal_short(@location.y) + Wad.marshal_short(@facing_angle) + Wad.marshal_short(@type_id) + Wad.marshal_short(@flags)
 	end
 	def to_s
-		Things.name_for_type_id(@type_id)	+ " at " + @location.to_s + " facing " + Things.direction_for_angle(@facing_angle)
+		Dictionary.get.name_for_type_id(@type_id)	+ " at " + @location.to_s + " facing " + Dictionary.get.direction_for_angle(@facing_angle)
 	end
 end
 
