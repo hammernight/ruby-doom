@@ -290,17 +290,6 @@ class BMPDecoderTest < Test::Unit::TestCase
 	end
 end
 
-class IndexToCoordinatesTest < Test::Unit::TestCase
-	def test_idx_to_xy
-		itc = IndexToCoordinates.new
-		assert(itc.convert(3,5) == Point.new(3,0), "wrong idx to xy " + itc.convert(3,5).to_s)
-		assert(itc.convert(5,5) == Point.new(0,1), "edge bit not right")
-		assert(itc.convert(7,5) == Point.new(2,1), "middle, second row not right")
-		assert(itc.convert(10,5) == Point.new(0,2), "edge bit, 2nd row not right")
-		assert(itc.convert(12, 8) == Point.new(4,1), "12,8 check")
-	end
-end
-
 class PointsToLineTest < Test::Unit::TestCase
 	def test_lower_left
 		pts = [Point.new(1,1), Point.new(2,1), Point.new(3,1), Point.new(2,4)]
@@ -341,6 +330,14 @@ class FinderTest < Test::Unit::TestCase
 end
 
 class ArrayToPointsTest < Test::Unit::TestCase
+	def test_idx_to_xy
+		itc = ArrayToPoints.new(0,0,[])
+		assert(itc.convert(3,5) == Point.new(3,0), "wrong idx to xy " + itc.convert(3,5).to_s)
+		assert(itc.convert(5,5) == Point.new(0,1), "edge bit not right")
+		assert(itc.convert(7,5) == Point.new(2,1), "middle, second row not right")
+		assert(itc.convert(10,5) == Point.new(0,2), "edge bit, 2nd row not right")
+		assert(itc.convert(12, 8) == Point.new(4,1), "12,8 check")
+	end
 	def test_convert
 		# Ensure we find the right point (3,1) when given a bitmap with the 12th bit set
 		# 00000000

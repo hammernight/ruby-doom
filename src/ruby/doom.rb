@@ -66,11 +66,7 @@ class PointThinner
 	end
 	def thin
 		newline = [@points[0]]
-		1.upto(@points.size-1) {|x|
-			if x % @factor == 0
-				newline << @points[x]
-			end
-		}
+		1.upto(@points.size-1) {|x| newline << @points[x] if x % @factor == 0 }
 		return newline	
 	end
 end
@@ -102,21 +98,11 @@ class PointsToLine
 	end
 end
 
-class IndexToCoordinates
-	# converts an index into an array of width blah to a point on an x/y coordinate plane
-	# with 0,0 in the upper left hand corner
-	# so in an array that's 8 units wide, unit 12 converts to a point 4 across, 1 down
-	def convert(idx, width)
-		Point.new(idx % width, idx/width)
-	end
-end
-
 class ArrayToPoints
 	def initialize(width, height, raw_data)
 		@width = width
 		@height = height
 		@raw_data = raw_data
-		@bit_index_to_point_converter = IndexToCoordinates.new
 	end
 	def points
 		pts = []
@@ -126,13 +112,19 @@ class ArrayToPoints
 			# for each bit in the image
 			0.upto(7) {|bit|
 				if (byte &  128 >> bit) == 0
-					tmp_pt = @bit_index_to_point_converter.convert(idx, @width)
+					tmp_pt = convert(idx, @width)
 					pts << Point.new(tmp_pt.x, @height-1-tmp_pt.y)
 				end
 				idx += 1
 			}
 		}
 		return pts
+	end
+	# converts an index into an array of width blah to a point on an x/y coordinate plane
+	# with 0,0 in the upper left hand corner
+	# so in an array that's 8 units wide, unit 12 converts to a point 4 across, 1 down
+	def convert(idx, width)
+		Point.new(idx % width, idx/width)
 	end
 end
 

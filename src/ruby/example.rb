@@ -9,6 +9,7 @@ if __FILE__ == $0
 		b.scale_factor = 2
 		b.thinning_factor = 10
     b.set_player Point.new(400, 400)
+    b.set_soldier Point.new(500, 500)
     b.create_wad("new.wad")
 	elsif ARGV.include?("-path")
 		puts "Creating a simple map using an encoded path"
