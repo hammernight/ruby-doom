@@ -52,6 +52,10 @@ class WadTest < Test::Unit::TestCase
 		assert(Wad.unmarshal_short([2,1]) == 258, "unmarshalling short failed")
 		assert(Wad.marshal_short(258) == [2,1], "marshalling short failed")
 	end
+	def test_string_readwrite
+		assert(Wad.unmarshal_string([84, 72, 73, 78, 71, 83, 0, 0]) == "THINGS", "unmarshalling string failed")
+		assert(Wad.marshal_string("THINGS") == [84, 72, 73, 78, 71, 83, 0, 0], "marshalling string failed")
+	end
 	def test_readwrite_simple
 		working = W1
 		w = Wad.new

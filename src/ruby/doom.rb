@@ -28,14 +28,15 @@ class Lump
 end
 
 class Thing < Lump
+	NAME="THING"
 	def initialize
-		super("THING")
+		super(NAME)
 	end
 	def type_id
 		return Wad.unmarshal_short(@bytes.slice(6,2))	
 	end
 	def location
-		Point.new()
+		Point.new(Wad.unmarshal_short(@bytes.slice(0,2)), Wad.unmarshal_short(@bytes.slice(2,2)))
 	end
 end
 
@@ -50,14 +51,14 @@ class DirectoryEntry
 	def read(array)
 			@offset = Wad.unmarshal_long(array.slice(0,4))
 			@size = Wad.unmarshal_long(array.slice(4,4))
-			@name = array.slice(8,8).pack("C*").strip
+			@name = Wad.unmarshal_string(array.slice(8,8))
 	end
 	def write
 		Wad.marshal_long(@offset) + Wad.marshal_long(@size) + Wad.marshal_string(@name)
 	end
 	def create_lump(bytes)
 		lump=nil
-		if @name == "THING"
+		if @name == Thing::NAME
 			lump=Thing.new
 		else
 			lump=Lump.new(@name)
@@ -120,19 +121,16 @@ class Wad
 			out += lump.write
 			ptr += lump.size
 		}
-		entries.each {|e| 
-			out += e.write
-		}
+		entries.each {|e| out += e.write }
 		# now go back and fill in the directory offset in the header
 		header.directory_offset = ptr
 		out = header.write + out
-		if filename != nil
-			File.open(filename, "w") {|f| 
-				out.each {|b| f.putc(b) }
-			}
-		end
+		File.open(filename, "w") {|f| out.each {|b| f.putc(b) } } unless filename == nil
 		puts "Done" unless !@verbose
 		return out
+	end
+	def Wad.unmarshal_string(a)
+		a.pack("C*").strip
 	end
 	def Wad.marshal_string(n)
 		arr = n.unpack("C8").compact
