@@ -1,0 +1,3 @@
+Here's how to do the next release:
+
+update the version number in the changelog
