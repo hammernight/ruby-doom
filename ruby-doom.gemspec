@@ -12,15 +12,12 @@ spec = Gem::Specification.new do |s|
 	s.files << "etc/README"
 	s.files << "etc/CHANGELOG"
 	s.files << "etc/LICENSE"
-	s.files << "sample/example.log"
-	s.files << "sample/syslog_sample.log"
-	s.files << "sample/mysql_sample.log"
 	s.require_path = "lib"
-	s.autorequire = "pqa"
+	s.autorequire = "ruby-doom"
 	s.author = "Tom Copeland"
 	s.email = "tom@infoether.com"
-	s.rubyforge_project = "pqa"
-	s.homepage = "http://pqa.projects.postgresql.org/"	
+	s.rubyforge_project = "ruby-doom"
+	s.homepage = "http://ruby-doom.rubyforge.org/"	
 end
 
  Gem::Builder.new(spec).build if $0 == __FILE__
