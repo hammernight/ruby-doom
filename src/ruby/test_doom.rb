@@ -294,14 +294,9 @@ class IndexToCoordinatesTest < Test::Unit::TestCase
 	def test_idx_to_xy
 		itc = IndexToCoordinates.new
 		assert(itc.convert(3,5) == Point.new(3,0), "wrong idx to xy " + itc.convert(3,5).to_s)
-		#puts itc.convert(5,5)
-		#puts itc.convert(10,5)
-		#puts itc.convert(10,5)[0]
-		#puts itc.convert(10,5)[1]
-		#assert(itc.convert(10,5) == [5,0], "wrong idx to xy " + itc.convert(10,5).to_s)
-		#assert(itc.convert(10,26) == [6,2], "wrong idx to xy " + itc.convert(10,26).to_s)
-		#assert(itc.convert(8,8) == [0,1], "wrong idx to xy " + itc.convert(8,8).to_s)
-		#assert(itc.convert(8,12) == [4,1], "wrong idx to xy")
+		assert(itc.convert(5,5) == Point.new(0,1), "edge bit not right")
+		assert(itc.convert(10,5) == Point.new(0,2), "edge bit, 2nd row not right")
+		assert(itc.convert(12, 8) == Point.new(4,1), "12,8 check")
 	end
 end
 
