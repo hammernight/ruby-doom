@@ -62,14 +62,15 @@ m.write_to_file("simple.wad")
 <li>Bytes 2-4: End VERTEX (short)
 <li>Bytes 4-6: Attributes (short)
 <li>Bytes 6-8: Special effects type (short)
-<li>Bytes 8-10: Right SIDEDEF (short)
-<li>Bytes 10-12: Left SIDEDEF (short)
+<li>Bytes 8-10: Tag (short)
+<li>Bytes 10-12: Right SIDEDEF (short)
+<li>Bytes 12-14: Left SIDEDEF (short)
 </ul>
 
 </ul>
 <p>Here's a sample run from the current version of <code>doom.rb</code>:
 <pre>
-[tom@rubyforge ruby]$ ./doom.rb
+[tom@rubyforge ruby]$ ./doom.rb                                                                                                             105,2-4       19%
 Reading WAD into memory
 Done reading, building the object model
 Object model built
@@ -80,15 +81,14 @@ MAP01     0
 THINGS    10
  - Player 1 at 224,65120 facing east
 LINEDEFS  112
- - Linedef from 0 to 1
- - Linedef from 65535 to 1
- - Linedef from 1 to 65535
- - Linedef from 0 to 2
- - Linedef from 0 to 0
- - Linedef from 1 to 0
- - Linedef from 6 to 1
- - Linedef from 6 to 7
- - Linedef from 65535 to 7
+ - Linedef from 0 to 1; attribute flag is 1; special fx is 0
+ - Linedef from 1 to 2; attribute flag is 1; special fx is 0
+ - Linedef from 2 to 3; attribute flag is 1; special fx is 0
+ - Linedef from 3 to 0; attribute flag is 1; special fx is 0
+ - Linedef from 4 to 5; attribute flag is 1; special fx is 0
+ - Linedef from 5 to 6; attribute flag is 1; special fx is 0
+ - Linedef from 6 to 7; attribute flag is 1; special fx is 0
+ - Linedef from 7 to 4; attribute flag is 1; special fx is 0
 SIDEDEFS  240
 VERTEXES  32
 SEGS      96
