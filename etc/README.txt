@@ -9,6 +9,6 @@ The current release can parse any DOOM II map into an object model.  Run it like
 and it'll produce a list of the lumps (things, vertexes, sectors, etc) contained within the file.
 
 You can also write Ruby code to assemble a map - please see an example in
-src/ruby/path_creation_example.rb.
+path_creation_example.rb.
 
 Please see http://ruby-doom.rubyforge.org/ for more detailed information.
