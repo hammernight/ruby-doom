@@ -39,7 +39,8 @@ end
 
 class WadTest < Test::Unit::TestCase
 	def test_init
-		w = Wad.new("../../test_wads/simple.wad")
+		w = Wad.new()
+		w.read("../../test_wads/simple.wad")
 		assert(w.byte_count == 900, "wrong byte count")
 		assert(w.pwad, "pwad not verified")
 	end

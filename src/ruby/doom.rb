@@ -31,10 +31,12 @@ end
 
 class Wad
 	attr_reader :directory_entries, :directory_offset, :lumps, :header
-	def initialize(filename, verbose=false)
+	def initialize(verbose=false)
 		@verbose = verbose
 		@bytes = []
 		@directory_entries = []
+	end
+	def read(filename)
 		puts "Reading WAD into memory" unless !@verbose
 		File.new(filename).each_byte {|b| @bytes << b }
 		puts "Done reading, building the object model" unless !@verbose
@@ -78,7 +80,8 @@ end
 
 if __FILE__ == $0
 	file = ARGV.include?("-f") ? ARGV[ARGV.index("-f") + 1] : "../../test_wads/simple.wad"
-	w = Wad.new(file, true)
+	w = Wad.new(true)
+	w.read(file)
 	puts "The file " + file + " is a " + w.byte_count.to_s + " byte patch WAD" unless !w.pwad
 	puts "It's got " + w.directory_entries.size.to_s + " lumps, the directory starts at byte " + w.header.directory_offset.to_s
 	puts "Lump".ljust(10) + "Size ".ljust(6) + "Offset".ljust(10)
