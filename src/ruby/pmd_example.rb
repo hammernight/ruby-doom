@@ -5,8 +5,10 @@ require "doom.rb"
 class PMDMap
 MIN_NOOKS = 2
 MAX_NOOKS = 12
-	def initialize(problems)
-		@problems = problems
+	def initialize(filename)
+		count = 0
+		File.read(filename).each {|line| count += 1 if line["</td>"] }
+		@problems = count == 0 ? 0 : (count/4).to_i
 	end
 	def nooks()
 		if @problems < MIN_NOOKS
@@ -15,18 +17,11 @@ MAX_NOOKS = 12
 			return MAX_NOOKS
 		end
 		return (@problems/10).to_i + MIN_NOOKS
-		
 	end
 end
 
 puts "Counting up the number of problems in the report"
-count = 0
-File.read("sample_pmd_report.html").each {|line|
-	count += 1 if line["</td>"]
-}
-count = (count/4).to_i
-
-pmd = PMDMap.new(count)
+pmd = PMDMap.new("sample_pmd_report.html")
 
 puts "Creating the map"
 w = Wad.new
@@ -61,5 +56,3 @@ if ARGV.include?("-nethack")
   puts p.nethack(50)
   puts "Map generated from " + p.to_s
 end
-
-
