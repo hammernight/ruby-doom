@@ -419,14 +419,26 @@ class Map
 	def add_level(level)
 		@levels << level
 	end
-	def save(filename)
+	def save()
+		w = Wad.new(filename)
 	end
 end
 
 class Level
-	def add_room(p,p1)
+	attr_accessor :spawn_point, :rooms
+	def initialize
+		@rooms = []
 	end
-	def set_spawn_point(p)
+	def add_room(p,p1)
+		@rooms << Room.new(p,p1)
+	end
+end
+
+class Room
+	attr_reader :p, :p1
+	def initialize(p,p1)
+		@p = p 
+		@p1 = p1
 	end
 end
 
@@ -442,7 +454,7 @@ if __FILE__ == $0
 		m = Map.new
 		level = Level.new
 		level.add_room(Point.new(0,0), Point.new(10,10))
-		level.set_spawn_point(Point.new(2,2))
+		level.spawn_point = Point.new(2,2)
 		m.add_level(level)
 		m.save("out.wad")
 		exit

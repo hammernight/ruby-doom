@@ -16,9 +16,8 @@
 <td>
 <pre>
 level = Level.new(10,10)
-level.add(Sector.new(0,0,2,2))
-level.add(Sector.new(5,5,7,7))
-level.spawn_point(1,1)
+level.add(Sector.new(1,1,8,8))
+level.spawn_point(3,3)
 m = Map.new(level)
 m.write_to_file("simple.wad")
 </pre>
