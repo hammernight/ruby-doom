@@ -10,7 +10,7 @@ class RGBQuad
 end
 
 class Finder
-	SEARCH_RADIUS=10
+	SEARCH_RADIUS=30
 	def Finder.next(points, current, sofar)
 		0.upto(SEARCH_RADIUS) {|x|
 			pts = Finder.points_at_radius(current, x)
@@ -61,15 +61,15 @@ class PointSet
 	def initialize(points)
 		@points = points
 	end
-	def upper_left
-		#@points.min {|a,b| a.distance_to(Point.new(0,0)) <=> b.distance_to(Point.new(0,0)) }
-		@points[0]
+	def lower_left
+		@points.min {|a,b| a.distance_to(Point.new(0,0)) <=> b.distance_to(Point.new(0,0)) }
+		#@points[0]
 	end
 	def size
 		@points.size
 	end
 	def in_order
-		found_so_far = [upper_left]
+		found_so_far = [lower_left]
 		current = Finder.next(points, found_so_far[0], found_so_far)
 		while found_so_far.size != @points.size - 1 
 			found_so_far << current
@@ -100,8 +100,8 @@ class ArrayToPoints
 			0.upto(7) {|bit|
 				if (byte & (1 << bit)) == 0
 					x,y = *ArrayToPoints.idx_to_xy(width, idx)
-					p = Point.new(x,y)
-					#p = Point.new(x,height-1-y)
+					#p = Point.new(x,y)
+					p = Point.new(x,height-1-y)
 					pts << p
 				end
 				idx += 1
@@ -832,8 +832,13 @@ end
 
 if __FILE__ == $0
 	if ARGV.include?("-bmp")
-		b = BMPMap.new("../../test_wads/square.bmp")
-		b.set_player Point.new(170, 160)
+		#b = BMPDecoder.new("../../test_wads/small_circle.bmp")
+		#puts b.points.points
+		#puts "in order"
+		#puts b.points.in_order
+		#exit
+		b = BMPMap.new("../../test_wads/small_circle.bmp")
+		b.set_player Point.new(60, 60)
 		b.create_wad("new.wad")		
 		exit
 	end
