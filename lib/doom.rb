@@ -796,31 +796,29 @@ class PathCompiler
 	def initialize(path)
 		@path = path
 		@sectors = Sectors.new
-		@sectors.add Sector.new
+		@sectors.add(Sector.new)
 		@vertexes = Vertexes.new
-		@vertexes.add Vertex.new(@path.start)
+		@vertexes.add(Vertex.new(@path.start))
 		@path.visit(self)
 		@sidedefs = Sidedefs.new
-		@path.segment_count.times {|v|
+		@path.segment_count.times do |v|
 			s = @sidedefs.add Sidedef.new
 			s.sector_id = @sectors.items[0].id	
-		}
+		end
 		@linedefs = Linedefs.new
 		last = nil
-		@vertexes.items.each {|v|
+		@vertexes.items.each do |v|
 			if last.nil?
 				last = v
 				next
 			end
 			@linedefs.add Linedef.new(last, v, @sidedefs.items[last.id])
 			last = v
-		}
-		@linedefs.add Linedef.new(@vertexes.items.last, @vertexes.items.first, @sidedefs.items.last)
+		end
+		@linedefs.add(Linedef.new(@vertexes.items.last, @vertexes.items.first, @sidedefs.items.last))
 	end
 	def line_to(p)
-		if @vertexes.items.find {|x| x.location == p } == nil
-			@vertexes.add Vertex.new(p)
-		end
+		@vertexes.add(Vertex.new(p)) if (@vertexes.items.find {|x| x.location == p }).nil?
 	end
 	def lumps
 		[@vertexes, @sectors, @linedefs, @sidedefs]
@@ -859,7 +857,7 @@ class Path
 	end
 	def visit(visitor)
 		cur = @start
-		segments.each {|x|
+		segments.each do |x|
 			dir = x[0].chr
 			len = x.slice(1, x.length-1).to_i
 			if dir == "e"
@@ -874,7 +872,7 @@ class Path
 				raise "Unrecognized direction " + dir.to_s + " in segment " + x.to_s
 			end
 			visitor.line_to(cur)
-		}
+		end
 	end
 	def nethack(size=Nethack::DEFAULT_SIZE)
 		n = Nethack.new(@start, size)
@@ -904,21 +902,21 @@ class Nethack
 	end
 	def render
 		res = ""
-		@map.each_index {|x|
+		@map.each_index do |x|
 			@map[x].each_index {|y| res << @map[@map.size-1-x][y-1] + " " }
 			res << "\n"
-		}
-		return res
+		end
+		res
 	end
 end
 
 if __FILE__ == $0
- 	file = ARGV.include?("-f") ? ARGV[ARGV.index("-f") + 1] : "../../test_wads/simple.wad"
+ 	file = ARGV.include?("-f") ? ARGV[ARGV.index("-f") + 1] : "../test_wads/simple.wad"
 	w = Wad.new(ARGV.include?("-v"))
 	w.read(file)
-  w.lumps.each {|lump|
+  w.lumps.each do |lump|
   	puts lump.name + " (" + lump.size.to_s + " bytes)"
 		lump.items.each { |t| puts " - " + t.to_s }
-  }
+	end
 end
 
