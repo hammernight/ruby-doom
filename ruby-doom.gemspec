@@ -7,15 +7,14 @@ spec = Gem::Specification.new do |s|
 	s.version = "0.8"
 	s.platform = Gem::Platform::RUBY
 	s.summary = "Ruby-DOOM provides a scripting API for creating DOOM maps. It also provides higher-level APIs to make map creation easier."
-	s.files = ["lib/example.rb"]
-	s.files << "lib/doom.rb"
-	s.files << "etc/README"
-	s.files << "etc/CHANGELOG"
-	s.files << "etc/LICENSE"
-	s.files << "test_wads/simple.wad"
-	s.files << "bitmaps/wiggly.bmp"
+	s.files = ["lib/example.rb","lib/doom.rb"]
+	s.files.concat ["etc/README"]
+	s.files.concat ["etc/CHANGELOG"]
+	s.files.concat ["etc/LICENSE"]
+	s.files.concat ["test_wads/simple.wad"]
+	s.files.concat ["bitmaps/wiggly.bmp"]
 	s.require_path = "lib"
-	s.autorequire = "ruby-doom"
+	s.autorequire = "doom"
 	s.author = "Tom Copeland"
 	s.email = "tom@infoether.com"
 	s.rubyforge_project = "ruby-doom"
