@@ -16,12 +16,9 @@ class Finder
 		@points = points
 	end
 	def next(current, sofar)
-		1.upto(@max_radius) {|x|
-			pts = points_at_radius(current, x)
-			pts.each {|p|
-				return p if good(p, sofar)
-			}
-		}
+		1.upto(@max_radius) do |x|
+			points_at_radius(current, x).each {|p| return p if good(p, sofar) }
+		end
 		raise "Couldn't find next point!"
 	end
 	def points_at_radius(p, r)
@@ -51,7 +48,7 @@ class Finder
 			res << p
 		}
 		puts "points array = " + res.to_s unless !@debug
-		return res
+		res
 	end
 	def good(candidate, sofar)	
 		puts "Testing " + candidate.to_s unless !@debug
@@ -67,7 +64,7 @@ class PointThinner
 	def thin
 		newline = [@points[0]]
 		1.upto(@points.size-1) {|x| newline << @points[x] if x % @factor == 0 }
-		return newline	
+		newline	
 	end
 end
 
@@ -94,7 +91,6 @@ class PointsToLine
 			end
 		end
 		found_so_far << current
-		return found_so_far
 	end
 end
 
@@ -108,16 +104,16 @@ class ArrayToPoints
 		pts = []
 		# for each byte in the image
 		idx = 0
-		@raw_data.each {|byte|
+		@raw_data.each do |byte|
 			# for each bit in the image
-			0.upto(7) {|bit|
+			0.upto(7) do |bit|
 				if (byte &  128 >> bit) == 0
 					tmp_pt = convert(idx, @width)
 					pts << Point.new(tmp_pt.x, @height-1-tmp_pt.y)
 				end
 				idx += 1
-			}
-		}
+			end
+		end
 		return pts
 	end
 	# converts an index into an array of width blah to a point on an x/y coordinate plane
@@ -130,6 +126,7 @@ end
 
 class BMPDecoder
 	attr_reader :type, :size, :offset_to_image_data, :info_header_size, :width, :height, :bit_planes, :bits_per_pixel, :compression, :size_of_image, :xpixels_per_meter, :ypixels_per_meter, :colors_used, :colors_important
+	attr_accessor :scale_factor, :thinning_factor
 	def initialize(filename, debug=false)
 		@debug = debug
 		@filename = filename
@@ -171,13 +168,7 @@ class BMPDecoder
 		rgb2 = RGBQuad.new(bytes.slice(58,4))
 	
 		@raw_image = bytes.slice(62, bytes.size-62)
-		return self
-	end
-	def scale_factor(factor)
-		@scale_factor = factor
-	end
-	def thinning_factor(factor)
-		@thinning_factor = factor
+		self
 	end
 	def raw_points
 		decode if @raw_image.nil?
@@ -781,8 +772,8 @@ class BMPMap
 	end
 	def create_wad(filename)
 		b = BMPDecoder.new(@bitmap_file)
-		b.scale_factor(@scale_factor)
-		b.thinning_factor(@thinning_factor)
+		b.scale_factor = @scale_factor
+		b.thinning_factor = @thinning_factor
 		w = Wad.new
 		w.lumps << UndecodedLump.new("MAP01")
 		w.lumps << @things
@@ -903,7 +894,9 @@ class Nethack
 	def render
 		res = ""
 		@map.each_index do |x|
-			@map[x].each_index {|y| res << @map[@map.size-1-x][y-1] + " " }
+			@map[x].each_index do 
+				|y| res << @map[@map.size-1-x][y-1] + " " 
+			end
 			res << "\n"
 		end
 		res
