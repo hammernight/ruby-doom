@@ -1,5 +1,7 @@
 #!/usr/local/bin/ruby
 
+#TEST
+
 require 'rubygems'
 
 spec = Gem::Specification.new do |s|
