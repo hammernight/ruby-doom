@@ -2,6 +2,8 @@
 
 require 'rubygems'
 
+#test 
+
 spec = Gem::Specification.new do |s|
 	s.name = "ruby-doom"
 	s.version = "0.8"
