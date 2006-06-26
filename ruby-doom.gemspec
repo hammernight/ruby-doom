@@ -2,7 +2,8 @@
 
 require 'rubygems'
 
-# test 2
+#test 3
+## test 2
 
 spec = Gem::Specification.new do |s|
 	s.name = "ruby-doom"
