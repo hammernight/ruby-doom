@@ -1,6 +1,8 @@
 #!/usr/local/bin/ruby
 
-VERSION = '0.9.0'
+class RubyDoom
+  VERSION = '0.9.0'
+end
 
 class RGBQuad
   def initialize(bytes)
