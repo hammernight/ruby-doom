@@ -4,4 +4,4 @@ README.txt
 Rakefile
 bin/introspector
 bin/bsp
-lib/doom.rb
+lib/ruby-doom.rb
