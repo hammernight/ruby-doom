@@ -1,5 +1,7 @@
 #!/usr/local/bin/ruby
 
+VERSION = '0.9.0'
+
 class RGBQuad
   def initialize(bytes)
     @r,@g,@b,@res = *bytes
