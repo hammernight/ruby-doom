@@ -46,7 +46,7 @@ class WadFile
 end
 
 class WadTest < Test::Unit::TestCase
-  W1 = WadFile.new("../test_wads/simple.wad", 900)
+  W1 = WadFile.new(File.join(File.dirname(__FILE__), "../test_wads/simple.wad"), 900)
   def test_readwrite_simple
     working = W1
     w = Wad.new
@@ -274,7 +274,7 @@ class PointTest < Test::Unit::TestCase
 end
 
 class BMPDecoderTest < Test::Unit::TestCase
-  B = BMPDecoder.new(TEST="../bitmaps/square.bmp").decode
+  B = BMPDecoder.new(TEST=File.join(File.dirname(__FILE__), "/../bitmaps/square.bmp")).decode
   def test_header
     assert(B.type == 19778, "That's not a bitmap")
     assert(B.size == File.size(TEST), "Wrong size")
