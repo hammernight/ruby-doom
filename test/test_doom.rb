@@ -1,7 +1,7 @@
 #!/usr/local/bin/ruby
 
 require "test/unit"
-require "doom.rb"
+require "ruby-doom.rb"
 
 class HeaderTest < Test::Unit::TestCase
   def test_read
