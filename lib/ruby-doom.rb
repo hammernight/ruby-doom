@@ -601,7 +601,7 @@ class Linedef
     @start_vertex, @end_vertex, @attributes, @special_effects_type, @tag, @right_sidedef, @left_sidedef = Codec.decode(FORMAT, bytes)
   end
   def write
-    Codec.encode(FORMAT, [@start_vertex.id, @end_vertex.id, @attributes, @special_effects_type, @tag, @right_sidedef.id, -1])
+    Codec.encode(FORMAT, [@start_vertex.object_id, @end_vertex.object_id, @attributes, @special_effects_type, @tag, @right_sidedef.object_id, -1])
   end
   def to_s
     "Linedef from " + @start_vertex.to_s + " to " + @end_vertex.to_s + "; attribute flag is " + @attributes.to_s + "; special fx is " + @special_effects_type.to_s + "; tag is " + @tag.to_s + "; right sidedef is " + @right_sidedef.to_s + "; left sidedef is " + @left_sidedef.to_s
