@@ -2,8 +2,6 @@
 
 require 'rubygems'
 
-#test 
-
 spec = Gem::Specification.new do |s|
 	s.name = "ruby-doom"
 	s.version = "0.8"
@@ -23,4 +21,4 @@ spec = Gem::Specification.new do |s|
 	s.homepage = "http://ruby-doom.rubyforge.org/"	
 end
 
- Gem::Builder.new(spec).build if $0 == __FILE__
+Gem::Builder.new(spec).build if $0 == __FILE__
