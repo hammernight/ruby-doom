@@ -1,6 +1,6 @@
-#!/usr/local/bin/ruby
+#!/usr/bin/env ruby
 
-require "doom.rb"
+require File.join(File.dirname(__FILE__), "ruby-doom")
 
 if __FILE__ == $0
   if ARGV.include?("-bitmap")
