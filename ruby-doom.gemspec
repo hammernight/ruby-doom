@@ -7,7 +7,7 @@ spec = Gem::Specification.new do |s|
 	s.version = "0.8"
 	s.platform = Gem::Platform::RUBY
 	s.summary = "Ruby-DOOM provides a scripting API for creating DOOM maps. It also provides higher-level APIs to make map creation easier."
-	s.files = ["lib/example.rb","lib/doom.rb"]
+	s.files = ["lib/example.rb","lib/ruby-doom.rb"]
 	s.files.concat ["etc/README"]
 	s.files.concat ["etc/CHANGELOG"]
 	s.files.concat ["etc/LICENSE"]
